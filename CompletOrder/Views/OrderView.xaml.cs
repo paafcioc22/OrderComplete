@@ -47,11 +47,15 @@ namespace CompletOrder.Views
 
 
             
-           // var odp =await RodzajeMetod.WejdżWZamowienie(orderVM.id, orderVM.data);
-            if (true)
+            var odp =await RodzajeMetod.WejdżWZamowienie(orderVM.id, orderVM.data);
+            if (odp)
                 await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
-            else
-                await DisplayAlert("info", "To zamówienie jest edytowane", "OK");
+            else 
+            { 
+                var odp2=await DisplayAlert("info", "To zamówienie jest edytowane\n Czy nadal chcesz je otworzyć?", "Tak","Nie");
+                if(odp2)
+                    await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
+            }
 
 
             //Deselect Item

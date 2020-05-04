@@ -123,6 +123,6 @@
             </ListView.ItemTemplate>
 
         </ListView>
-        <Label x:Name="lbl_sumaKwota"/>
+        <Label x:Name="lbl_sumaKwota" HorizontalTextAlignment="Center" BackgroundColor="LightSlateGray" TextColor="White"/>
     </StackLayout>
 </ContentPage>

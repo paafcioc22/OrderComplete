@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,7 +38,8 @@ namespace CompletOrder.ViewModels
             get { return showOtherLocation; }
         }
         public int _orderid { get; set; }
-        public double SumaZamowienia { get; set; }
+        public decimal SumaZamowienia { get; set; }
+        public int PozycjiZamowienia{ get; set; }
 
         public OrderDetailVM(Order _order)
         {
@@ -48,7 +50,7 @@ namespace CompletOrder.ViewModels
             //orderDetail=_orderDetail.OrderDetailVM =new ObservableCollection<OrderDetail>();
 
             this._order = _order;
-            SumaZamowienia = _order.wartosc_netto;
+            SumaZamowienia = (decimal)_order.do_zaplaty;
             _orderid = _order.id;
             orderDetail.OrderBy(x => x.IsDone);
             _connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
@@ -156,6 +158,7 @@ namespace CompletOrder.ViewModels
 
             //var wynik = await _connection.Table<OrderDatailComplete>().Where(c => c.IdOrder == orderId).ToListAsync(); ;
 
+                DataTable dt = new DataTable();
             try
             {
                 orderDetail.Clear();
@@ -164,10 +167,10 @@ namespace CompletOrder.ViewModels
                 command1.CommandText = "SELECT zamowienia_produkty.id IdElement,nr_katalogowy, ilosc, cena_netto, zamowienia_produkty.vat as zvat, promo, ilosc_zwrocona, nazwa " +
                     "FROM zamowienia_produkty LEFT JOIN produkty ON zamowienia_produkty.produkt_id=produkty.id WHERE main_id=" + orderId;
                 MySqlDataReader reader = command1.ExecuteReader();
-
+                
                 while (reader.Read())
                 {
-
+                    PozycjiZamowienia++;
                     if (!string.IsNullOrEmpty(reader["nr_katalogowy"].ToString()))
                     {
                         var stwrkarty = Task.Run(() => GetTwrKartyAsync(reader["nr_katalogowy"].ToString())).Result[0] as TwrKarty;
@@ -193,9 +196,11 @@ namespace CompletOrder.ViewModels
                         }
                         var tmp = orderDetail.OrderBy(x => x.IsDone).ThenBy(x => x.twrkarty.MgA_Segment1).ThenBy(x => x.twrkarty.MgA_Segment2).ThenBy(x => x.twrkarty.MgA_Segment3);
                         orderDetail = Convert2(tmp.ToList());
+
                     }
                     
                 }
+              
                 base.mysqlconn.Close();
             }
             catch (Exception )
