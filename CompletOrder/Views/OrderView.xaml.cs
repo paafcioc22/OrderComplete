@@ -46,25 +46,14 @@ namespace CompletOrder.Views
             var orderVM = e.Item as Order;
 
 
-            //await DisplayAlert("Item Tapped", $"Nr zmówienia {id.id}", "OK");
-
-            //var send = new SendOrder()
-            //{
-            //    Orn_OrderId = orderVM.id,
-            //    Orn_IsDone = false,
-            //    Orn_IsEdit = true,
-            //    Orn_DoneUser = 0,
-            //    Orn_EditUser = 0,
-            //    Orn_OrderData = orderVM.data,
-            //    Orn_DoneData = null,
-            //    Orn_DeviceId=deviceIdentifier
-            //};
-
-            var odp =await RodzajeMetod.WejdżWZamowienie(orderVM.id, orderVM.data);
-            if (odp)
+            
+           // var odp =await RodzajeMetod.WejdżWZamowienie(orderVM.id, orderVM.data);
+            if (true)
                 await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
             else
                 await DisplayAlert("info", "To zamówienie jest edytowane", "OK");
+
+
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
 

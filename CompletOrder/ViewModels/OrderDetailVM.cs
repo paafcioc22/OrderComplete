@@ -37,6 +37,7 @@ namespace CompletOrder.ViewModels
             get { return showOtherLocation; }
         }
         public int _orderid { get; set; }
+        public double SumaZamowienia { get; set; }
 
         public OrderDetailVM(Order _order)
         {
@@ -47,7 +48,7 @@ namespace CompletOrder.ViewModels
             //orderDetail=_orderDetail.OrderDetailVM =new ObservableCollection<OrderDetail>();
 
             this._order = _order;
-
+            SumaZamowienia = _order.wartosc_netto;
             _orderid = _order.id;
             orderDetail.OrderBy(x => x.IsDone);
             _connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
@@ -167,30 +168,33 @@ namespace CompletOrder.ViewModels
                 while (reader.Read())
                 {
 
-
-                    var stwrkarty = Task.Run(()=> GetTwrKartyAsync(reader["nr_katalogowy"].ToString())).Result[0] as TwrKarty;
-                    var id_element = reader.GetInt32("IdElement");
-                   // var tmp2 = (wynik.Where(s => s.IdOrder == orderId && s.IdElementOrder == id_element)).Any();
-                    OrderDetail item = new OrderDetail
+                    if (!string.IsNullOrEmpty(reader["nr_katalogowy"].ToString()))
                     {
-                        IsDone= (wynik.Where(s => s.IdOrder == orderId && s.IdElementOrder== id_element)).Any(),
-                        OrderId = orderId,
-                        IdElement = reader.GetInt32("IdElement"),
-                        kod = reader["nr_katalogowy"].ToString(),
-                        //twrkarty = GetTwrInfo(reader["nr_katalogowy"].ToString()),
-                        twrkarty = stwrkarty,//GetTwrKartyAsync(reader["nr_katalogowy"].ToString()).Result[0] as TwrKarty,
-                        promo = reader["promo"].ToString().Replace("&quot;", "").Replace("_", "").Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", ""),
-                        nazwa = reader["nazwa"].ToString().Replace(reader["nr_katalogowy"].ToString(), ""),
-                        ilosc = Convert.ToInt32(reader["ilosc"]) - Convert.ToInt32(reader["ilosc_zwrocona"]),
-                        cena_netto = reader.GetDouble("cena_netto"),
-                        vat = reader.GetInt32("zvat")
-                    };
-                    if (item.ilosc > 0)
-                    {
-                        orderDetail.Add(item);
+                        var stwrkarty = Task.Run(() => GetTwrKartyAsync(reader["nr_katalogowy"].ToString())).Result[0] as TwrKarty;
+                        var id_element = reader.GetInt32("IdElement");
+                        // var tmp2 = (wynik.Where(s => s.IdOrder == orderId && s.IdElementOrder == id_element)).Any();
+                        OrderDetail item = new OrderDetail
+                        {
+                            IsDone = (wynik.Where(s => s.IdOrder == orderId && s.IdElementOrder == id_element)).Any(),
+                            OrderId = orderId,
+                            IdElement = reader.GetInt32("IdElement"),
+                            kod = reader["nr_katalogowy"].ToString(),
+                            //twrkarty = GetTwrInfo(reader["nr_katalogowy"].ToString()),
+                            twrkarty = stwrkarty,//GetTwrKartyAsync(reader["nr_katalogowy"].ToString()).Result[0] as TwrKarty,
+                            promo = reader["promo"].ToString().Replace("&quot;", "").Replace("_", "").Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", ""),
+                            nazwa = reader["nazwa"].ToString().Replace(reader["nr_katalogowy"].ToString(), ""),
+                            ilosc = Convert.ToInt32(reader["ilosc"]) - Convert.ToInt32(reader["ilosc_zwrocona"]),
+                            cena_netto = reader.GetDouble("cena_netto"),
+                            vat = reader.GetInt32("zvat")
+                        };
+                        if (item.ilosc > 0)
+                        {
+                            orderDetail.Add(item);
+                        }
+                        var tmp = orderDetail.OrderBy(x => x.IsDone).ThenBy(x => x.twrkarty.MgA_Segment1).ThenBy(x => x.twrkarty.MgA_Segment2).ThenBy(x => x.twrkarty.MgA_Segment3);
+                        orderDetail = Convert2(tmp.ToList());
                     }
-                    var tmp = orderDetail.OrderBy(x => x.IsDone).ThenBy(x => x.twrkarty.MgA_Segment1).ThenBy(x => x.twrkarty.MgA_Segment2).ThenBy(x => x.twrkarty.MgA_Segment3);
-                    orderDetail = Convert2(tmp.ToList());
+                    
                 }
                 base.mysqlconn.Close();
             }

@@ -128,13 +128,14 @@ namespace CompletOrder.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Filtr)));
                 if (_filtr)
                 {
-                    PobierzListe();
+                    //PobierzListe();
+                    UstawFiltry();
                     OrderList = GetOrders;
                 }
                 else { 
                 
-                    PobierzListe();
-                    OrderList = GetOrders;
+                   // PobierzListe();
+                   // OrderList = GetOrders;
                 }
             }
         }

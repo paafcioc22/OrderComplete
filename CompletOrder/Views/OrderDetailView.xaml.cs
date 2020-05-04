@@ -36,6 +36,11 @@ namespace CompletOrder.Views
 
             IDevice device = DependencyService.Get<IDevice>();
             deviceIdentifier = device.GetIdentifier();
+            //var suma = orderDetail.orderDetail.Count();// (s => s.cena_netto);
+            var suma = orderDetail.orderDetail.Sum(s => s.cena_netto);
+            if (suma != orderDetail.SumaZamowienia)
+                DisplayAlert("Uwaga", "Nie pełna lista zamówienia", "OK");
+            lbl_sumaKwota.Text = suma.ToString();
             //CzyKtosNieRobi();
         }
 
