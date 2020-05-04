@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" NavigationPage.HasBackButton="False"
+             x:Class="CompletOrder.Views.OrderDetailView" Title="{Binding _orderid}" 
+    >
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Zakończ z brakami " Clicked="ToolbarItem_Clicked"   />
+    </ContentPage.ToolbarItems>
+
+
+    <ListView x:Name="MyListView"
+            ItemsSource="{Binding orderDetail}"
+            ItemTapped="Handle_ItemTapped"
+            CachingStrategy="RecycleElement" HasUnevenRows="True"> 
+    
+    <!--Custom View Cells-->
+    
+    <ListView.ItemTemplate>
+      <DataTemplate>
+        <ViewCell>
+                    <AbsoluteLayout  Padding="5"  HeightRequest="200"   >
+                        <AbsoluteLayout.Triggers>
+                            <DataTrigger TargetType="AbsoluteLayout"
+                                            Binding="{Binding Source={x:Reference checkBox}, Path=IsChecked}"   Value="true">
+                                <Setter Property="BackgroundColor"  Value="LightGray" />
+
+                            </DataTrigger>
+                        </AbsoluteLayout.Triggers>
+
+                        <Label Text="{Binding kod }" TextColor="Black" FontSize="25"
+                                       AbsoluteLayout.LayoutBounds="0.4,0.01,.8,.15"
+                                       AbsoluteLayout.LayoutFlags="All"
+                                       HorizontalTextAlignment="Center"  
+                                       />
+                        <Label Text="{Binding twrkarty.Polozenie }" 
+                                       TextColor="Black"  
+                                       FontSize="25" FontAttributes="Bold"  
+                                       AbsoluteLayout.LayoutBounds="0.1,0.20,.85,.2"
+                                       AbsoluteLayout.LayoutFlags="All"
+                                       HorizontalTextAlignment="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ShowOtherLocation}" Tapped="TapGestureRecognizer_Tapped"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                                           
+                               
+                        <Label Text="{Binding nazwa}"  
+                                       TextColor="Black"  
+                                       AbsoluteLayout.LayoutBounds="0.75,.45,.55,.3"
+                                       AbsoluteLayout.LayoutFlags="All"
+                                       HorizontalTextAlignment="Center"
+                                       />
+                        <Label Text="{Binding ilosc, StringFormat='Ilość : {0} szt'} " 
+                                       TextColor="Black"  FontAttributes="Bold"
+                                       AbsoluteLayout.LayoutBounds="0.5,.8,.3,.2"
+                                       AbsoluteLayout.LayoutFlags="All"
+                                       HorizontalTextAlignment="Start"
+                                       />
+
+
+                        <Label  Text="{Binding cena_netto, StringFormat='Cena : {0:N} zł'}" TextColor="Black"  
+                                       AbsoluteLayout.LayoutBounds="0.5,0.85,.3,.2"
+                                       AbsoluteLayout.LayoutFlags="All"
+                                       HorizontalTextAlignment="Start" FontAttributes="Bold"
+                                       VerticalTextAlignment="End"
+                                       /> 
+ 
+                        <Image  Source="{Binding twrkarty.TwrUrl}" 
+                                       AbsoluteLayout.LayoutBounds="0.01,0.95,.3,0.6"
+                                       AbsoluteLayout.LayoutFlags="All"
+                                       Aspect="AspectFill" WidthRequest="40" HeightRequest="80"
+                                        />
+                        <CheckBox x:Name="checkBox" HorizontalOptions="End" 
+                                  IsChecked="{Binding IsDone,Mode=TwoWay}"  
+                                  IsEnabled="False"
+                                  Scale="2"  Color="Black" 
+                                  AbsoluteLayout.LayoutBounds=".95,0.5,.3,0.3"
+                                  AbsoluteLayout.LayoutFlags="All"
+                                   
+                                  />
+
+                        <!--CheckedChanged="CheckBox_CheckedChanged"-->
+
+
+                    </AbsoluteLayout>
+                    <!--<StackLayout Padding="10" Orientation="Horizontal">  CheckedChanged="CheckBox_CheckedChanged"
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <StackLayout.Triggers>
+                            <DataTrigger TargetType="StackLayout"
+                                            Binding="{Binding Source={x:Reference checkBox}, Path=IsChecked}"   Value="true">
+                                <Setter Property="BackgroundColor"  Value="LightGray" />
+                               
+                            </DataTrigger>
+                            </StackLayout.Triggers>
+                            <Label Text="{Binding kod}" HorizontalTextAlignment="Center" FontSize="Large"  TextColor="{Binding Color}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label"
+                                            Binding="{Binding Source={x:Reference checkBox}, Path=IsChecked}"   Value="true">
+                                        <Setter Property="FontAttributes"  Value="Italic, Bold" />
+                                        <Setter Property="FontSize"   Value="Large" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+
+                            <Label Text="{Binding twrkarty.Polozenie}" HorizontalTextAlignment="Center" FontSize="Large" TextColor="{Binding Color}" />
+                            <Label Text="{Binding nazwa}"  />
+                            <Label Text="{Binding ilosc, StringFormat='Ilość : {0} szt'} "  />
+                            <Label Text="{Binding cena_netto, StringFormat='Cena : {0:N} zł'}"/>
+                        </StackLayout>
+                        --><!--<Image Source="{Binding twrkarty.TwrUrl}" HorizontalOptions="End"/>--><!--
+                        <CheckBox x:Name="checkBox" HorizontalOptions="End" IsChecked="{Binding IsDone}" CheckedChanged="CheckBox_CheckedChanged" Scale="2"  Color="Black" />
+                    </StackLayout>-->
+        </ViewCell>
+      </DataTemplate>
+    </ListView.ItemTemplate>
+    
+  </ListView>
+</ContentPage>

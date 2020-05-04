@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" Title="Ustawienia filtrów"
+             x:Class="CompletOrder.Views.SettingsPage"
+             x:Name="Root"
+             >
+    
+  <!--Pages can be added as references or inline-->
+
+    <TableView Intent="Settings">
+        <TableRoot>
+            <TableSection Title="Status zamówienia">
+                <SwitchCell Text="zapłacone" On="{Binding FiltrZaplacone}"/>
+                <SwitchCell Text="nowe" On="{Binding FiltrNowe}"/>
+                <SwitchCell Text="anulowane" On="{Binding FiltrAnulowane}"/>
+                <SwitchCell Text="przyjęte do realizacji" On="{Binding FiltrRealizowane}"/>
+                <SwitchCell Text="zrealizowane" On="{Binding FiltrZrealizowane}"/>
+            </TableSection>
+            <TableSection Title="Zakres dat">
+                <ViewCell>
+                    <StackLayout Orientation="Horizontal" Padding="10,0,10,0">
+                        <Label Text="Data od" VerticalOptions="Center" HorizontalTextAlignment="Start" HorizontalOptions="FillAndExpand"/>
+                        <DatePicker Date="{Binding DataOd}" Format="yyyy-MM-dd"/>
+                    </StackLayout>
+                </ViewCell>
+                <ViewCell>
+                    <StackLayout Orientation="Horizontal" Padding="10,0,10,0">
+                        <Label Text="Data do " VerticalOptions="Center" HorizontalTextAlignment="Start" HorizontalOptions="FillAndExpand"/>
+                        <DatePicker Date="{Binding DataDo}" Format="yyyy-MM-dd"/>
+                    </StackLayout>
+                </ViewCell>
+            </TableSection>
+            <TableSection Title="Forma płatności">
+                <ViewCell>
+                    <Picker  x:Name="PickerSource" SelectedIndexChanged="PickerSource_SelectedIndexChanged" SelectedIndex="{Binding WybranyTypPlatnosci}"
+                            Title="Wybierz formę płatności" HorizontalOptions="CenterAndExpand" />
+                </ViewCell>
+            </TableSection>
+        </TableRoot>
+    </TableView>
+    
+</ContentPage>

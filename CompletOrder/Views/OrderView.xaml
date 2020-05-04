@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+              
+             x:Class="CompletOrder.Views.OrderView" NavigationPage.HasNavigationBar="False">
+
+    <AbsoluteLayout >
+        <Label Text="{Binding IleZam}" 
+               HorizontalOptions="FillAndExpand" 
+               HorizontalTextAlignment="Center" 
+               FontSize="Large" 
+               BackgroundColor="#909090" 
+               TextColor="AliceBlue"
+               AbsoluteLayout.LayoutBounds="0,0,1,.05"
+               AbsoluteLayout.LayoutFlags="All"
+               />
+         
+             
+            <Frame  HasShadow="true"  BorderColor="DarkGray"   
+                                CornerRadius="10" BackgroundColor="#feecfa"
+                                OutlineColor="Gray" Padding="1" 
+                    AbsoluteLayout.LayoutBounds="0.05,0.07,.75,.08"
+                                       AbsoluteLayout.LayoutFlags="All">
+                <SearchBar Text="{Binding Filter, Mode=TwoWay}" SearchCommand="{Binding SearchCommand}" 
+                           Placeholder="Wyszukaj zamówienie" Keyboard="Numeric"   />
+            </Frame>
+            <Button BorderColor="DarkGray"  BorderWidth="3" Text="Filtry" Margin="0,0,5,0" HorizontalOptions="EndAndExpand"  CornerRadius="10" Clicked="Button_Clicked"
+                    AbsoluteLayout.LayoutBounds="1,0.067,.21,.085"  
+                    AbsoluteLayout.LayoutFlags="All"
+                    />
+            
+         
+            
+        <ListView x:Name="MyListView"
+            ItemsSource="{Binding OrderList}"
+            ItemTapped="Handle_ItemTapped" SeparatorVisibility="None"
+            CachingStrategy="RecycleElement" HasUnevenRows="True"
+                  AbsoluteLayout.LayoutBounds="0.4,1,1,.85"
+                                       AbsoluteLayout.LayoutFlags="All">
+            <d:ListView.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Item 1</x:String>
+                    <x:String>Item 2</x:String>
+                    <x:String>Item 3</x:String>
+                    <x:String>Item 4</x:String>
+                    <x:String>Item 5</x:String>
+                </x:Array>
+            </d:ListView.ItemsSource>
+            <!--Built in Cells-->
+
+            <!--Custom View Cells-->
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell >
+                        <Frame BorderColor="DarkGray" Padding="5"  CornerRadius="10" HasShadow="True" Margin="5">
+                            <StackLayout Orientation="Horizontal"  HorizontalOptions="FillAndExpand" Padding="10" Spacing="8" BackgroundColor="WhiteSmoke" Margin="5" >
+                                <StackLayout.Triggers>
+                                    <DataTrigger TargetType="StackLayout"
+                                            Binding="{Binding IsFinish}"    Value="True">
+                                        <Setter Property="BackgroundColor"  Value="Color.LightGreen" />
+
+                                    </DataTrigger>
+                                    <!--<DataTrigger TargetType="StackLayout"
+                                            Binding="{Binding IsEdit}"    Value="True">
+                                        <Setter Property="BackgroundColor"  Value="Color.LightPink" />
+
+                                    </DataTrigger>-->
+                                     
+                                </StackLayout.Triggers>
+                                <StackLayout   Margin="5" HorizontalOptions="FillAndExpand"  >
+                                    <Label Text="{Binding id}" TextColor="Red" FontSize="20" HorizontalTextAlignment="Center"/>
+                                    <Label Text="{Binding data}" />
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                        <Label Text="{Binding status}" FontAttributes="Bold" HorizontalOptions="Start"/>
+                                        <Label Text="{Binding platnosc_info}" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                                    </StackLayout>
+                                    <Label Text="{Binding do_zaplaty, StringFormat='Do zapłaty : {0:N} zł'}"/>
+                                    <Label Text="{Binding nr_paragonu}"/>
+                                </StackLayout>
+
+                                <CheckBox  x:Name="checkBox1" HorizontalOptions="End" IsEnabled="False" IsChecked="{Binding IsFinish}" Scale="2" Margin="0,0,15,0"/>
+
+                            </StackLayout>
+                        </Frame>
+                        
+                        
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+    </AbsoluteLayout>
+</ContentPage>
