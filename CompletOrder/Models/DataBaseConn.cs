@@ -1,12 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Text;
 
 namespace CompletOrder.Models
 {
-     
+
     public class DataBaseConn
     {
          
@@ -29,12 +25,15 @@ namespace CompletOrder.Models
 
         private void Connect()
         {
-            var connstring = $"SERVER={funkcje.serwer};DATABASE={funkcje.database};TRUSTED_CONNECTION=No; UID={funkcje.sqluser}; PWD={funkcje.password};Connection Timeout=30";
+            //var connstring = $"SERVER={funkcje.serwer};" +
+            //    $"DATABASE={funkcje.database};" +
+            //    $"TRUSTED_CONNECTION=No; UID={funkcje.sqluser}; " +
+            //    $"PWD={funkcje.password};Connection Timeout=30";
 
 
             MySqlConnection connection = new MySqlConnection(conn_string.ToString());
             this.mysqlconn = connection;
-            sqlconn = connstring;
+             
         }
 
 

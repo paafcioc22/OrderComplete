@@ -13,9 +13,8 @@
   <ItemGroup>
     <PackageReference Include="MySqlConnector" Version="0.63.2" />
     <PackageReference Include="sqlite-net-pcl" Version="1.6.292" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
-    <PackageReference Include="Xamarin.Forms" Version="4.5.0.617" />  
-    <PackageReference Include="Xamarin.Essentials" Version="1.5.2" />
+    <PackageReference Include="Xamarin.Forms" Version="4.6.0.726" />  
+    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.1" />
   </ItemGroup>
 
   <ItemGroup>

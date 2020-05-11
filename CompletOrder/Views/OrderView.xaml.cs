@@ -72,16 +72,7 @@ namespace CompletOrder.Views
             base.OnAppearing();
         }
 
-        private void Switch_Toggled(object sender, ToggledEventArgs e)
-        {
-            if (e.Value)
-            {
-                orderView.OrderList.Where(x => x.status == "zapłacone");
-               
-            }
-            
-        }
-
+       
         private async void Button_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new SettingsPage());

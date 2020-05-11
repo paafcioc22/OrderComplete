@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -233,52 +232,52 @@ MgA_Segment2,MgA_Segment3, replace(twr_url,twr_kod,''miniatury/''+twr_kod) TwrUr
 
 
 
-        TwrKarty GetTwrInfo(string _twrkod) 
-        {
+        //TwrKarty GetTwrInfo(string _twrkod) 
+        //{
 
-            var twrkarty = new TwrKarty();
+        //    var twrkarty = new TwrKarty();
             
-            var querystring = $@"SELECT twr_kod TwrKod, TZM_TPaId, CDN.ifs_PodajPolozenie(mga_id) Polozenie,MgA_Segment1,MgA_Segment2,MgA_Segment3, replace(twr_url,twr_kod,'miniatury/'+twr_kod) TwrUrl
-                    FROM cdn.twrkarty
-                    left join CDN.TwrPartie on tpa_twrnumer = twr_gidnumer
-                    LEFT JOIN CDN.TwrZasobyMag ON CDN.TwrPartie.TPa_Id = CDN.TwrZasobyMag.TZM_TPaId AND CDN.TwrZasobyMag.TZM_MagNumer = 41 
-                    LEFT JOIN CDN.MagAdresy ON CDN.TwrZasobyMag.TZM_MgAId = CDN.MagAdresy.MgA_Id 
-                    LEFT JOIN CDN.MagObszary ON CDN.MagAdresy.MgA_MgOId = CDN.MagObszary.MgO_Id 
-                    WHERE Twr_kod = '{_twrkod}' ";
+        //    var querystring = $@"SELECT twr_kod TwrKod, TZM_TPaId, CDN.ifs_PodajPolozenie(mga_id) Polozenie,MgA_Segment1,MgA_Segment2,MgA_Segment3, replace(twr_url,twr_kod,'miniatury/'+twr_kod) TwrUrl
+        //            FROM cdn.twrkarty
+        //            left join CDN.TwrPartie on tpa_twrnumer = twr_gidnumer
+        //            LEFT JOIN CDN.TwrZasobyMag ON CDN.TwrPartie.TPa_Id = CDN.TwrZasobyMag.TZM_TPaId AND CDN.TwrZasobyMag.TZM_MagNumer = 41 
+        //            LEFT JOIN CDN.MagAdresy ON CDN.TwrZasobyMag.TZM_MgAId = CDN.MagAdresy.MgA_Id 
+        //            LEFT JOIN CDN.MagObszary ON CDN.MagAdresy.MgA_MgOId = CDN.MagObszary.MgO_Id 
+        //            WHERE Twr_kod = '{_twrkod}' ";
 
-            using (SqlConnection connection = new SqlConnection(sqlconn))
-            {
-                connection.Open();
-                using (SqlCommand command2 = new SqlCommand(querystring, connection))
-                using (SqlDataReader reader = command2.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
+        //    using (SqlConnection connection = new SqlConnection(sqlconn))
+        //    {
+        //        connection.Open();
+        //        using (SqlCommand command2 = new SqlCommand(querystring, connection))
+        //        using (SqlDataReader reader = command2.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
 
-                        int _MgA_Segment1;
-                        int _MgA_Segment2;
-                        int _MgA_Segment3;
+        //                int _MgA_Segment1;
+        //                int _MgA_Segment2;
+        //                int _MgA_Segment3;
 
 
-                        bool tak1= Int32.TryParse(reader.GetString(reader.GetOrdinal("MgA_Segment1")), out _MgA_Segment1);
-                        bool tak2= Int32.TryParse(reader.GetString(reader.GetOrdinal("MgA_Segment2")), out _MgA_Segment2);
-                        bool tak3= Int32.TryParse(reader.GetString(reader.GetOrdinal("MgA_Segment3")), out _MgA_Segment3);
-                        TwrKarty _twrKarty = new TwrKarty
-                        {
-                            TwrKod = reader.GetString(reader.GetOrdinal("TwrKod")),
-                            Polozenie = reader.GetString(reader.GetOrdinal("Polozenie")),
-                            TwrUrl = reader.GetString(reader.GetOrdinal("TwrUrl")),
-                            //MgA_Segment1 = tak1 ? _MgA_Segment1 : 0,
-                            //MgA_Segment2 = tak2 ? _MgA_Segment2 : 0,
-                            //MgA_Segment3 = tak3 ? _MgA_Segment3 : 0 
+        //                bool tak1= Int32.TryParse(reader.GetString(reader.GetOrdinal("MgA_Segment1")), out _MgA_Segment1);
+        //                bool tak2= Int32.TryParse(reader.GetString(reader.GetOrdinal("MgA_Segment2")), out _MgA_Segment2);
+        //                bool tak3= Int32.TryParse(reader.GetString(reader.GetOrdinal("MgA_Segment3")), out _MgA_Segment3);
+        //                TwrKarty _twrKarty = new TwrKarty
+        //                {
+        //                    TwrKod = reader.GetString(reader.GetOrdinal("TwrKod")),
+        //                    Polozenie = reader.GetString(reader.GetOrdinal("Polozenie")),
+        //                    TwrUrl = reader.GetString(reader.GetOrdinal("TwrUrl")),
+        //                    //MgA_Segment1 = tak1 ? _MgA_Segment1 : 0,
+        //                    //MgA_Segment2 = tak2 ? _MgA_Segment2 : 0,
+        //                    //MgA_Segment3 = tak3 ? _MgA_Segment3 : 0 
                             
-                        };
-                        twrkarty = _twrKarty;
-                    }
-                }
-            }
-            return twrkarty;
-        }
+        //                };
+        //                twrkarty = _twrKarty;
+        //            }
+        //        }
+        //    }
+        //    return twrkarty;
+        //}
 
     }
 }

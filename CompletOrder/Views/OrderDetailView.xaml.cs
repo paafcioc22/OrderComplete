@@ -297,5 +297,14 @@ namespace CompletOrder.Views
             
             return base.OnBackButtonPressed();
         }
+
+        private void TapGestureRecognizer_ShowKod(object sender, EventArgs e)
+        {
+            ViewCell cell = (sender as Label).Parent.Parent as ViewCell;
+
+            OrderDetail order = cell.BindingContext as OrderDetail;
+
+            DisplayAlert("Pełny kod towaru..", $"{order.kod}\n\n{order.nazwa}", "Ok");
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace CompletOrder.ViewModels
     public class OrderViewModel :DataBaseConn, INotifyPropertyChanged
     {
         private MySqlConnection connection;
-        private SQLiteAsyncConnection _connection;
+        //private SQLiteAsyncConnection _connection;
 
         //public ObservableCollection<Order> OrderList { get; set; }
 
@@ -64,9 +64,10 @@ namespace CompletOrder.ViewModels
 
             connection = new MySqlConnection(conn_string.ToString());
 
-            _connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
+            //_connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
            
             PobierzListe();
+            if(GetOrders !=null)
             OrderList = GetOrders;
         }
 
@@ -191,8 +192,16 @@ namespace CompletOrder.ViewModels
                 if (filtry.FiltrZrealizowane)
                     statusy += "'zrealizowane',";
 
-                statusy += ")";
-                statusy = statusy.Replace(",)", ")");
+
+                if (statusy == "status in (")
+                {
+                    statusy = "";
+                }
+                else {
+                    statusy += ")";
+                    statusy = statusy.Replace(",)", ")");
+                }
+                
 
                 if (filtry.WybranyTypPlatnosci != 0)
                 {
@@ -218,12 +227,15 @@ namespace CompletOrder.ViewModels
                 string dataod = $"{date1:yyyy-MM-dd HH:mm:ss}";
                 string datado = $"{date2:yyyy-MM-dd HH:mm:ss}";
 
+                 
                 daty = daty.Replace("dataod", dataod).Replace("datado", datado);
             }
 
+            var platnosc_string = platnosc_info == " AND platnosc_info LIKE '%xxxx%'" ? "" : platnosc_info;
 
+            var returnString = (daty + statusy + platnosc_string) == ""?"":"where "+ daty + statusy + platnosc_string;
 
-            return daty + statusy + platnosc_info;
+            return returnString;
 
         }
 
@@ -248,84 +260,78 @@ namespace CompletOrder.ViewModels
         {
 
             sendOrders = new List<SendOrder>();
-            string _filtr = UstawFiltry();
+            string _filtr = UstawFiltry(); 
 
-
-            //await _connection.CreateTableAsync<OrderComplete>();
-
-            //var wynik = await _connection.Table<OrderComplete>().ToListAsync();
-
-
-
-            
-
-
-            try
+            if(_filtr!= "where data between 'dataod' and 'datado' and status in (")
             {
-                var wynik = Task.Run(() => SendOrders()).Result;
-                //string tmp = "cdn.PC_WykonajSelect N'select * from cdn.pc_ordernag '";
 
-                //var wynik = await App.TodoManager.GetOrdersFromWeb(tmp);
-
-                GetOrders.Clear();
-
-                connection.Open();
-                MySqlCommand command1 = connection.CreateCommand();
-
-                command1.CommandText = $@"SELECT *, zamowienia.id as zid, zamowienia.nr_paragonu as nr_paragonu  FROM zamowienia 
-                            LEFT JOIN zamowienia_klienci ON zamowienia.zamowienie_klient_id = zamowienia_klienci.id 
-                            where {_filtr}
-                            ORDER BY zamowienia.id DESC  ";
-                MySqlDataReader reader = command1.ExecuteReader();
-
-
-                while (reader.Read())
+                try
                 {
-                    double num;
-                    DateTime dateTime = Convert.ToDateTime(reader["data"]);
-                    var _isFinish = (wynik.Where(s => s.Orn_OrderId == reader.GetInt32("zid") && s.Orn_IsDone == true)).Any();
-                    Order item = new Order
+                    var wynik = Task.Run(() => SendOrders()).Result;
+                    //string tmp = "cdn.PC_WykonajSelect N'select * from cdn.pc_ordernag '";
+
+                    //var wynik = await App.TodoManager.GetOrdersFromWeb(tmp);
+
+                    GetOrders.Clear();
+
+                    connection.Open();
+                    MySqlCommand command1 = connection.CreateCommand();
+
+                    command1.CommandText = $@"SELECT *, zamowienia.id as zid, zamowienia.nr_paragonu as nr_paragonu  FROM zamowienia 
+                            LEFT JOIN zamowienia_klienci ON zamowienia.zamowienie_klient_id = zamowienia_klienci.id 
+                            {_filtr}";
+                    //ORDER BY zamowienia.id DESC  ";
+                    MySqlDataReader reader = command1.ExecuteReader();
+
+
+                    while (reader.Read())
                     {
-                        //IsFinish = (wynik.Where(s => s.IdOrder == reader.GetInt32("zid"))).Any(),
-                        IsEdit= (wynik.Where(s => s.Orn_OrderId == reader.GetInt32("zid") && s.Orn_IsEdit == true)).Any(),
-                        IsFinish = (wynik.Where(s => s.Orn_OrderId== reader.GetInt32("zid") && s.Orn_IsDone==true)).Any(),
-                        id = reader.GetInt32("zid"),
-                        data = dateTime.ToString("yyyy-MM-dd HH:MM:ss"),
-                        status = reader["status"].ToString(),
-                        wartosc_netto = Math.Round(reader.GetDouble("wartosc_netto"), 2),
-                        wysylka_koszt = reader.GetDouble("wysylka_koszt"),
-                        platnosc_koszt = reader.GetDouble("platnosc_koszt"),
-                        do_zaplaty = reader.GetDouble("do_zaplaty") - (double.TryParse(reader["korekta"].ToString(), out num) ? reader.GetDouble("korekta") : 0.0),
-                        wysylka_info = reader["wysylka_info"].ToString(),
-                        platnosc_info = reader["platnosc_info"].ToString(),
-                        uwagi = reader["uwagi"].ToString(),
-                        faktura_adres = reader["faktura_adres"].ToString(),
-                        nr_paragonu = reader["nr_paragonu"].ToString(),
-                        faktura_firma = reader["faktura_firma"].ToString(),
-                        typ_platnosci = reader["typ_platnosci"].ToString(),
-                        platnosc_karta_podarunkowa = reader.GetDouble("platnosc_karta_podarunkowa")
-                    };
-                    if (double.TryParse(reader["platnosc_punktami"].ToString(), out num))
-                    {
-                        item.platnosc_punktami = double.Parse(reader["platnosc_punktami"].ToString());
+                        double num;
+                        DateTime dateTime = Convert.ToDateTime(reader["data"]);
+                        var _isFinish = (wynik.Where(s => s.Orn_OrderId == reader.GetInt32("zid") && s.Orn_IsDone == true)).Any();
+                        Order item = new Order
+                        {
+                            //IsFinish = (wynik.Where(s => s.IdOrder == reader.GetInt32("zid"))).Any(),
+                            IsEdit = (wynik.Where(s => s.Orn_OrderId == reader.GetInt32("zid") && s.Orn_IsEdit == true)).Any(),
+                            IsFinish = (wynik.Where(s => s.Orn_OrderId == reader.GetInt32("zid") && s.Orn_IsDone == true)).Any(),
+                            id = reader.GetInt32("zid"),
+                            data = dateTime.ToString("yyyy-MM-dd HH:MM:ss"),
+                            status = reader["status"].ToString(),
+                            wartosc_netto = Math.Round(reader.GetDouble("wartosc_netto"), 2),
+                            wysylka_koszt = reader.GetDouble("wysylka_koszt"),
+                            platnosc_koszt = reader.GetDouble("platnosc_koszt"),
+                            do_zaplaty = reader.GetDouble("do_zaplaty") - (double.TryParse(reader["korekta"].ToString(), out num) ? reader.GetDouble("korekta") : 0.0),
+                            wysylka_info = reader["wysylka_info"].ToString(),
+                            platnosc_info = reader["platnosc_info"].ToString(),
+                            uwagi = reader["uwagi"].ToString(),
+                            faktura_adres = reader["faktura_adres"].ToString(),
+                            nr_paragonu = reader["nr_paragonu"].ToString(),
+                            faktura_firma = reader["faktura_firma"].ToString(),
+                            typ_platnosci = reader["typ_platnosci"].ToString(),
+                            platnosc_karta_podarunkowa = reader.GetDouble("platnosc_karta_podarunkowa")
+                        };
+                        if (double.TryParse(reader["platnosc_punktami"].ToString(), out num))
+                        {
+                            item.platnosc_punktami = double.Parse(reader["platnosc_punktami"].ToString());
+                        }
+
+                        GetOrders.Add(item);
                     }
 
-                    GetOrders.Add(item);
+                    //connection.Close();
+                    //if(OrderList !=null)
+                    //IleZam = $"Lista zamówień ({OrderList.Count})";
+
                 }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
 
-                //connection.Close();
-                //if(OrderList !=null)
-                //IleZam = $"Lista zamówień ({OrderList.Count})";
-
+                }
+                if (GetOrders != null)
+                    IleZam = $"Lista zamówień ({GetOrders.Count})";
+                connection.Close();
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                
-            }
-            if (GetOrders != null)
-                IleZam = $"Lista zamówień ({GetOrders.Count})";
-            connection.Close();
 
         }
 
