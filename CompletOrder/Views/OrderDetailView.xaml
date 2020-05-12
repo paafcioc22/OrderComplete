@@ -49,10 +49,10 @@
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Center">
                                 <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding ShowOtherLocation}" Tapped="TapGestureRecognizer_Tapped"/>
+                                    <TapGestureRecognizer  Tapped="TapGestureRecognizer_Tapped"/>
                                 </Label.GestureRecognizers>
                             </Label>
-
+                            <!--Command="{Binding ShowOtherLocation}"-->
 
                             <Label Text="{Binding nazwa}"  
                                        TextColor="Black"  

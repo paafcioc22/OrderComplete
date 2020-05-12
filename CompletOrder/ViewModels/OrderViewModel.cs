@@ -279,8 +279,8 @@ namespace CompletOrder.ViewModels
 
                     command1.CommandText = $@"SELECT *, zamowienia.id as zid, zamowienia.nr_paragonu as nr_paragonu  FROM zamowienia 
                             LEFT JOIN zamowienia_klienci ON zamowienia.zamowienie_klient_id = zamowienia_klienci.id 
-                            {_filtr}";
-                    //ORDER BY zamowienia.id DESC  ";
+                            {_filtr}
+                    ORDER BY zamowienia.id DESC  ";
                     MySqlDataReader reader = command1.ExecuteReader();
 
 
