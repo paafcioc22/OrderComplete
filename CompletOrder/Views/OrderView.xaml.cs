@@ -13,7 +13,7 @@ using Xamarin.Forms.Xaml;
 namespace CompletOrder.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class OrderView : ContentPage
+    public partial class OrderView : TabbedPage
     {
          
         OrderViewModel orderView;
