@@ -19,6 +19,7 @@ namespace CompletOrder.ViewModels
         private SQLiteAsyncConnection _connection;
         
         public ObservableCollection<OrderDetail> orderDetail { get; set; }
+        public ObservableCollection<Allegro> AllegroList { get; set; }
 
         public Order _order = new Order();
 
@@ -59,6 +60,27 @@ namespace CompletOrder.ViewModels
 
             GetOrderDetail(_order.id);
             //pobierz();
+        }
+
+        public OrderDetailVM(Allegro allegro)
+        {
+            orderDetail = new ObservableCollection<OrderDetail>();
+
+            AllegroList = Task.Run(() => GetAllegros(allegro.Id)).Result;
+
+            foreach (var a in AllegroList)
+            {
+                var stwrkarty = Task.Run(() => GetTwrKartyAsync(a.kod)).Result[0] as TwrKarty;
+                orderDetail.Add(new OrderDetail
+                { 
+                    OrderId= a.Id,
+                    ilosc=a.ilosc,
+                    nazwa=a.nazwa,
+                    kod=a.kod,
+                    twrkarty=stwrkarty
+                    
+                });
+            }
         }
 
 
@@ -147,9 +169,20 @@ namespace CompletOrder.ViewModels
             return sss;
         }
 
+        async Task<ObservableCollection<Allegro>> GetAllegros(int id)
+        {
+
+            string tmp = $@"cdn.PC_WykonajSelect N' select *
+                            from cdn.pc_allegroorders where id={id}'";
+
+            var wynikii = await App.TodoManager.GetOrdersFromAllegro(tmp);
+
+            return wynikii;
+        }
 
 
-        public  void GetOrderDetail(int orderId)
+
+        public void GetOrderDetail(int orderId)
         {
             
 
@@ -209,6 +242,8 @@ namespace CompletOrder.ViewModels
             }   
             
         }
+
+
 
 
 

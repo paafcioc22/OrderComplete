@@ -25,6 +25,7 @@ namespace CompletOrder.ViewModels
         //public ObservableCollection<Order> OrderList { get; set; }
 
         private ObservableCollection<Order> _orderList;
+        private ObservableCollection<Allegro> _allegroList;
         private ObservableCollection<Order> GetOrders;
 
         public ObservableCollection<Order> OrderList
@@ -37,7 +38,16 @@ namespace CompletOrder.ViewModels
                //OnPropertyChanged(nameof(OrderList));
             }
         }
-
+        public ObservableCollection<Allegro> AllegroList
+        {
+            get { return _allegroList; }
+            set
+            {
+                //_orderList = value;
+                SetValue(ref _allegroList, value);
+                //OnPropertyChanged(nameof(OrderList));
+            }
+        }
 
         //public static string NazwaPlatnosci { get; set; }
 
@@ -61,13 +71,16 @@ namespace CompletOrder.ViewModels
         {
             OrderList = new ObservableCollection<Order>();
             GetOrders = new ObservableCollection<Order>(); 
+            AllegroList = new ObservableCollection<Allegro>(); 
 
             connection = new MySqlConnection(conn_string.ToString());
 
             //_connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
            
             PobierzListe();
-            if(GetOrders !=null)
+
+            AllegroList = Task.Run(() => GetAllegros()).Result;
+            if (GetOrders !=null)
             OrderList = GetOrders;
         }
 
@@ -239,7 +252,16 @@ namespace CompletOrder.ViewModels
 
         }
 
+        async Task<ObservableCollection<Allegro>> GetAllegros()
+        {
 
+            string tmp = $@"cdn.PC_WykonajSelect N' select distinct   Id, CustomerName, RaportDate,    forma_platnosc
+   from cdn.pc_allegroorders '";
+
+            var wynikii = await App.TodoManager.GetOrdersFromAllegro(tmp);
+
+            return wynikii;
+        }
 
 
         async Task<List<SendOrder>> SendOrders()

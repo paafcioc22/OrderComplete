@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,5 +11,6 @@ namespace CompletOrder.Models
         Task<List<TwrKarty>> GetInfos(string query);
         Task<string> InsertOrderSend(SendOrder sendOrder);
         Task<List<SendOrder>> SelectOrderSend(string query3);
+        Task<ObservableCollection<Allegro>> GetAllegros(string query3);
     }
 }

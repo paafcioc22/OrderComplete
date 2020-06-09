@@ -99,6 +99,56 @@
     </AbsoluteLayout>
     </ContentPage>
     <ContentPage Title="Allegro">
-        
+        <ListView x:Name="MyListView2"
+            ItemsSource="{Binding AllegroList}"
+            ItemTapped="MyListView2_ItemTapped"  SeparatorVisibility="None"
+            CachingStrategy="RecycleElement" HasUnevenRows="True"
+                  AbsoluteLayout.LayoutBounds="0.4,1,1,.85"
+                                       AbsoluteLayout.LayoutFlags="All">
+            
+            <!--Built in Cells-->
+
+            <!--Custom View Cells-->
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell >
+                        <Frame BorderColor="DarkGray" Padding="5"  CornerRadius="10" HasShadow="True" Margin="5">
+                            <StackLayout Orientation="Horizontal"  HorizontalOptions="FillAndExpand" Padding="10" Spacing="8" BackgroundColor="WhiteSmoke" Margin="5" >
+                                <StackLayout.Triggers>
+                                    <DataTrigger TargetType="StackLayout"
+                                            Binding="{Binding IsFinish}"    Value="True">
+                                        <Setter Property="BackgroundColor"  Value="Color.LightGreen" />
+
+                                    </DataTrigger>
+                                    <!--<DataTrigger TargetType="StackLayout"
+                                            Binding="{Binding IsEdit}"    Value="True">
+                                        <Setter Property="BackgroundColor"  Value="Color.LightPink" />
+
+                                    </DataTrigger>-->
+
+                                </StackLayout.Triggers>
+                                <StackLayout   Margin="5" HorizontalOptions="FillAndExpand"  >
+                                    <Label Text="{Binding CustomerName}" TextColor="Red" FontSize="20" HorizontalTextAlignment="Center"/>
+                                    <Label Text="{Binding RaportDate}" />
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                        <Label Text="{Binding Id}" FontAttributes="Bold" HorizontalOptions="Start"/>
+                                        <Label Text="{Binding forma_platnosc}" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                                    </StackLayout>
+                                    <!--<Label Text="{Binding do_zaplaty, StringFormat='Do zapłaty : {0:N} zł'}"/>-->
+                                    <!--<Label Text="{Binding nr_paragonu}"/>-->
+                                </StackLayout>
+
+                                <!--<CheckBox  x:Name="checkBox1" HorizontalOptions="End" IsEnabled="False" IsChecked="{Binding IsFinish}" Scale="2" Margin="0,0,15,0"/>-->
+
+                            </StackLayout>
+                        </Frame>
+
+
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
     </ContentPage>
 </TabbedPage>

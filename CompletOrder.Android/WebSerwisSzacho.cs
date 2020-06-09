@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using CompletOrder.Models;
+using Java.Util;
 
 namespace CompletOrder.Droid
 {
@@ -24,6 +26,7 @@ namespace CompletOrder.Droid
 
         public WebSzacho.CDNOffLineSrv client;
         public List<TwrKarty> TowarInfoList { get; private set; }
+        public ObservableCollection<Allegro> AllegroList { get; private set; }
 
         string odp;
 
@@ -133,8 +136,9 @@ namespace CompletOrder.Droid
 
                 TextReader reader = new StringReader(respone);
 
-
+                
                 XmlSerializer serializer = new XmlSerializer(typeof(GetOrders));
+                //
                 GetOrders gidNazwa = (GetOrders)serializer.Deserialize(reader);
 
                 //XmlSerializer serializer = new XmlSerializer(typeof(List<SendOrder>), new XmlRootAttribute("ROOT"));
@@ -160,6 +164,46 @@ namespace CompletOrder.Droid
                 return TowarInfo;
             });
         }
+
+        public async Task<ObservableCollection<Allegro>> GetAllegros(string query3)
+        {
+            return await Task.Run(() =>
+            {
+                AllegroList = new ObservableCollection<Allegro>();
+
+                var respone = client.ExecuteSQLCommand(query3);
+
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(respone);
+
+                TextReader reader = new StringReader(respone);
+
+
+                XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<Allegro>), new XmlRootAttribute("ROOT"));
+                ObservableCollection<Allegro> gidNazwa = (ObservableCollection<Allegro>)serializer.Deserialize(reader);
+
+                foreach (var a in gidNazwa)
+                {
+                    var datastart = Convert.ToDateTime(a.RaportDate);
+                    AllegroList.Add(new Allegro
+                    {
+                        Id= a.Id,
+                        CustomerName=a.CustomerName,
+                        kod=a.kod,
+                        forma_platnosc = a.forma_platnosc,
+                        nazwa=a.nazwa,
+                        Pol1=a.Pol1,
+                        Pol2=a.Pol2,
+                        Pol3=a.Pol3,
+                        ilosc=a.ilosc,
+                        RaportDate= datastart.ToString("yyyy-MM-dd"),
+                        NrParagonu=a.NrParagonu 
+                    });
+                }
+
+                return AllegroList;
+            });
+        }
     }
 
 
@@ -169,7 +213,11 @@ namespace CompletOrder.Droid
     {
         [XmlElement("Table", typeof(TwrKarty))]
         public List<TwrKarty> TwrInfoLista { get; set; }
+        //[XmlElement("Table", typeof(Allegro))]
+        //public ObservableCollection<Allegro> AllegroLista { get; set; }
     }
+
+  
 
     [XmlRoot("ROOT")]
     public class GetOrders

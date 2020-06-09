@@ -78,6 +78,36 @@ namespace CompletOrder.Views
             await Navigation.PushAsync(new SettingsPage());
         }
 
+        private async void MyListView2_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            if (_userTapped)
+                return;
+
+            _userTapped = true;
+
+            if (e.Item == null)
+                return;
+            var orderVM = e.Item as Allegro;
+
+
+
+            var odp = await RodzajeMetod.WejdżWZamowienie(orderVM.Id, orderVM.RaportDate);
+            if (odp)
+                await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
+            else
+            {
+                var odp2 = await DisplayAlert("info", "To zamówienie jest edytowane\n Czy nadal chcesz je otworzyć?", "Tak", "Nie");
+                if (odp2)
+                    await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
+            }
+
+
+            //Deselect Item
+            ((ListView)sender).SelectedItem = null;
+
+            _userTapped = false;
+        }
+
 
         //public IEnumerable<Order> SzukajTowar(string searchText = null)
         //{
