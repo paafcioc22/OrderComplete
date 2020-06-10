@@ -197,7 +197,9 @@ namespace CompletOrder.Droid
                         Pol3=a.Pol3,
                         ilosc=a.ilosc,
                         RaportDate= datastart.ToString("yyyy-MM-dd"),
-                        NrParagonu=a.NrParagonu 
+                        NrParagonu=a.NrParagonu ,
+                        ElementId=a.ElementId,
+                        IsFinish=false
                     });
                 }
 

@@ -26,5 +26,7 @@ namespace CompletOrder.Models
         public string Pol3 { get; set; }
         public string forma_platnosc { get; set; }
         public string NrParagonu { get; set; }
+        [XmlElement(ElementName = "ElementId")]
+        public int ElementId { get; set; }
     }
 }

@@ -78,8 +78,10 @@ namespace CompletOrder.ViewModels
             //_connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
            
             PobierzListe();
+            PobierzAllegro();
+            
+            //AllegroList = nowa.ToList();// Task.Run(() => GetAllegros()).Result;
 
-            AllegroList = Task.Run(() => GetAllegros()).Result;
             if (GetOrders !=null)
             OrderList = GetOrders;
         }
@@ -250,6 +252,44 @@ namespace CompletOrder.ViewModels
 
             return returnString;
 
+        }
+
+
+        public void PobierzAllegro()
+        {
+
+            AllegroList.Clear();
+            var tmp = Task.Run(() => GetAllegros()).Result;
+            var wynik = Task.Run(() => SendOrders()).Result;
+
+            //var nowa = (
+            //    from allegro in tmp
+            //    join done in wynik on allegro.Id equals done.Orn_OrderId into pod
+            //    from ales in pod.DefaultIfEmpty()
+            //    select ales
+            //    );
+
+
+            foreach (var a in tmp)
+            {
+                AllegroList.Add(new Allegro
+                {
+                    Id = a.Id,
+                    ElementId = a.ElementId,
+                    CustomerName = a.CustomerName,
+                    forma_platnosc = a.forma_platnosc,
+                    ilosc = a.ilosc,
+                    IsFinish = (wynik.Where(s => s.Orn_OrderId == a.Id && s.Orn_IsDone == true)).Any(),
+                    kod = a.kod,
+                    nazwa = a.nazwa,
+                    NrParagonu = a.NrParagonu,
+                    Pol1 = a.Pol1,
+                    Pol2 = a.Pol2,
+                    Pol3 = a.Pol3,
+                    RaportDate = a.RaportDate
+
+                });
+            }
         }
 
         async Task<ObservableCollection<Allegro>> GetAllegros()

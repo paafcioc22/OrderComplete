@@ -68,11 +68,24 @@ namespace CompletOrder.Views
 
         protected override void OnAppearing()
         {
-            orderView.PobierzListe(); 
+
+            var page = this.CurrentPage;
+
+
+            orderView.PobierzListe();
+            
+            orderView.PobierzAllegro(); 
+
             base.OnAppearing();
         }
 
-       
+        override protected void OnCurrentPageChanged() 
+        { 
+             
+        }
+
+
+
         private async void Button_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new SettingsPage());

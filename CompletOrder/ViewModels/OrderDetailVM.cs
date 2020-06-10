@@ -64,12 +64,20 @@ namespace CompletOrder.ViewModels
 
         public OrderDetailVM(Allegro allegro)
         {
+
+            _connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
+            _connection.CreateTableAsync<OrderDatailComplete>();
+
             orderDetail = new ObservableCollection<OrderDetail>();
 
             AllegroList = Task.Run(() => GetAllegros(allegro.Id)).Result;
 
+            _orderid = allegro.Id;
+            var wynik = Task.Run(() => listaUkonczonych(allegro.Id)).Result;
+
             foreach (var a in AllegroList)
             {
+                PozycjiZamowienia++;
                 var stwrkarty = Task.Run(() => GetTwrKartyAsync(a.kod)).Result[0] as TwrKarty;
                 orderDetail.Add(new OrderDetail
                 { 
@@ -77,10 +85,13 @@ namespace CompletOrder.ViewModels
                     ilosc=a.ilosc,
                     nazwa=a.nazwa,
                     kod=a.kod,
-                    twrkarty=stwrkarty
-                    
+                    twrkarty=stwrkarty,
+                    IsDone= (wynik.Where(s => s.IdOrder == _orderid && s.IdElementOrder == a.ElementId)).Any(),
+                    IdElement=a.ElementId, 
                 });
             }
+
+            orderDetail.OrderBy(x => x.IsDone);
         }
 
 
