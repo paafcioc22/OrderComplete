@@ -69,8 +69,16 @@
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-90}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.2,Constant=0}"/>
 
-        <ActivityIndicator >
-            
-        </ActivityIndicator>
+        <ActivityIndicator IsVisible="{Binding IsLoading}" IsRunning="{Binding IsLoading}" Color="#f4b9fe"
+            RelativeLayout.XConstraint="{ConstraintExpression
+            Type=RelativeToView,ElementName=imageCircleBack,Property=X,Factor=1.4}"
+               
+                RelativeLayout.YConstraint="{ConstraintExpression 
+            Type=RelativeToParent, 
+            Factor=0, 
+            Property=Y, 
+            Constant=260}"/>
+
+
     </RelativeLayout>
 </ContentPage>

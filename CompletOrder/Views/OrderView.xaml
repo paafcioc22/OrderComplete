@@ -151,4 +151,53 @@
 
         </ListView>
     </ContentPage>
+    <ContentPage Title="Presta">
+        <ListView x:Name="MyListView3"
+            ItemsSource="{Binding PrestaNagList}" 
+            ItemTapped="MyListView3_ItemTapped"   SeparatorVisibility="None"
+            CachingStrategy="RecycleElement" HasUnevenRows="True"
+                  AbsoluteLayout.LayoutBounds="0.4,1,1,.85"
+                                       AbsoluteLayout.LayoutFlags="All">
+
+            <!--Built in Cells-->
+
+            <!--Custom View Cells-->
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell >
+                        <Frame BorderColor="DarkGray" Padding="5"  CornerRadius="10" HasShadow="True" Margin="5">
+                            <StackLayout Orientation="Horizontal"  HorizontalOptions="FillAndExpand" Padding="10" Spacing="8" BackgroundColor="WhiteSmoke" Margin="5" >
+                                <!--    <StackLayout.Triggers>
+                                    <DataTrigger TargetType="StackLayout"
+                                            Binding="{Binding IsFinish}"    Value="True">
+                                        <Setter Property="BackgroundColor"  Value="Color.LightGreen" />
+
+                                    </DataTrigger>
+                             
+
+                                </StackLayout.Triggers>-->
+                                <StackLayout   Margin="5" HorizontalOptions="FillAndExpand"  >
+                                    <Label Text="{Binding KnA_Akronim}" TextColor="Red" FontSize="20" HorizontalTextAlignment="Center"/>
+                                    <Label Text="{Binding ZaN_DataWystawienia}" />
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                        <Label Text="{Binding ZaN_GIDNumer}" FontAttributes="Bold" HorizontalOptions="Start"/>
+                                        <Label Text="{Binding ZaN_FormaNazwa}" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                                    </StackLayout>
+                                    <Label Text="{Binding WartoscZam, StringFormat='Do zapłaty : {0:N} zł'}"/>
+                                    <!--<Label Text="{Binding nr_paragonu}"/>-->
+                                </StackLayout>
+
+                                <CheckBox  x:Name="checkBox1" HorizontalOptions="End" IsEnabled="False" IsChecked="{Binding IsFinish}" Scale="2" Margin="0,0,15,0"/>
+
+                            </StackLayout>
+                        </Frame>
+
+
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+    </ContentPage>
 </TabbedPage>

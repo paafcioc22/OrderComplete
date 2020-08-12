@@ -35,5 +35,10 @@ namespace CompletOrder.Services
         {
             return soapService.GetAllegros(query2);
         }
+
+        public Task<ObservableCollection<Presta>> GetOrdersFromPresta(string query2)
+        {
+            return soapService.GetPrestaZam(query2);
+        }
     }
 }

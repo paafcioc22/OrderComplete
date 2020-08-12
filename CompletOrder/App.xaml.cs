@@ -16,7 +16,7 @@ namespace CompletOrder
         public static WebMenager TodoManager { get; set; }
 
        // public TypPlatnosc typPlatnosci { get; set; } = new TypPlatnosc();
-        public OrderViewModel orderViewModel { get; set; } = new OrderViewModel();
+        //public OrderViewModel orderViewModel { get; set; } = new OrderViewModel();
 
         private const string filtrZaplacone = "filtrZaplacone";
         private const string filtrNowe = "filtrNowe";
@@ -27,6 +27,7 @@ namespace CompletOrder
         private const string filtrDataDo = "filtrDataDo";
         private const string ListaTypow = "ListaTypow";
         private const string password = "password";
+        private const string isloading = "isloading";
 
         public App()
         {
@@ -74,7 +75,7 @@ namespace CompletOrder
             set
             {
                 Properties[filtrZaplacone] = value;
-                orderViewModel.Filtr = true;
+              //  orderViewModel.Filtr = true;
             }
 
         }
@@ -90,7 +91,7 @@ namespace CompletOrder
             set
             {
                 Properties[filtrNowe] = value;
-                orderViewModel.Filtr = true;
+            //    orderViewModel.Filtr = true;
             }
 
         }
@@ -106,7 +107,7 @@ namespace CompletOrder
             set
             {
                 Properties[filtrAnulowane] = value;
-                orderViewModel.Filtr = true;
+              //  orderViewModel.Filtr = true;
             }
 
         }
@@ -122,7 +123,7 @@ namespace CompletOrder
             set
             {
                 Properties[filtrZrealizowane] = value;
-                orderViewModel.Filtr = true;
+             //   orderViewModel.Filtr = true;
             }
 
         }
@@ -138,7 +139,7 @@ namespace CompletOrder
             set
             {
                 Properties[filtrRealizowane] = value;
-                orderViewModel.Filtr = true;
+             //   orderViewModel.Filtr = true;
             }
 
         }
@@ -154,7 +155,7 @@ namespace CompletOrder
             set
             {
                 Properties[filtrDataOd] = value;
-                orderViewModel.Filtr = true;
+             //   orderViewModel.Filtr = true;
             }
 
         }
@@ -170,7 +171,7 @@ namespace CompletOrder
             set
             {
                 Properties[filtrDataDo] = value;
-                orderViewModel.Filtr = true;
+             //   orderViewModel.Filtr = true;
             }
 
         }
@@ -187,7 +188,23 @@ namespace CompletOrder
             set
             {
                 Properties[ListaTypow] = value;
-                orderViewModel.Filtr = true;
+            //    orderViewModel.Filtr = true;
+            }
+
+        }
+
+        public bool IsLoading
+        {
+            get
+            {
+                if (Properties.ContainsKey(isloading))
+                    return (bool)Properties[isloading];
+                return true;
+            }
+            set
+            {
+                Properties[isloading] = value;
+                //  orderViewModel.Filtr = true;
             }
 
         }

@@ -27,6 +27,8 @@ namespace CompletOrder.Droid
         public WebSzacho.CDNOffLineSrv client;
         public List<TwrKarty> TowarInfoList { get; private set; }
         public ObservableCollection<Allegro> AllegroList { get; private set; }
+        List<SendOrder> TowarInfo;
+        public ObservableCollection<Presta> PrestaList { get; private set; }
 
         string odp;
 
@@ -119,7 +121,7 @@ namespace CompletOrder.Droid
             }
         }
 
-        List<SendOrder> TowarInfo;
+        
 
         public async Task<List<SendOrder>> SelectOrderSend(string query3)
         {
@@ -167,44 +169,87 @@ namespace CompletOrder.Droid
 
         public async Task<ObservableCollection<Allegro>> GetAllegros(string query3)
         {
-            return await Task.Run(() =>
+            try
             {
-                AllegroList = new ObservableCollection<Allegro>();
-
-                var respone = client.ExecuteSQLCommand(query3);
-
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.LoadXml(respone);
-
-                TextReader reader = new StringReader(respone);
-
-
-                XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<Allegro>), new XmlRootAttribute("ROOT"));
-                ObservableCollection<Allegro> gidNazwa = (ObservableCollection<Allegro>)serializer.Deserialize(reader);
-
-                foreach (var a in gidNazwa)
-                {
-                    var datastart = Convert.ToDateTime(a.RaportDate);
-                    AllegroList.Add(new Allegro
+                return await Task.Run(() =>
                     {
-                        Id= a.Id,
-                        CustomerName=a.CustomerName,
-                        kod=a.kod,
-                        forma_platnosc = a.forma_platnosc,
-                        nazwa=a.nazwa,
-                        Pol1=a.Pol1,
-                        Pol2=a.Pol2,
-                        Pol3=a.Pol3,
-                        ilosc=a.ilosc,
-                        RaportDate= datastart.ToString("yyyy-MM-dd"),
-                        NrParagonu=a.NrParagonu ,
-                        ElementId=a.ElementId,
-                        IsFinish=false
-                    });
-                }
+                        AllegroList = new ObservableCollection<Allegro>();
 
-                return AllegroList;
-            });
+                        var respone = client.ExecuteSQLCommand(query3);
+
+                        XmlDocument xmlDoc = new XmlDocument();
+                        xmlDoc.LoadXml(respone);
+
+                        TextReader reader = new StringReader(respone);
+
+
+                        XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<Allegro>), new XmlRootAttribute("ROOT"));
+                        ObservableCollection<Allegro> gidNazwa = (ObservableCollection<Allegro>)serializer.Deserialize(reader);
+
+                        foreach (var a in gidNazwa)
+                        {
+                            var datastart = Convert.ToDateTime(a.RaportDate);
+                            AllegroList.Add(new Allegro
+                            {
+                                Id = a.Id,
+                                CustomerName = a.CustomerName,
+                                kod = a.kod,
+                                forma_platnosc = a.forma_platnosc,
+                                nazwa = a.nazwa,
+                                Pol1 = a.Pol1,
+                                Pol2 = a.Pol2,
+                                Pol3 = a.Pol3,
+                                ilosc = a.ilosc,
+                                RaportDate = datastart.ToString("yyyy-MM-dd"),
+                                NrParagonu = a.NrParagonu,
+                                ElementId = a.ElementId,
+                                IsFinish = false
+                            });
+                        }
+
+                        return AllegroList;
+                    });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<ObservableCollection<Presta>> GetPrestaZam(string query3)
+        {
+            try
+            {
+                return await Task.Run(() =>
+                {
+                    PrestaList = new ObservableCollection<Presta>();
+
+                    var respone = client.ExecuteSQLCommand(query3);
+
+                    XmlDocument xmlDoc = new XmlDocument();
+                    xmlDoc.LoadXml(respone);
+
+                    TextReader reader = new StringReader(respone);
+
+
+                    XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<Presta>), new XmlRootAttribute("ROOT"));
+                    ObservableCollection<Presta> gidNazwa = (ObservableCollection<Presta>)serializer.Deserialize(reader);
+
+                    foreach (var a in gidNazwa)
+                    {
+                        var datastart = Convert.ToDateTime(a.ZaN_DataWystawienia);
+                        PrestaList.Add( a);
+                    }
+
+                    return PrestaList;
+                });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 

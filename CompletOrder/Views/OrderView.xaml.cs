@@ -68,14 +68,16 @@ namespace CompletOrder.Views
 
         protected override void OnAppearing()
         {
+            orderView.PobierzListeZatwierdzonychZamowien();
+            var app = Application.Current as App;
 
-            var page = this.CurrentPage;
-
-
+            app.IsLoading = true;
             orderView.PobierzListe();
             
-            orderView.PobierzAllegro(); 
+            orderView.PobierzAllegro();
+            orderView.GetPrestaZam();
 
+            app.IsLoading = false;
             base.OnAppearing();
         }
 
@@ -105,6 +107,36 @@ namespace CompletOrder.Views
 
 
             var odp = await RodzajeMetod.WejdżWZamowienie(orderVM.Id, orderVM.RaportDate);
+            if (odp)
+                await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
+            else
+            {
+                var odp2 = await DisplayAlert("info", "To zamówienie jest edytowane\n Czy nadal chcesz je otworzyć?", "Tak", "Nie");
+                if (odp2)
+                    await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
+            }
+
+
+            //Deselect Item
+            ((ListView)sender).SelectedItem = null;
+
+            _userTapped = false;
+        }
+
+        private async void MyListView3_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            if (_userTapped)
+                return;
+
+            _userTapped = true;
+
+            if (e.Item == null)
+                return;
+            var orderVM = e.Item as Presta;
+
+
+
+            var odp = await RodzajeMetod.WejdżWZamowienie(orderVM.ZaN_GIDNumer, orderVM.ZaN_DataWystawienia);
             if (odp)
                 await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
             else

@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using SQLite;
 using System;
+using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -20,6 +21,7 @@ namespace CompletOrder.ViewModels
         
         public ObservableCollection<OrderDetail> orderDetail { get; set; }
         public ObservableCollection<Allegro> AllegroList { get; set; }
+        public ObservableCollection<Presta> PrestaElemList { get; set; }
 
         public Order _order = new Order();
 
@@ -89,6 +91,38 @@ namespace CompletOrder.ViewModels
                     IsDone= (wynik.Where(s => s.IdOrder == _orderid && s.IdElementOrder == a.ElementId)).Any(),
                     IdElement=a.ElementId, 
                 });
+            }
+
+            orderDetail.OrderBy(x => x.IsDone);
+        }
+
+        public OrderDetailVM(Presta presta)
+        {
+            _connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
+            _connection.CreateTableAsync<OrderDatailComplete>();
+
+            orderDetail = new ObservableCollection<OrderDetail>();
+
+            PrestaElemList = Task.Run(() => GetPrestaElem(presta.ZaN_GIDNumer)).Result;
+
+            _orderid = presta.ZaN_GIDNumer;
+            var wynik = Task.Run(() => listaUkonczonych(presta.ZaN_GIDNumer)).Result;
+
+            foreach (var a in PrestaElemList)
+            {
+                PozycjiZamowienia++;
+                var stwrkarty = Task.Run(() => GetTwrKartyAsync(a.ZaE_TwrKod)).Result[0] as TwrKarty;
+                orderDetail.Add(new OrderDetail
+                {
+                    OrderId = a.ZaN_GIDNumer,
+                    ilosc = a.ZaE_Ilosc,
+                    nazwa = a.ZaE_TwrNazwa,
+                    kod = a.ZaE_TwrKod,
+                    twrkarty = stwrkarty,
+                    IsDone = (wynik.Where(s => s.IdOrder == _orderid && s.IdElementOrder == a.ElementId)).Any(),
+                    IdElement = a.ElementId,
+                    cena_netto = Convert.ToDouble(a.WartoscZam)
+                }); 
             }
 
             orderDetail.OrderBy(x => x.IsDone);
@@ -191,6 +225,58 @@ namespace CompletOrder.ViewModels
             return wynikii;
         }
 
+        async Task<ObservableCollection<Presta>> GetPrestaElem(int id)
+        {
+
+            ObservableCollection<Presta> _prestaNagList = new ObservableCollection<Presta>();
+
+            string querystring = $@"cdn.PC_WykonajSelect N'     select   
+	                    ZaN_GIDNumer, 
+	                    ZaN_FormaNazwa, 
+	                    ZaN_DokumentObcy,  
+	                    knt.KnA_Akronim, 
+						ZaE_Ilosc,
+						ZaE_TwrNazwa,
+						ZaE_TwrNumer,
+						ZaE_WartoscPoRabacie WartoscZam,
+						ZaE_TwrKod,
+						concat(ZaE_GIDNumer,ZaE_GIDLp)ElementId
+                    from cdn.ZamNag
+	                      join cdn.KntAdresy knt on KnA_GIDTyp=ZaN_KnATyp AND KnA_GIDNumer=ZaN_KnANumer  
+	                      left join cdn.ZamElem ele on ZaN_GIDNumer=ZaE_GIDNumer
+                      where ZaN_GIDTyp=960
+					  and ZaN_GIDNumer={id}'";
+
+           // var _prestaNagList = await App.TodoManager.GetOrdersFromPresta(tmp);
+
+            using (SqlConnection connection = new SqlConnection(sqlconn))
+            {
+                connection.Open();
+                using (SqlCommand command2 = new SqlCommand(querystring, connection))
+                using (SqlDataReader reader = command2.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        _prestaNagList.Add(new Presta
+                        {
+
+                            ZaN_GIDNumer = Convert.ToInt32(reader["ZaN_GIDNumer"]),
+                            ZaN_FormaNazwa = reader["ZaN_FormaNazwa"].ToString(),
+                            ZaN_DokumentObcy = reader["ZaN_DokumentObcy"].ToString(),
+                            ZaE_Ilosc = Convert.ToInt32(reader["ZaE_Ilosc"]),
+                             ElementId = Convert.ToInt32(reader["ElementId"]),
+                             ZaE_TwrNazwa = reader["ZaE_TwrNazwa"].ToString(),
+                             WartoscZam = Convert.ToDecimal(reader["WartoscZam"]),
+                             ZaE_TwrKod = reader["ZaE_TwrKod"].ToString(),
+
+                        });
+
+                    }
+                }
+            }
+
+            return _prestaNagList;
+        }
 
 
         public void GetOrderDetail(int orderId)

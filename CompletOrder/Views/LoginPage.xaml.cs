@@ -12,7 +12,6 @@ namespace CompletOrder.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LoginPage : ContentPage
     {
-
        
         public LoginPage()
         {
@@ -33,6 +32,7 @@ namespace CompletOrder.Views
         {
             if (entry_haslo.Text == Haslo.pass)
             {
+               
                 Navigation.PushAsync(new OrderView());
             }
             else
@@ -43,13 +43,17 @@ namespace CompletOrder.Views
 
         private void Button_Clicked(object sender, EventArgs e)
         {
+            
+            
             if (entry_haslo.Text == Haslo.pass)
             {
-                Navigation.PushAsync(new OrderView());
+                 
+                  Navigation.PushAsync(new OrderView());
+               
             }
             else
             {
-                DisplayAlert(null, "Błędne hasło", "OK");
+                  DisplayAlert(null, "Błędne hasło", "OK");
             }
         }
     }

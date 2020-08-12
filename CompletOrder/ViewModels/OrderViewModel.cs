@@ -3,6 +3,7 @@ using CompletOrder.Views;
 using MySql.Data.MySqlClient;
 using SQLite;
 using System;
+using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -27,6 +28,19 @@ namespace CompletOrder.ViewModels
         private ObservableCollection<Order> _orderList;
         private ObservableCollection<Allegro> _allegroList;
         private ObservableCollection<Order> GetOrders;
+        private ObservableCollection<Presta> _prestaNagList;
+
+        public ObservableCollection<Presta> PrestaNagList
+        {
+            get { return _prestaNagList; }
+            set
+            {
+                
+                SetValue(ref _prestaNagList, value);
+                
+            }
+        }
+
 
         public ObservableCollection<Order> OrderList
         {
@@ -48,6 +62,7 @@ namespace CompletOrder.ViewModels
                 //OnPropertyChanged(nameof(OrderList));
             }
         }
+
 
         //public static string NazwaPlatnosci { get; set; }
 
@@ -72,19 +87,30 @@ namespace CompletOrder.ViewModels
             OrderList = new ObservableCollection<Order>();
             GetOrders = new ObservableCollection<Order>(); 
             AllegroList = new ObservableCollection<Allegro>(); 
+            _prestaNagList = new ObservableCollection<Presta>(); 
 
             connection = new MySqlConnection(conn_string.ToString());
 
             //_connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
-           
-            PobierzListe();
-            PobierzAllegro();
-            
-            //AllegroList = nowa.ToList();// Task.Run(() => GetAllegros()).Result;
+
+            //PobierzListe();
+            //PobierzAllegro();
+
+            wynik = new List<SendOrder>();
+            PobierzListeZatwierdzonychZamowien();
+             // przeniosłem z allegro i pobierz liste
 
             if (GetOrders !=null)
             OrderList = GetOrders;
         }
+
+
+        public void PobierzListeZatwierdzonychZamowien()
+        {
+            wynik = Task.Run(() => SendOrders()).Result;
+        }
+            
+
 
         //protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         //{
@@ -257,10 +283,10 @@ namespace CompletOrder.ViewModels
 
         public void PobierzAllegro()
         {
-
+            
             AllegroList.Clear();
             var tmp = Task.Run(() => GetAllegros()).Result;
-            var wynik = Task.Run(() => SendOrders()).Result;
+           // wynik = Task.Run(() => SendOrders()).Result;
 
             //var nowa = (
             //    from allegro in tmp
@@ -294,20 +320,28 @@ namespace CompletOrder.ViewModels
 
         async Task<ObservableCollection<Allegro>> GetAllegros()
         {
+            try
+            {
+                string tmp = $@"cdn.PC_WykonajSelect N' select distinct   Id, CustomerName, RaportDate,    forma_platnosc
+                            from cdn.pc_allegroorders '";
 
-            string tmp = $@"cdn.PC_WykonajSelect N' select distinct   Id, CustomerName, RaportDate,    forma_platnosc
-   from cdn.pc_allegroorders '";
+                var wynikii = await App.TodoManager.GetOrdersFromAllegro(tmp);
 
-            var wynikii = await App.TodoManager.GetOrdersFromAllegro(tmp);
+                return wynikii;
+            }
+            catch (Exception)
+            {
 
-            return wynikii;
+                throw;
+            }
+            
         }
 
 
         async Task<List<SendOrder>> SendOrders()
         {
 
-            string tmp = $@"cdn.PC_WykonajSelect N'select * from cdn.pc_ordernag '";
+            string tmp = $@"cdn.PC_WykonajSelect N'select * from cdn.pc_ordernag where  Orn_OrderData>getdate()-30'";
 
             var wynikii = await App.TodoManager.GetOrdersFromWeb(tmp);
 
@@ -317,6 +351,7 @@ namespace CompletOrder.ViewModels
 
 
         List<SendOrder> sendOrders;
+        private List<SendOrder> wynik;
 
         public  void PobierzListe()
         {
@@ -329,7 +364,8 @@ namespace CompletOrder.ViewModels
 
                 try
                 {
-                    var wynik = Task.Run(() => SendOrders()).Result;
+                    //var wynik = Task.Run(() => SendOrders()).Result;  // przeniesione do konstruktra
+
                     //string tmp = "cdn.PC_WykonajSelect N'select * from cdn.pc_ordernag '";
 
                     //var wynik = await App.TodoManager.GetOrdersFromWeb(tmp);
@@ -397,6 +433,65 @@ namespace CompletOrder.ViewModels
 
         }
 
-        
+        public async void GetPrestaZam()
+        {
+
+            _prestaNagList.Clear();
+            //var prestaZamNag = new List<Presta>();
+            //cdn.PC_WykonajSelect N'
+            var querystring = $@" cdn.PC_WykonajSelect N'
+                    select   
+	                    ZaN_GIDNumer, 
+	                    ZaN_FormaNazwa, 
+	                    ZaN_DokumentObcy, 
+	                    ZaN_SpDostawy, 
+	                    cast(dateadd(d,ZaN_DataWystawienia,''18001228'') as date)ZaN_DataWystawienia,
+	                    cast(dateadd(d,ZaN_DataRealizacji,''18001228'') as date)ZaN_DataRealizacji, 
+	                    ZaN_Stan,
+	                    knt.KnA_Akronim,
+	                    sum(ele.ZaE_WartoscPoRabacie)WartoscZam
+                    from cdn.ZamNag
+	                      join cdn.KntAdresy knt on KnA_GIDTyp=ZaN_KnATyp AND KnA_GIDNumer=ZaN_KnANumer  
+	                      left join cdn.ZamElem ele on ZaN_GIDNumer=ZaE_GIDNumer
+                      where ZaN_GIDTyp=960
+                      group by ZaN_GIDNumer, 
+	                    ZaN_FormaNazwa, 
+	                    ZaN_DokumentObcy, 
+	                    ZaN_SpDostawy,ZaN_DataWystawienia,ZaN_DataRealizacji,ZaN_Stan,knt.KnA_Akronim
+                '";
+
+            //_prestaNagList= await App.TodoManager.GetOrdersFromPresta(querystring);
+
+            using (SqlConnection connection = new SqlConnection(sqlconn))
+            {
+                connection.Open();
+                using (SqlCommand command2 = new SqlCommand(querystring, connection))
+                using (SqlDataReader reader = command2.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        _prestaNagList.Add(new Presta
+                        {
+
+                            ZaN_GIDNumer = Convert.ToInt32(reader["ZaN_GIDNumer"]),
+                            ZaN_FormaNazwa = reader["ZaN_FormaNazwa"].ToString(),
+                            ZaN_DataRealizacji = reader["ZaN_DataRealizacji"].ToString(),
+                            ZaN_DataWystawienia = reader["ZaN_DataWystawienia"].ToString(),
+                            ZaN_DokumentObcy = reader["ZaN_DokumentObcy"].ToString(),
+                            ZaN_SpDostawy = reader["ZaN_SpDostawy"].ToString(),
+                            ZaN_Stan = reader["ZaN_Stan"].ToString(),
+                            WartoscZam = Convert.ToDecimal(reader["WartoscZam"]),
+                            KnA_Akronim = reader["KnA_Akronim"].ToString(),
+                            IsFinish= (wynik.Where(s => s.Orn_OrderId == Convert.ToInt32(reader["ZaN_GIDNumer"]) && s.Orn_IsDone == true)).Any()
+                        });
+
+                    }
+                }
+            }
+
+
+        }
+
+
     }
 }

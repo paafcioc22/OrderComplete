@@ -13,7 +13,7 @@ namespace CompletOrder.Models
         public DataBaseConn()
         {
             conn_string = new MySqlConnectionStringBuilder();
-            conn_string.Server = "www.szachownica.com.pl";
+            conn_string.Server = "vps524101.ovh.net";
             conn_string.Port = 3306;
             conn_string.SslMode = MySqlSslMode.None;
             conn_string.UserID = "root";
@@ -25,10 +25,10 @@ namespace CompletOrder.Models
 
         private void Connect()
         {
-            //var connstring = $"SERVER={funkcje.serwer};" +
-            //    $"DATABASE={funkcje.database};" +
-            //    $"TRUSTED_CONNECTION=No; UID={funkcje.sqluser}; " +
-            //    $"PWD={funkcje.password};Connection Timeout=30";
+              sqlconn = $"SERVER={funkcje.serwer};" +
+                $"DATABASE={funkcje.database};" +
+                $"TRUSTED_CONNECTION=No; UID={funkcje.sqluser}; " +
+                $"PWD={funkcje.password};Connection Timeout=30";
 
 
             MySqlConnection connection = new MySqlConnection(conn_string.ToString());
@@ -41,10 +41,10 @@ namespace CompletOrder.Models
         {
             public static int wersja_nr = 20193;
             //public static int SessionID;
-            public static string serwer = "10.8.0.6";
-            public static string database = "cdnxl_joart";//cdnxl_joart ; cdnxl_test
+            public static string serwer = "192.168.1.55";
+            public static string database = "cdnxl_tst";//cdnxl_joart ; cdnxl_test
             public static string sqluser = "sa";
-            public static string password = "sqlSQL123#";
+            public static string password = "sql";
             //public static int dokid;
             public static int typZamknij = 0; // //1-bufor , 0- zatwierdź ////////////////////// 
         }
