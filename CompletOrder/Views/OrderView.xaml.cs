@@ -68,16 +68,14 @@ namespace CompletOrder.Views
 
         protected override void OnAppearing()
         {
-            orderView.PobierzListeZatwierdzonychZamowien();
-            var app = Application.Current as App;
-
-            app.IsLoading = true;
+            orderView.PobierzListeZatwierdzonychZamowien(); 
+            
             orderView.PobierzListe();
             
-            orderView.PobierzAllegro();
             orderView.GetPrestaZam();
+            orderView.PobierzAllegro();
 
-            app.IsLoading = false;
+             
             base.OnAppearing();
         }
 

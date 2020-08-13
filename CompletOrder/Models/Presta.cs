@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Xamarin.Forms;
 
 namespace CompletOrder.Models
 {
@@ -21,6 +22,7 @@ namespace CompletOrder.Models
         public int ZaE_Ilosc { get; set; }
         public int ElementId { get; set; }
         public bool IsFinish { get; set; }
+        public string Color { get; set; }
 
     }
 }

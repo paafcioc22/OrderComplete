@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using CompletOrder.Services;
 
 namespace CompletOrder.ViewModels
 {
@@ -20,6 +21,9 @@ namespace CompletOrder.ViewModels
         private SQLiteAsyncConnection _connection;
         
         public ObservableCollection<OrderDetail> orderDetail { get; set; }
+
+        private PrestaWeb prestaWeb;
+
         public ObservableCollection<Allegro> AllegroList { get; set; }
         public ObservableCollection<Presta> PrestaElemList { get; set; }
 
@@ -102,7 +106,7 @@ namespace CompletOrder.ViewModels
             _connection.CreateTableAsync<OrderDatailComplete>();
 
             orderDetail = new ObservableCollection<OrderDetail>();
-
+            prestaWeb = new PrestaWeb();
             PrestaElemList = Task.Run(() => GetPrestaElem(presta.ZaN_GIDNumer)).Result;
 
             _orderid = presta.ZaN_GIDNumer;
@@ -247,33 +251,35 @@ namespace CompletOrder.ViewModels
                       where ZaN_GIDTyp=960
 					  and ZaN_GIDNumer={id}'";
 
-           // var _prestaNagList = await App.TodoManager.GetOrdersFromPresta(tmp);
+            // _prestaNagList = await App.TodoManager.GetOrdersFromPresta(querystring);
+            _prestaNagList = Task.Run(() => prestaWeb.PobierzelementyZamówienia(id)).Result;
+            
 
-            using (SqlConnection connection = new SqlConnection(sqlconn))
-            {
-                connection.Open();
-                using (SqlCommand command2 = new SqlCommand(querystring, connection))
-                using (SqlDataReader reader = command2.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        _prestaNagList.Add(new Presta
-                        {
+            //using (SqlConnection connection = new SqlConnection(sqlconn))
+            //{
+            //    connection.Open();
+            //    using (SqlCommand command2 = new SqlCommand(querystring, connection))
+            //    using (SqlDataReader reader = command2.ExecuteReader())
+            //    {
+            //        while (reader.Read())
+            //        {
+            //            _prestaNagList.Add(new Presta
+            //            {
 
-                            ZaN_GIDNumer = Convert.ToInt32(reader["ZaN_GIDNumer"]),
-                            ZaN_FormaNazwa = reader["ZaN_FormaNazwa"].ToString(),
-                            ZaN_DokumentObcy = reader["ZaN_DokumentObcy"].ToString(),
-                            ZaE_Ilosc = Convert.ToInt32(reader["ZaE_Ilosc"]),
-                             ElementId = Convert.ToInt32(reader["ElementId"]),
-                             ZaE_TwrNazwa = reader["ZaE_TwrNazwa"].ToString(),
-                             WartoscZam = Convert.ToDecimal(reader["WartoscZam"]),
-                             ZaE_TwrKod = reader["ZaE_TwrKod"].ToString(),
+            //                ZaN_GIDNumer = Convert.ToInt32(reader["ZaN_GIDNumer"]),
+            //                ZaN_FormaNazwa = reader["ZaN_FormaNazwa"].ToString(),
+            //                ZaN_DokumentObcy = reader["ZaN_DokumentObcy"].ToString(),
+            //                ZaE_Ilosc = Convert.ToInt32(reader["ZaE_Ilosc"]),
+            //                 ElementId = Convert.ToInt32(reader["ElementId"]),
+            //                 ZaE_TwrNazwa = reader["ZaE_TwrNazwa"].ToString(),
+            //                 WartoscZam = Convert.ToDecimal(reader["WartoscZam"]),
+            //                 ZaE_TwrKod = reader["ZaE_TwrKod"].ToString(),
 
-                        });
+            //            });
 
-                    }
-                }
-            }
+            //        }
+            //    }
+            //}
 
             return _prestaNagList;
         }

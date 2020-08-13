@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CompletOrder.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,16 +29,18 @@ namespace CompletOrder.Views
             public static string pass = "j0@rt";
         }
 
-        private void Entry_Completed(object sender, EventArgs e)
+        private async void Entry_Completed(object sender, EventArgs e)
         {
             if (entry_haslo.Text == Haslo.pass)
             {
-               
-                Navigation.PushAsync(new OrderView());
+                //PrestaWeb prestaWeb = new PrestaWeb();
+                //await prestaWeb.PobierzZamówienia();
+                
+                await Navigation.PushAsync(new OrderView());
             }
             else
             {
-                DisplayAlert(null, "Błędne hasło", "OK");
+                await DisplayAlert(null, "Błędne hasło", "OK");
             }
         }
 

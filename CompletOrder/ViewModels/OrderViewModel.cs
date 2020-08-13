@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using CompletOrder.Services;
 
 namespace CompletOrder.ViewModels
 {
@@ -24,7 +25,7 @@ namespace CompletOrder.ViewModels
         //private SQLiteAsyncConnection _connection;
 
         //public ObservableCollection<Order> OrderList { get; set; }
-
+        PrestaWeb prestaWeb;
         private ObservableCollection<Order> _orderList;
         private ObservableCollection<Allegro> _allegroList;
         private ObservableCollection<Order> GetOrders;
@@ -95,10 +96,12 @@ namespace CompletOrder.ViewModels
 
             //PobierzListe();
             //PobierzAllegro();
+            prestaWeb = new PrestaWeb();
 
             wynik = new List<SendOrder>();
             PobierzListeZatwierdzonychZamowien();
              // przeniosłem z allegro i pobierz liste
+
 
             if (GetOrders !=null)
             OrderList = GetOrders;
@@ -433,10 +436,10 @@ namespace CompletOrder.ViewModels
 
         }
 
-        public async void GetPrestaZam()
+        public async  void GetPrestaZam()
         {
 
-            _prestaNagList.Clear();
+            PrestaNagList.Clear();
             //var prestaZamNag = new List<Presta>();
             //cdn.PC_WykonajSelect N'
             var querystring = $@" cdn.PC_WykonajSelect N'
@@ -462,32 +465,37 @@ namespace CompletOrder.ViewModels
 
             //_prestaNagList= await App.TodoManager.GetOrdersFromPresta(querystring);
 
-            using (SqlConnection connection = new SqlConnection(sqlconn))
-            {
-                connection.Open();
-                using (SqlCommand command2 = new SqlCommand(querystring, connection))
-                using (SqlDataReader reader = command2.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        _prestaNagList.Add(new Presta
-                        {
+            PrestaNagList = Task.Run(() => prestaWeb.PobierzZamówienia()).Result;
+            //PrestaNagList = await prestaWeb.PobierzZamówienia();
 
-                            ZaN_GIDNumer = Convert.ToInt32(reader["ZaN_GIDNumer"]),
-                            ZaN_FormaNazwa = reader["ZaN_FormaNazwa"].ToString(),
-                            ZaN_DataRealizacji = reader["ZaN_DataRealizacji"].ToString(),
-                            ZaN_DataWystawienia = reader["ZaN_DataWystawienia"].ToString(),
-                            ZaN_DokumentObcy = reader["ZaN_DokumentObcy"].ToString(),
-                            ZaN_SpDostawy = reader["ZaN_SpDostawy"].ToString(),
-                            ZaN_Stan = reader["ZaN_Stan"].ToString(),
-                            WartoscZam = Convert.ToDecimal(reader["WartoscZam"]),
-                            KnA_Akronim = reader["KnA_Akronim"].ToString(),
-                            IsFinish= (wynik.Where(s => s.Orn_OrderId == Convert.ToInt32(reader["ZaN_GIDNumer"]) && s.Orn_IsDone == true)).Any()
-                        });
+            //PrestaNagList = _prestaNagList;
 
-                    }
-                }
-            }
+            //using (SqlConnection connection = new SqlConnection(sqlconn))
+            //{
+            //    connection.Open();
+            //    using (SqlCommand command2 = new SqlCommand(querystring, connection))
+            //    using (SqlDataReader reader = command2.ExecuteReader())
+            //    {
+            //        while (reader.Read())
+            //        {
+            //            _prestaNagList.Add(new Presta
+            //            {
+
+            //                ZaN_GIDNumer = Convert.ToInt32(reader["ZaN_GIDNumer"]),
+            //                ZaN_FormaNazwa = reader["ZaN_FormaNazwa"].ToString(),
+            //                ZaN_DataRealizacji = reader["ZaN_DataRealizacji"].ToString(),
+            //                ZaN_DataWystawienia = reader["ZaN_DataWystawienia"].ToString(),
+            //                ZaN_DokumentObcy = reader["ZaN_DokumentObcy"].ToString(),
+            //                ZaN_SpDostawy = reader["ZaN_SpDostawy"].ToString(),
+            //                ZaN_Stan = reader["ZaN_Stan"].ToString(),
+            //                WartoscZam = Convert.ToDecimal(reader["WartoscZam"]),
+            //                KnA_Akronim = reader["KnA_Akronim"].ToString(),
+            //                IsFinish= (wynik.Where(s => s.Orn_OrderId == Convert.ToInt32(reader["ZaN_GIDNumer"]) && s.Orn_IsDone == true)).Any()
+            //            });
+
+            //        }
+            //    }
+            //}
 
 
         }
