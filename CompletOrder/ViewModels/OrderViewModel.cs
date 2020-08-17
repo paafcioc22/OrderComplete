@@ -65,7 +65,7 @@ namespace CompletOrder.ViewModels
         }
 
 
-        //public static string NazwaPlatnosci { get; set; }
+         
 
         private string _nazwaPlatnosci;
 
@@ -75,7 +75,7 @@ namespace CompletOrder.ViewModels
             set 
             {
                 SetValue(ref _nazwaPlatnosci, value);
-                PobierzListe();
+                //PobierzListe();
             }
         }
 
@@ -85,8 +85,8 @@ namespace CompletOrder.ViewModels
 
         public OrderViewModel()
         {
-            OrderList = new ObservableCollection<Order>();
-            GetOrders = new ObservableCollection<Order>(); 
+            //OrderList = new ObservableCollection<Order>();
+            //GetOrders = new ObservableCollection<Order>(); 
             AllegroList = new ObservableCollection<Allegro>(); 
             _prestaNagList = new ObservableCollection<Presta>(); 
 
@@ -103,8 +103,8 @@ namespace CompletOrder.ViewModels
              // przeniosłem z allegro i pobierz liste
 
 
-            if (GetOrders !=null)
-            OrderList = GetOrders;
+            //if (GetOrders !=null)
+            //OrderList = GetOrders;
         }
 
 
@@ -112,13 +112,8 @@ namespace CompletOrder.ViewModels
         {
             wynik = Task.Run(() => SendOrders()).Result;
         }
-            
-
-
-        //protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
+             
+ 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             var changed = PropertyChanged;
@@ -175,7 +170,7 @@ namespace CompletOrder.ViewModels
                 {
                     //PobierzListe();
                     UstawFiltry();
-                    OrderList = GetOrders;
+                    //OrderList = GetOrders;
                 }
                 else { 
                 
@@ -203,12 +198,7 @@ namespace CompletOrder.ViewModels
                 var tmp = GetOrders.Where(c => c.id.ToString().Contains(_filter)).ToList();
                 OrderList = Convert2(tmp);
             }
-
-
-            //if (String.IsNullOrWhiteSpace(searchText))
-            //    return orderView.OrderList;
-            ////return _listaOrder.Where(c => c.id.ToString().Contains(searchText));
-            //return orderView.OrderList.Where(c => c.id.ToString().Contains(searchText));
+              
         }
 
 
@@ -436,7 +426,7 @@ namespace CompletOrder.ViewModels
 
         }
 
-        public async  void GetPrestaZam()
+        public  void GetPrestaZam()
         {
 
             PrestaNagList.Clear();
@@ -465,7 +455,13 @@ namespace CompletOrder.ViewModels
 
             //_prestaNagList= await App.TodoManager.GetOrdersFromPresta(querystring);
 
-            PrestaNagList = Task.Run(() => prestaWeb.PobierzZamówienia()).Result;
+            PrestaNagList =  Task.Run(() => prestaWeb.PobierzZamówienia()).Result;
+
+
+            foreach (var ss in PrestaNagList)
+            {
+                ss.IsFinish = (wynik.Where(s => s.Orn_OrderId == ss.ZaN_GIDNumer && s.Orn_IsDone == true)).Any();
+            }
             //PrestaNagList = await prestaWeb.PobierzZamówienia();
 
             //PrestaNagList = _prestaNagList;

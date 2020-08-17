@@ -7,7 +7,7 @@
               
              
             x:Class="CompletOrder.Views.OrderView" NavigationPage.HasNavigationBar="False" BarBackgroundColor="Gray">
-    <ContentPage Title="SI"  >
+    <ContentPage Title="SI" IsEnabled="False" >
         
     
     <AbsoluteLayout >

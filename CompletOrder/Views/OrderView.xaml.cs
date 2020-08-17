@@ -70,7 +70,7 @@ namespace CompletOrder.Views
         {
             orderView.PobierzListeZatwierdzonychZamowien(); 
             
-            orderView.PobierzListe();
+           // orderView.PobierzListe();
             
             orderView.GetPrestaZam();
             orderView.PobierzAllegro();

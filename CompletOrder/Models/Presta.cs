@@ -23,6 +23,8 @@ namespace CompletOrder.Models
         public int ElementId { get; set; }
         public bool IsFinish { get; set; }
         public string Color { get; set; }
+        public string Kolor { get; set; }
+        public string Rozmiar { get; set; }
 
     }
 }

@@ -18,7 +18,7 @@ namespace CompletOrder.Views
         {
             InitializeComponent();
 
-            BindingContext = Application.Current;
+            BindingContext =  Application.Current;
 
             entry_haslo.Keyboard = Keyboard.Create(KeyboardFlags.CapitalizeWord);
             wersja_label.Text = $"ver {AppInfo.VersionString}";
@@ -36,7 +36,10 @@ namespace CompletOrder.Views
                 //PrestaWeb prestaWeb = new PrestaWeb();
                 //await prestaWeb.PobierzZamówienia();
                 
+                this.IsBusy = true;
                 await Navigation.PushAsync(new OrderView());
+                this.IsBusy = false;
+
             }
             else
             {
@@ -44,19 +47,19 @@ namespace CompletOrder.Views
             }
         }
 
-        private void Button_Clicked(object sender, EventArgs e)
+        private async void Button_Clicked(object sender, EventArgs e)
         {
             
             
             if (entry_haslo.Text == Haslo.pass)
             {
-                 
-                  Navigation.PushAsync(new OrderView());
-               
+                this.IsBusy = true;
+                await  Navigation.PushAsync(new OrderView());
+                this.IsBusy = false;
             }
             else
             {
-                  DisplayAlert(null, "Błędne hasło", "OK");
+                await  DisplayAlert(null, "Błędne hasło", "OK");
             }
         }
     }

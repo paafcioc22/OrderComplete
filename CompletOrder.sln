@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompletOrder.Android", "CompletOrder.Android\CompletOrder.Android.csproj", "{3946E291-5911-4D0C-AA89-6026A0AB345F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompletOrder", "CompletOrder\CompletOrder.csproj", "{6EE4584E-CC1F-4F1C-8A22-61632A756899}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompletOrder", "CompletOrder\CompletOrder.csproj", "{6EE4584E-CC1F-4F1C-8A22-61632A756899}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

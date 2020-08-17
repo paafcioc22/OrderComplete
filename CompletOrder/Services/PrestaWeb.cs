@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.Serialization;
@@ -56,6 +57,10 @@ namespace CompletOrder.Services
             //string _url = $"https://www.szachownica.com.pl/api/orders/1/";//?fulfillment.status=PROCESSING  //status=READY_FOR_PROCESSING
             //var uri = new Uri(_url);
             //var odp = await wyślijGet(uri, pobierzParametryAutoryzacji(Account) );
+            orderStateFactory = new OrderStateFactory(BaseUrl, Account, Password);
+            order_state state = new order_state();
+            customer klient = new customer();
+
             return await Task.Run(() =>
             {
                 ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
@@ -72,27 +77,32 @@ namespace CompletOrder.Services
 
                 //    }
                 //}
-                orderStateFactory = new OrderStateFactory(BaseUrl, Account, Password);
                 var zamowianie = orderFactory.GetAll();
 
 
                 foreach (var i in zamowianie)
                 {
-                    var state = orderStateFactory.Get((long)i.current_state);
-                     
-                    var klient = customer.Get((long)i.id_customer);
-                    prestas.Add(new Presta
-                    {
-                        ZaN_GIDNumer = (int)i.id,
-                        ZaN_DataWystawienia = i.date_add,
-                        ZaN_DokumentObcy = i.reference,
-                        ZaN_FormaNazwa = i.payment,
-                        ZaN_SpDostawy = state.name[0].Value,
-                        WartoscZam = i.total_paid,
-                        KnA_Akronim = klient.firstname + ' ' + klient.lastname,
-                        Color= state.color
 
-                    });
+                    if (new int[] { 15, 2, 3, 11 }.Contains((int)i.current_state))
+                    {
+
+                        state = orderStateFactory.Get((long)i.current_state);
+                        klient = customer.Get((long)i.id_customer);
+
+                        prestas.Add(new Presta
+                        {
+                            ZaN_GIDNumer = (int)i.id,
+                            ZaN_DataWystawienia = i.date_add,
+                            ZaN_DokumentObcy = i.reference,
+                            ZaN_FormaNazwa = i.payment,
+                            ZaN_SpDostawy = state.name[0].Value,
+                            WartoscZam = i.total_paid,
+                            KnA_Akronim = klient.firstname + ' ' + klient.lastname,
+                            Color = state.color,
+
+
+                        });
+                    }
                 }
 
             return prestas;
@@ -118,7 +128,14 @@ namespace CompletOrder.Services
 
                 foreach (var i in zamowianie.associations.order_rows)
                 {
-                     
+
+                    var nazwa = i.product_name.Substring(0, i.product_name.IndexOf("- Kolor") - 1);
+                    var rozmiar = i.product_name.Substring(i.product_name.IndexOf("- Rozmiar") + 2, i.product_name.Length - i.product_name.IndexOf("- Rozmiar") - 2);
+                    var kolor =
+                        i.product_name.Substring(i.product_name.IndexOf("- Kolor") + 2, i.product_name.Length - i.product_name.IndexOf("- Kolor") - 2).Replace("- " + rozmiar, "");
+
+
+
                     prestas.Add(new Presta
                     {
                         ZaN_GIDNumer = (int)i.id,
@@ -126,7 +143,9 @@ namespace CompletOrder.Services
                         ZaE_TwrKod = i.product_reference,
                         ZaE_TwrNazwa = i.product_name,
                         ElementId = (int)i.product_id,
-                        WartoscZam=i.unit_price_tax_incl
+                        WartoscZam=i.unit_price_tax_incl,
+                        Kolor= kolor,
+                        Rozmiar=rozmiar
 
                     });
                 }

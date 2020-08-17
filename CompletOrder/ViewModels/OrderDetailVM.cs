@@ -114,6 +114,8 @@ namespace CompletOrder.ViewModels
 
             foreach (var a in PrestaElemList)
             {
+
+                var nazwakrtka = a.ZaE_TwrNazwa.Substring(0, a.ZaE_TwrNazwa.IndexOf("- Kolor") - 1);
                 PozycjiZamowienia++;
                 var stwrkarty = Task.Run(() => GetTwrKartyAsync(a.ZaE_TwrKod)).Result[0] as TwrKarty;
                 orderDetail.Add(new OrderDetail
@@ -125,7 +127,10 @@ namespace CompletOrder.ViewModels
                     twrkarty = stwrkarty,
                     IsDone = (wynik.Where(s => s.IdOrder == _orderid && s.IdElementOrder == a.ElementId)).Any(),
                     IdElement = a.ElementId,
-                    cena_netto = Convert.ToDouble(a.WartoscZam)
+                    cena_netto = Convert.ToDouble(a.WartoscZam),
+                    kolor=a.Kolor,
+                    rozmiar= a.Rozmiar,
+                    nazwaShort= nazwakrtka
                 }); 
             }
 

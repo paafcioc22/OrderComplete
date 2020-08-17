@@ -37,6 +37,8 @@ namespace CompletOrder.ViewModels
         public string kod { get; set; }
         public string nazwa { get; set; }
         public string promo { get; set; }
+        public string kolor { get; set; }
+        public string rozmiar { get; set; }
         public int vat { get; set; } 
 
         private bool _isDone;
@@ -77,6 +79,6 @@ namespace CompletOrder.ViewModels
             get { return IsDone ? Color.Green : Color.Black; }
         }
 
-        
+        public string nazwaShort { get; internal set; }
     }
 }
