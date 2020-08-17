@@ -61,9 +61,18 @@ namespace CompletOrder.Services
             order_state state = new order_state();
             customer klient = new customer();
 
+            Dictionary<string, string> filter = new Dictionary<string, string>();
+            //filter.Add("id", "");
+           
+            string dFrom = string.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd HH:mm:ss"));
+            string dTo = string.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss"));
+            filter.Add("date_upd", "[" + dFrom + "," + dTo + "]");
+
+
             return await Task.Run(() =>
             {
                 ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
+                var customer1 = customer.GetByFilter(filter, "date_upd_DESC", null);
 
                 //if(odp.RezultatOk)
                 //{
@@ -78,27 +87,62 @@ namespace CompletOrder.Services
                 //    }
                 //}
                 var zamowianie = orderFactory.GetAll();
+                var state2 = orderStateFactory.GetAll();
+                List<Status> statuses = new List<Status>();
 
+                foreach (var s in state2)
+                {
+                    if(new int[] { 15, 2, 3, 11 }.Contains((int)s.id))
+                    {
+                        statuses.Add(new Status
+                        {
+                            id = (int)s.id,
+                            color = s.color,
+                            status = s.name[0].Value
+                        });
+                    }
+                }
 
                 foreach (var i in zamowianie)
                 {
 
                     if (new int[] { 15, 2, 3, 11 }.Contains((int)i.current_state))
                     {
+                        // i.date_upd
+                        //state = orderStateFactory.Get((long)i.current_state);
+                        //klient =  customer.GetAsync((long)i.id_customer).Result;
 
-                        state = orderStateFactory.Get((long)i.current_state);
-                        klient = customer.Get((long)i.id_customer);
 
+                        //var customer1 = customer.GetByFilter(filter, null, null);
+
+                        //var _url = $"https://www.szachownica.com.pl/api/customers/{308}/";
+                        //var uri = new Uri(_url);
+                        //var odp = await wyślijGet(uri, pobierzParametryAutoryzacji(Account));
+
+                        ////var jsno = deserializujJson < PrestaKlient.Root > (odp.Strumień);
+
+                        //using (var reader = new System.IO.StreamReader(odp.Strumień))
+                        //{
+                        //    string responseText = reader.ReadToEnd();
+
+                        //}
+
+                        var cstm = customer1.Where(a => a.id == i.id_customer).Select(s => new customer { lastname = s.lastname, firstname = s.firstname }).FirstOrDefault() as customer;
+
+                        var kolor = statuses.Where(a => a.id == i.current_state).Select(s => new Status { color = s.color, status=s.status }).FirstOrDefault() as Status;
                         prestas.Add(new Presta
                         {
                             ZaN_GIDNumer = (int)i.id,
                             ZaN_DataWystawienia = i.date_add,
                             ZaN_DokumentObcy = i.reference,
                             ZaN_FormaNazwa = i.payment,
-                            ZaN_SpDostawy = state.name[0].Value,
+                           // ZaN_SpDostawy = state.name[0].Value,
+                            ZaN_SpDostawy = kolor.status,
                             WartoscZam = i.total_paid,
-                            KnA_Akronim = klient.firstname + ' ' + klient.lastname,
-                            Color = state.color,
+                            //KnA_Akronim = klient.firstname + ' ' + klient.lastname,
+                            KnA_Akronim = cstm !=null? cstm.firstname + ' ' + cstm.lastname:"",
+                            //Color = state.color,
+                            Color =kolor.color,
 
 
                         });
@@ -111,6 +155,13 @@ namespace CompletOrder.Services
 
         }
 
+        class Status
+        {
+            public int id { get; set; }
+            public string status  { get; set; }
+            public string color  { get; set; }
+
+        }
 
         public async Task<ObservableCollection<Presta>> PobierzelementyZamówienia( int id )
         {

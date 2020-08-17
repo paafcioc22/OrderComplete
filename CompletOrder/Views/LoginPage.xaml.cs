@@ -35,10 +35,12 @@ namespace CompletOrder.Views
             {
                 //PrestaWeb prestaWeb = new PrestaWeb();
                 //await prestaWeb.PobierzZamówienia();
-                
-                this.IsBusy = true;
+
+                kolko.IsRunning = true;
+                kolko.IsVisible = true;
                 await Navigation.PushAsync(new OrderView());
-                this.IsBusy = false;
+                kolko.IsRunning = false;
+                kolko.IsVisible = false;
 
             }
             else
@@ -53,9 +55,11 @@ namespace CompletOrder.Views
             
             if (entry_haslo.Text == Haslo.pass)
             {
-                this.IsBusy = true;
-                await  Navigation.PushAsync(new OrderView());
-                this.IsBusy = false;
+                kolko.IsRunning = true;
+                kolko.IsVisible = true;
+                 await  Navigation.PushAsync(new OrderView());
+                kolko.IsRunning = false;
+                kolko.IsVisible = false;
             }
             else
             {

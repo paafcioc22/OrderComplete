@@ -25,6 +25,8 @@ namespace CompletOrder.Views
 
             BindingContext = orderView = new OrderViewModel();
 
+            
+
             IDevice device = DependencyService.Get<IDevice>();
             string deviceIdentifier = device.GetIdentifier();
         }
@@ -68,10 +70,10 @@ namespace CompletOrder.Views
 
         protected override void OnAppearing()
         {
-            orderView.PobierzListeZatwierdzonychZamowien(); 
-            
-           // orderView.PobierzListe();
-            
+            orderView.PobierzListeZatwierdzonychZamowien();
+
+            // orderView.PobierzListe();
+
             orderView.GetPrestaZam();
             orderView.PobierzAllegro();
 
@@ -151,6 +153,7 @@ namespace CompletOrder.Views
             _userTapped = false;
         }
 
+        
 
         //public IEnumerable<Order> SzukajTowar(string searchText = null)
         //{

@@ -257,7 +257,7 @@ namespace CompletOrder.ViewModels
 					  and ZaN_GIDNumer={id}'";
 
             // _prestaNagList = await App.TodoManager.GetOrdersFromPresta(querystring);
-            _prestaNagList = Task.Run(() => prestaWeb.PobierzelementyZamówienia(id)).Result;
+            _prestaNagList =await  Task.Run(() => prestaWeb.PobierzelementyZamówienia(id));
             
 
             //using (SqlConnection connection = new SqlConnection(sqlconn))

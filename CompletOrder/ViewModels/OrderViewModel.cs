@@ -457,7 +457,7 @@ namespace CompletOrder.ViewModels
 
             PrestaNagList =  Task.Run(() => prestaWeb.PobierzZamówienia()).Result;
 
-
+            if(PrestaNagList.Count >0)
             foreach (var ss in PrestaNagList)
             {
                 ss.IsFinish = (wynik.Where(s => s.Orn_OrderId == ss.ZaN_GIDNumer && s.Orn_IsDone == true)).Any();
