@@ -13,6 +13,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace CompletOrder.Services
 {
@@ -54,24 +55,28 @@ namespace CompletOrder.Services
 
         public async Task<ObservableCollection<Presta>> PobierzZamówienia()
         {
-            //string _url = $"https://www.szachownica.com.pl/api/orders/1/";//?fulfillment.status=PROCESSING  //status=READY_FOR_PROCESSING
-            //var uri = new Uri(_url);
-            //var odp = await wyślijGet(uri, pobierzParametryAutoryzacji(Account) );
+            var filtry = Application.Current as App;
+
             orderStateFactory = new OrderStateFactory(BaseUrl, Account, Password);
             order_state state = new order_state();
-            customer klient = new customer();
+            //customer klient = new customer();
 
             Dictionary<string, string> filter = new Dictionary<string, string>();
-            //filter.Add("id", "");
-           
             string dFrom = string.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd HH:mm:ss"));
-            string dTo = string.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss"));
+            string dTo = string.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now.AddDays(3).ToString("yyyy-MM-dd HH:mm:ss"));
             filter.Add("date_upd", "[" + dFrom + "," + dTo + "]");
 
+
+            DateTimeOffset date2 = new DateTime(filtry.DataDo.Year, filtry.DataDo.Month, filtry.DataDo.Day, 23, 59, 59);
+            Dictionary<string, string> filterdata = new Dictionary<string, string>();
+            string dFrom2 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", filtry.DataOd.ToString("yyyy-MM-dd HH:mm:ss"));
+            string dTo2 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", date2.ToString("yyyy-MM-dd HH:mm:ss"));
+            filterdata.Add("date_upd", "[" + dFrom2 + "," + dTo2 + "]");
 
             return await Task.Run(() =>
             {
                 ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
+                //var customer1 = customer.GetByFilter(filter, "date_upd_DESC", null);
                 var customer1 = customer.GetByFilter(filter, "date_upd_DESC", null);
 
                 //if(odp.RezultatOk)
@@ -86,7 +91,10 @@ namespace CompletOrder.Services
 
                 //    }
                 //}
-                var zamowianie = orderFactory.GetAll();
+                var app = Application.Current as App;
+                var sort = app.SortASC ? "id_ASC" : "id_DESC";
+
+                var zamowianie = orderFactory.GetByFilter(filterdata, sort, null);
                 var state2 = orderStateFactory.GetAll();
                 List<Status> statuses = new List<Status>();
 
@@ -140,7 +148,7 @@ namespace CompletOrder.Services
                             ZaN_SpDostawy = kolor.status,
                             WartoscZam = i.total_paid,
                             //KnA_Akronim = klient.firstname + ' ' + klient.lastname,
-                            KnA_Akronim = cstm !=null? cstm.firstname + ' ' + cstm.lastname:"",
+                            KnA_Akronim = cstm !=null? cstm.firstname.ToUpper().Substring(0,1) + ". " + cstm.lastname:"",
                             //Color = state.color,
                             Color =kolor.color,
 

@@ -3,7 +3,7 @@ using CompletOrder.Views;
 using MySql.Data.MySqlClient;
 using SQLite;
 using System;
-using System.Data.SqlClient;
+ 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -130,7 +130,19 @@ namespace CompletOrder.ViewModels
             backingField = value;
 
             OnPropertyChanged(propertyName);
+
+
+            OnPropertyChanged(propertyName);
         }
+
+
+        bool isBusy = false;
+        public bool IsBusy
+        {
+            get { return isBusy; }
+            set { SetValue(ref isBusy, value); }
+        }
+
 
         private string _ileZam;
 
@@ -220,10 +232,10 @@ namespace CompletOrder.ViewModels
                 if (filtry.FiltrRealizowane)
                     statusy += "'przyjęte do realizacji',";
 
-                if (filtry.FiltrZaplacone)
+                if (filtry.OnlyToDoKompletacja)
                     statusy += "'zapłacone',";
 
-                if (filtry.FiltrZrealizowane)
+                if (filtry.SortASC)
                     statusy += "'zrealizowane',";
 
 
@@ -426,13 +438,82 @@ namespace CompletOrder.ViewModels
 
         }
 
-        public  void GetPrestaZam()
+
+
+        public void GetPrestaZam()
+        {
+            if (IsBusy)
+                return;
+
+            IsBusy = true;
+            var app = Application.Current as App;
+
+            //if ( !app.OnlyToDoKompletacja)
+            
+                PrestaNagList.Clear();
+
+                
+               //if(PrestaNagList.Count==0)
+                  PrestaNagList = Task.Run(() => prestaWeb.PobierzZamówienia()).Result;
+
+
+
+                if (PrestaNagList.Count > 0)
+                    foreach (var ss in PrestaNagList)
+                    {
+                        ss.IsFinish = (wynik.Where(s => s.Orn_OrderId == ss.ZaN_GIDNumer && s.Orn_IsDone == true)).Any();
+
+                    }
+                IsBusy = false;
+                
+            
+            
+            //else if (app.OnlyToDoKompletacja && PrestaNagList.Count > 0) 
+            //{
+            //    foreach (var item in PrestaNagList.ToList())
+            //    {
+
+            //        PrestaNagList.Remove(PrestaNagList.SingleOrDefault(i => i.IsFinish == true && i.ZaN_GIDNumer == item.ZaN_GIDNumer));
+            //    }
+            //    IsBusy = false;
+            //}
+            
+
+                if (app.SortASC)
+                {
+
+                    PrestaNagList.OrderBy(s => s.ZaN_GIDNumer);
+                }
+                else
+                    PrestaNagList.OrderByDescending(s => s.ZaN_GIDNumer);
+
+                
+             
+
+            IleZam = $"Lista zamówień ({PrestaNagList.Count})"; 
+             
+
+            IsBusy = false;
+
+        }
+
+
+
+
+        public void GetPrestaZam(bool onlyRefresh)
         {
 
-            PrestaNagList.Clear();
-            //var prestaZamNag = new List<Presta>();
-            //cdn.PC_WykonajSelect N'
-            var querystring = $@" cdn.PC_WykonajSelect N'
+            if (IsBusy)
+                return;
+
+            IsBusy = true;
+                var app = Application.Current as App;
+
+            if (!onlyRefresh &&!app.OnlyToDoKompletacja)
+            {
+                PrestaNagList.Clear();
+
+                var querystring = $@" cdn.PC_WykonajSelect N'
                     select   
 	                    ZaN_GIDNumer, 
 	                    ZaN_FormaNazwa, 
@@ -451,17 +532,51 @@ namespace CompletOrder.ViewModels
 	                    ZaN_FormaNazwa, 
 	                    ZaN_DokumentObcy, 
 	                    ZaN_SpDostawy,ZaN_DataWystawienia,ZaN_DataRealizacji,ZaN_Stan,knt.KnA_Akronim
-                '";
+                '"; //queery to sql
 
-            //_prestaNagList= await App.TodoManager.GetOrdersFromPresta(querystring);
+                //_prestaNagList= await App.TodoManager.GetOrdersFromPresta(querystring);
 
-            PrestaNagList =  Task.Run(() => prestaWeb.PobierzZamówienia()).Result;
+                PrestaNagList = Task.Run(() => prestaWeb.PobierzZamówienia()).Result;
 
-            if(PrestaNagList.Count >0)
-            foreach (var ss in PrestaNagList)
-            {
-                ss.IsFinish = (wynik.Where(s => s.Orn_OrderId == ss.ZaN_GIDNumer && s.Orn_IsDone == true)).Any();
+
+
+                if (PrestaNagList.Count > 0)
+                    foreach (var ss in PrestaNagList)
+                    {
+                        ss.IsFinish = (wynik.Where(s => s.Orn_OrderId == ss.ZaN_GIDNumer && s.Orn_IsDone == true)).Any();
+
+                    }
+                IsBusy = false;
+
             }
+            
+            else if(app.OnlyToDoKompletacja &&PrestaNagList.Count>0)//tylko nieskompletowane
+            {
+                foreach (var item in PrestaNagList.ToList())
+                {
+
+                 PrestaNagList.Remove(PrestaNagList.SingleOrDefault(i => i.IsFinish ==true && i.ZaN_GIDNumer==item.ZaN_GIDNumer));
+                }
+                IsBusy = false;
+            }
+            else if (onlyRefresh)
+            {
+
+                if (app.SortASC)
+                {
+
+                    var dsdsa=PrestaNagList.OrderBy(s => s.ZaN_GIDNumer).ToList();
+                }
+                else
+                    PrestaNagList.OrderByDescending(s => s.ZaN_GIDNumer);
+                IsBusy = false;
+                return;
+            }
+
+            IleZam = $"Lista zamówień ({PrestaNagList.Count})";
+
+            #region sql
+
             //PrestaNagList = await prestaWeb.PobierzZamówienia();
 
             //PrestaNagList = _prestaNagList;
@@ -491,8 +606,10 @@ namespace CompletOrder.ViewModels
 
             //        }
             //    }
-            //}
+            //} 
+            #endregion
 
+            IsBusy = false;
 
         }
 

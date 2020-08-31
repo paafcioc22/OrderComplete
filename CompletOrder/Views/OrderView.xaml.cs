@@ -74,19 +74,16 @@ namespace CompletOrder.Views
 
             // orderView.PobierzListe();
 
-            orderView.GetPrestaZam();
-            orderView.PobierzAllegro();
+            if(orderView.PrestaNagList.Count==0)
+                orderView.GetPrestaZam();
+           // else
+             //   orderView.GetPrestaZam(true);
+            orderView.PobierzAllegro(); 
 
-             
             base.OnAppearing();
         }
 
-        override protected void OnCurrentPageChanged() 
-        { 
-             
-        }
-
-
+         
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
@@ -152,8 +149,14 @@ namespace CompletOrder.Views
 
             _userTapped = false;
         }
+            
+        private void MyListView3_Refreshing(object sender, EventArgs e)
+        {
+            
+            orderView.GetPrestaZam(false);
+        }
 
-        
+
 
         //public IEnumerable<Order> SzukajTowar(string searchText = null)
         //{

@@ -10,58 +10,83 @@
 
 
     <ContentPage Title="Presta" >
-        <ListView x:Name="MyListView3"
+        <AbsoluteLayout >
+            <Label Text="{Binding IleZam}" 
+               HorizontalOptions="FillAndExpand" 
+               HorizontalTextAlignment="Center" 
+               FontSize="Large" 
+               BackgroundColor="#909090" 
+               TextColor="AliceBlue"
+               AbsoluteLayout.LayoutBounds="0,0,1,.05"
+               AbsoluteLayout.LayoutFlags="All"
+               />
+            
+
+            <ListView x:Name="MyListView3" IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsBusy, Mode=OneWay}" 
+                      Refreshing="MyListView3_Refreshing"
             ItemsSource="{Binding PrestaNagList}" 
             ItemTapped="MyListView3_ItemTapped"   SeparatorVisibility="None"
             CachingStrategy="RecycleElement" HasUnevenRows="True"
-                  AbsoluteLayout.LayoutBounds="0.4,1,1,.85"
+                  AbsoluteLayout.LayoutBounds="0.4,1,1,.95" 
                                        AbsoluteLayout.LayoutFlags="All">
 
-            <!--Built in Cells-->
+                <!--Built in Cells-->
 
-            <!--Custom View Cells-->
+                <!--Custom View Cells-->
 
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell >
-                        <Frame BorderColor="DarkGray" Padding="5"  CornerRadius="10" HasShadow="True" Margin="5">
-                            <StackLayout Orientation="Horizontal"  HorizontalOptions="FillAndExpand" Padding="10" Spacing="8"
-                                         BackgroundColor="WhiteSmoke" Margin="5" >
-                                <StackLayout.Triggers>
-                                    <DataTrigger TargetType="StackLayout"
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell >
+                            <Frame BorderColor="DarkGray" Padding="2"  CornerRadius="10" HasShadow="True" Margin="2,4,2,4">
+                                <StackLayout Orientation="Horizontal"  HorizontalOptions="FillAndExpand" Padding="10" Spacing="8"
+                                         BackgroundColor="WhiteSmoke" Margin="0"  >
+                                    <StackLayout.Triggers>
+                                        <DataTrigger TargetType="StackLayout"
                                             Binding="{Binding IsFinish}"    Value="True">
-                                        <Setter Property="BackgroundColor"  Value="LightCyan" />
+                                            <Setter Property="BackgroundColor"  Value="LightCyan" />
 
-                                    </DataTrigger>
+                                        </DataTrigger>
 
 
-                                </StackLayout.Triggers>
-                                <StackLayout   Margin="5" HorizontalOptions="FillAndExpand"  >
-                                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                        <Label Text="{Binding ZaN_GIDNumer}" FontAttributes="Bold" HorizontalOptions="StartAndExpand" FontSize="20"/>
-                                        <Label Text="{Binding KnA_Akronim}" TextColor="Red" FontSize="20" 
+                                    </StackLayout.Triggers>
+                                    <StackLayout   Margin="5" HorizontalOptions="FillAndExpand"  >
+                                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                            <Label Text="{Binding ZaN_GIDNumer}" FontAttributes="Bold" HorizontalOptions="StartAndExpand" FontSize="20"/>
+                                            <Label Text="{Binding KnA_Akronim}" TextColor="Red" FontSize="20" 
                                                HorizontalTextAlignment="Center" 
                                                HorizontalOptions="CenterAndExpand" 
                                                 />
+                                        </StackLayout>
+                                        <Label Text="{Binding ZaN_FormaNazwa}"  HorizontalOptions="StartAndExpand" HorizontalTextAlignment="Start"/>
+                                        <Label Text="{Binding ZaN_DataWystawienia}" />
+                                        <Label Text="{Binding ZaN_SpDostawy}" TextColor="{Binding Color}" FontAttributes="Bold"/>
+                                        <Label Text="{Binding WartoscZam, StringFormat='Do zapłaty : {0:N} zł'}"/>
+                                        <!--<Label Text="{Binding nr_paragonu}"/>-->
                                     </StackLayout>
-                                    <Label Text="{Binding ZaN_FormaNazwa}"  HorizontalOptions="StartAndExpand" HorizontalTextAlignment="Start"/>
-                                    <Label Text="{Binding ZaN_DataWystawienia}" />
-                                    <Label Text="{Binding ZaN_SpDostawy}" TextColor="{Binding Color}" FontAttributes="Bold"/>
-                                    <Label Text="{Binding WartoscZam, StringFormat='Do zapłaty : {0:N} zł'}"/>
-                                    <!--<Label Text="{Binding nr_paragonu}"/>-->
+
+                                    <CheckBox  x:Name="checkBox1" HorizontalOptions="End" IsEnabled="False" IsChecked="{Binding IsFinish}" Scale="2" Margin="0,0,15,0"/>
+
                                 </StackLayout>
-
-                                <CheckBox  x:Name="checkBox1" HorizontalOptions="End" IsEnabled="False" IsChecked="{Binding IsFinish}" Scale="2" Margin="0,0,15,0"/>
-
-                            </StackLayout>
-                        </Frame>
+                            </Frame>
 
 
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
 
-        </ListView>
+            </ListView>
+            <Button BorderColor="DarkGray"  BorderWidth="3" Text="Filtr" TextColor="Red" BackgroundColor="Pink"
+                    Margin="6" 
+                    HorizontalOptions="EndAndExpand"  
+                    CornerRadius="50" 
+                    Clicked="Button_Clicked"
+                    AbsoluteLayout.LayoutBounds="1,1,80,80"  
+                    AbsoluteLayout.LayoutFlags="PositionProportional"
+                    />
+      
+            
+
+        </AbsoluteLayout>
     </ContentPage>
 
 

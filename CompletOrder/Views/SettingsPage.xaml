@@ -10,14 +10,18 @@
     
   <!--Pages can be added as references or inline-->
 
+                <!--<SwitchCell Text="anulowane" On="{Binding FiltrAnulowane}"/>-->
+                <!--<SwitchCell Text="przyjęte do realizacji" On="{Binding FiltrRealizowane}"/>-->
+                <!--<SwitchCell Text="zrealizowane" On="{Binding FiltrZrealizowane}"/>-->
     <TableView Intent="Settings">
         <TableRoot>
+            <TableSection Title="Sortowanie">
+                <SwitchCell Text="Sortuj rosnąco (d. malejąco)" On="{Binding SortASC }"/>
+            </TableSection>
             <TableSection Title="Status zamówienia">
-                <SwitchCell Text="zapłacone" On="{Binding FiltrZaplacone}"/>
-                <SwitchCell Text="nowe" On="{Binding FiltrNowe}"/>
-                <SwitchCell Text="anulowane" On="{Binding FiltrAnulowane}"/>
-                <SwitchCell Text="przyjęte do realizacji" On="{Binding FiltrRealizowane}"/>
-                <SwitchCell Text="zrealizowane" On="{Binding FiltrZrealizowane}"/>
+                <SwitchCell Text="Tylko do kompletacji" On="{Binding OnlyToDoKompletacja}"/>
+                <!--<SwitchCell Text="nowe" On="{Binding FiltrNowe}"/>-->
+                
             </TableSection>
             <TableSection Title="Zakres dat">
                 <ViewCell>

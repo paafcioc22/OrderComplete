@@ -64,7 +64,7 @@ namespace CompletOrder
             }
 
         }
-        public bool FiltrZaplacone
+        public bool OnlyToDoKompletacja
         {
             get
             {
@@ -112,7 +112,7 @@ namespace CompletOrder
 
         }
 
-        public bool FiltrZrealizowane
+        public bool SortASC
         {
             get
             {
@@ -150,7 +150,7 @@ namespace CompletOrder
             {
                 if (Properties.ContainsKey(filtrDataOd))
                     return (DateTime)Properties[filtrDataOd];
-                return DateTime.Now.AddDays(-1);
+                return DateTime.Now.AddDays(-4);
             }
             set
             {

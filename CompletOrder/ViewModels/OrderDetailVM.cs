@@ -2,7 +2,7 @@
 using MySql.Data.MySqlClient;
 using SQLite;
 using System;
-using System.Data.SqlClient;
+ 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -89,11 +89,12 @@ namespace CompletOrder.ViewModels
                 { 
                     OrderId= a.Id,
                     ilosc=a.ilosc,
-                    nazwa=a.nazwa,
+                    nazwaShort=a.nazwa,
                     kod=a.kod,
                     twrkarty=stwrkarty,
                     IsDone= (wynik.Where(s => s.IdOrder == _orderid && s.IdElementOrder == a.ElementId)).Any(),
                     IdElement=a.ElementId, 
+                    
                 });
             }
 
