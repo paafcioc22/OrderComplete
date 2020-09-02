@@ -70,7 +70,7 @@ namespace CompletOrder
             {
                 if (Properties.ContainsKey(filtrZaplacone))
                     return (bool)Properties[filtrZaplacone];
-                return true;
+                return false;
             }
             set
             {

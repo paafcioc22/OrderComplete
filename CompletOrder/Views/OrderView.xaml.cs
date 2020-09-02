@@ -74,6 +74,9 @@ namespace CompletOrder.Views
 
             // orderView.PobierzListe();
 
+
+
+
             if(orderView.PrestaNagList.Count==0)
                 orderView.GetPrestaZam();
            // else
@@ -152,8 +155,8 @@ namespace CompletOrder.Views
             
         private void MyListView3_Refreshing(object sender, EventArgs e)
         {
-            
             orderView.GetPrestaZam(false);
+            orderView.PobierzListeZatwierdzonychZamowien();
         }
 
 

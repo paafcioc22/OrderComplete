@@ -110,7 +110,7 @@
                                 <StackLayout.Triggers>
                                     <DataTrigger TargetType="StackLayout"
                                             Binding="{Binding IsFinish}"    Value="True">
-                                        <Setter Property="BackgroundColor"  Value="Color.LightGreen" />
+                                        <Setter Property="BackgroundColor"  Value="Color.LightCyan" />
 
                                     </DataTrigger>
                                     <!--<DataTrigger TargetType="StackLayout"
@@ -143,7 +143,7 @@
 
         </ListView>
     </ContentPage>
-    <ContentPage Title="SI" IsEnabled="False" >
+    <!--<ContentPage Title="SI" IsEnabled="False" >
 
 
         <AbsoluteLayout >
@@ -188,9 +188,9 @@
                         <x:String>Item 5</x:String>
                     </x:Array>
                 </d:ListView.ItemsSource>
-                <!--Built in Cells-->
+                --><!--Built in Cells-->
 
-                <!--Custom View Cells-->
+                <!--Custom View Cells--><!--
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -203,11 +203,11 @@
                                             <Setter Property="BackgroundColor"  Value="Color.LightGreen" />
 
                                         </DataTrigger>
-                                        <!--<DataTrigger TargetType="StackLayout"
+                                        --><!--<DataTrigger TargetType="StackLayout"
                                             Binding="{Binding IsEdit}"    Value="True">
                                         <Setter Property="BackgroundColor"  Value="Color.LightPink" />
 
-                                    </DataTrigger>-->
+                                    </DataTrigger>--><!--
 
                                     </StackLayout.Triggers>
                                     <StackLayout   Margin="5" HorizontalOptions="FillAndExpand"  >
@@ -233,5 +233,5 @@
 
             </ListView>
         </AbsoluteLayout>
-    </ContentPage>
+    </ContentPage>-->
 </TabbedPage>

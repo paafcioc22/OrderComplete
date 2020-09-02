@@ -28,7 +28,7 @@ namespace CompletOrder.ViewModels
         PrestaWeb prestaWeb;
         private ObservableCollection<Order> _orderList;
         private ObservableCollection<Allegro> _allegroList;
-        private ObservableCollection<Order> GetOrders;
+       // private ObservableCollection<Order> GetOrders;
         private ObservableCollection<Presta> _prestaNagList;
 
         public ObservableCollection<Presta> PrestaNagList
@@ -111,6 +111,20 @@ namespace CompletOrder.ViewModels
         public void PobierzListeZatwierdzonychZamowien()
         {
             wynik = Task.Run(() => SendOrders()).Result;
+
+            if (PrestaNagList.Count > 0)
+                foreach (var ss in PrestaNagList)
+                {
+                    //ss.IsFinish = (wynik.Where(s => s.Orn_OrderId == ss.ZaN_GIDNumer )).Any();//&& s.Orn_IsDone == true
+
+
+                    ss.IsFinish = ( 
+                                  from nowa in wynik
+                                        //join presta in ss on nowa.Orn_OrderId equals presta.ZaN_GIDNumer
+                                  where nowa.Orn_OrderId ==ss.ZaN_GIDNumer
+                                  select   nowa.Orn_IsDone).SingleOrDefault(); 
+
+                }
         }
              
  
@@ -122,6 +136,7 @@ namespace CompletOrder.ViewModels
 
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         protected void SetValue<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(backingField, value))
@@ -156,15 +171,15 @@ namespace CompletOrder.ViewModels
             }
         }
 
-        public string Filter
-        {
-            get { return _filter; }
-            set
-            {
-                SetValue(ref _filter, value);
-                Search();
-            }
-        }
+        //public string Filter
+        //{
+        //    get { return _filter; }
+        //    set
+        //    {
+        //        SetValue(ref _filter, value);
+        //        Search();
+        //    }
+        //}
 
 
         private bool _filtr;
@@ -198,20 +213,20 @@ namespace CompletOrder.ViewModels
         }
 
 
-        public ICommand SearchCommand => new Command(Search);
-        public void Search()
-        {
-            if (string.IsNullOrWhiteSpace(_filter))
-            {
-                OrderList = GetOrders;// ItemData.Items;
-            }
-            else
-            {
-                var tmp = GetOrders.Where(c => c.id.ToString().Contains(_filter)).ToList();
-                OrderList = Convert2(tmp);
-            }
+        //public ICommand SearchCommand => new Command(Search);
+        //public void Search()
+        //{
+        //    if (string.IsNullOrWhiteSpace(_filter))
+        //    {
+        //        OrderList = GetOrders;// ItemData.Items;
+        //    }
+        //    else
+        //    {
+        //        var tmp = GetOrders.Where(c => c.id.ToString().Contains(_filter)).ToList();
+        //        OrderList = Convert2(tmp);
+        //    }
               
-        }
+        //}
 
 
         string UstawFiltry()
@@ -358,85 +373,85 @@ namespace CompletOrder.ViewModels
         List<SendOrder> sendOrders;
         private List<SendOrder> wynik;
 
-        public  void PobierzListe()
-        {
+        //public  void PobierzListe()
+        //{
 
-            sendOrders = new List<SendOrder>();
-            string _filtr = UstawFiltry(); 
+        //    sendOrders = new List<SendOrder>();
+        //    string _filtr = UstawFiltry(); 
 
-            if(_filtr!= "where data between 'dataod' and 'datado' and status in (")
-            {
+        //    if(_filtr!= "where data between 'dataod' and 'datado' and status in (")
+        //    {
 
-                try
-                {
-                    //var wynik = Task.Run(() => SendOrders()).Result;  // przeniesione do konstruktra
+        //        try
+        //        {
+        //            //var wynik = Task.Run(() => SendOrders()).Result;  // przeniesione do konstruktra
 
-                    //string tmp = "cdn.PC_WykonajSelect N'select * from cdn.pc_ordernag '";
+        //            //string tmp = "cdn.PC_WykonajSelect N'select * from cdn.pc_ordernag '";
 
-                    //var wynik = await App.TodoManager.GetOrdersFromWeb(tmp);
+        //            //var wynik = await App.TodoManager.GetOrdersFromWeb(tmp);
 
-                    GetOrders.Clear();
+        //           // GetOrders.Clear();
 
-                    connection.Open();
-                    MySqlCommand command1 = connection.CreateCommand();
+        //            connection.Open();
+        //            MySqlCommand command1 = connection.CreateCommand();
 
-                    command1.CommandText = $@"SELECT *, zamowienia.id as zid, zamowienia.nr_paragonu as nr_paragonu  FROM zamowienia 
-                            LEFT JOIN zamowienia_klienci ON zamowienia.zamowienie_klient_id = zamowienia_klienci.id 
-                            {_filtr}
-                    ORDER BY zamowienia.id DESC  ";
-                    MySqlDataReader reader = command1.ExecuteReader();
+        //            command1.CommandText = $@"SELECT *, zamowienia.id as zid, zamowienia.nr_paragonu as nr_paragonu  FROM zamowienia 
+        //                    LEFT JOIN zamowienia_klienci ON zamowienia.zamowienie_klient_id = zamowienia_klienci.id 
+        //                    {_filtr}
+        //            ORDER BY zamowienia.id DESC  ";
+        //            MySqlDataReader reader = command1.ExecuteReader();
 
 
-                    while (reader.Read())
-                    {
-                        double num;
-                        DateTime dateTime = Convert.ToDateTime(reader["data"]);
-                        var _isFinish = (wynik.Where(s => s.Orn_OrderId == reader.GetInt32("zid") && s.Orn_IsDone == true)).Any();
-                        Order item = new Order
-                        {
-                            //IsFinish = (wynik.Where(s => s.IdOrder == reader.GetInt32("zid"))).Any(),
-                            IsEdit = (wynik.Where(s => s.Orn_OrderId == reader.GetInt32("zid") && s.Orn_IsEdit == true)).Any(),
-                            IsFinish = (wynik.Where(s => s.Orn_OrderId == reader.GetInt32("zid") && s.Orn_IsDone == true)).Any(),
-                            id = reader.GetInt32("zid"),
-                            data = dateTime.ToString("yyyy-MM-dd HH:MM:ss"),
-                            status = reader["status"].ToString(),
-                            wartosc_netto = Math.Round(reader.GetDouble("wartosc_netto"), 2),
-                            wysylka_koszt = reader.GetDouble("wysylka_koszt"),
-                            platnosc_koszt = reader.GetDouble("platnosc_koszt"),
-                            do_zaplaty = reader.GetDouble("do_zaplaty") - (double.TryParse(reader["korekta"].ToString(), out num) ? reader.GetDouble("korekta") : 0.0),
-                            wysylka_info = reader["wysylka_info"].ToString(),
-                            platnosc_info = reader["platnosc_info"].ToString(),
-                            uwagi = reader["uwagi"].ToString(),
-                            faktura_adres = reader["faktura_adres"].ToString(),
-                            nr_paragonu = reader["nr_paragonu"].ToString(),
-                            faktura_firma = reader["faktura_firma"].ToString(),
-                            typ_platnosci = reader["typ_platnosci"].ToString(),
-                            platnosc_karta_podarunkowa = reader.GetDouble("platnosc_karta_podarunkowa")
-                        };
-                        if (double.TryParse(reader["platnosc_punktami"].ToString(), out num))
-                        {
-                            item.platnosc_punktami = double.Parse(reader["platnosc_punktami"].ToString());
-                        }
+        //            while (reader.Read())
+        //            {
+        //                double num;
+        //                DateTime dateTime = Convert.ToDateTime(reader["data"]);
+        //                var _isFinish = (wynik.Where(s => s.Orn_OrderId == reader.GetInt32("zid") && s.Orn_IsDone == true)).Any();
+        //                Order item = new Order
+        //                {
+        //                    //IsFinish = (wynik.Where(s => s.IdOrder == reader.GetInt32("zid"))).Any(),
+        //                    IsEdit = (wynik.Where(s => s.Orn_OrderId == reader.GetInt32("zid") && s.Orn_IsEdit == true)).Any(),
+        //                    IsFinish = (wynik.Where(s => s.Orn_OrderId == reader.GetInt32("zid") && s.Orn_IsDone == true)).Any(),
+        //                    id = reader.GetInt32("zid"),
+        //                    data = dateTime.ToString("yyyy-MM-dd HH:MM:ss"),
+        //                    status = reader["status"].ToString(),
+        //                    wartosc_netto = Math.Round(reader.GetDouble("wartosc_netto"), 2),
+        //                    wysylka_koszt = reader.GetDouble("wysylka_koszt"),
+        //                    platnosc_koszt = reader.GetDouble("platnosc_koszt"),
+        //                    do_zaplaty = reader.GetDouble("do_zaplaty") - (double.TryParse(reader["korekta"].ToString(), out num) ? reader.GetDouble("korekta") : 0.0),
+        //                    wysylka_info = reader["wysylka_info"].ToString(),
+        //                    platnosc_info = reader["platnosc_info"].ToString(),
+        //                    uwagi = reader["uwagi"].ToString(),
+        //                    faktura_adres = reader["faktura_adres"].ToString(),
+        //                    nr_paragonu = reader["nr_paragonu"].ToString(),
+        //                    faktura_firma = reader["faktura_firma"].ToString(),
+        //                    typ_platnosci = reader["typ_platnosci"].ToString(),
+        //                    platnosc_karta_podarunkowa = reader.GetDouble("platnosc_karta_podarunkowa")
+        //                };
+        //                if (double.TryParse(reader["platnosc_punktami"].ToString(), out num))
+        //                {
+        //                    item.platnosc_punktami = double.Parse(reader["platnosc_punktami"].ToString());
+        //                }
 
-                        GetOrders.Add(item);
-                    }
+        //                GetOrders.Add(item);
+        //            }
 
-                    //connection.Close();
-                    //if(OrderList !=null)
-                    //IleZam = $"Lista zamówień ({OrderList.Count})";
+        //            //connection.Close();
+        //            //if(OrderList !=null)
+        //            //IleZam = $"Lista zamówień ({OrderList.Count})";
 
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Debug.WriteLine(ex);
 
-                }
-                if (GetOrders != null)
-                    IleZam = $"Lista zamówień ({GetOrders.Count})";
-                connection.Close();
-            }
+        //        }
+        //        if (GetOrders != null)
+        //            IleZam = $"Lista zamówień ({GetOrders.Count})";
+        //        connection.Close();
+        //    }
 
-        }
+        //}
 
 
 
@@ -540,12 +555,7 @@ namespace CompletOrder.ViewModels
 
 
 
-                if (PrestaNagList.Count > 0)
-                    foreach (var ss in PrestaNagList)
-                    {
-                        ss.IsFinish = (wynik.Where(s => s.Orn_OrderId == ss.ZaN_GIDNumer && s.Orn_IsDone == true)).Any();
-
-                    }
+                
                 IsBusy = false;
 
             }
@@ -572,6 +582,13 @@ namespace CompletOrder.ViewModels
                 IsBusy = false;
                 return;
             }
+
+            //if (PrestaNagList.Count > 0)
+            //    foreach (var ss in PrestaNagList)
+            //    {
+            //        ss.IsFinish = (wynik.Where(s => s.Orn_OrderId == ss.ZaN_GIDNumer && s.Orn_IsDone == true)).Any();
+
+            //    }
 
             IleZam = $"Lista zamówień ({PrestaNagList.Count})";
 

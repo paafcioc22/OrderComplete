@@ -15,7 +15,7 @@ using CompletOrder.Services;
 
 namespace CompletOrder.ViewModels
 {
-    public class OrderDetailVM : DataBaseConn, INotifyPropertyChanged
+    public class OrderDetailVM : DataBaseConn//, INotifyPropertyChanged
     {
         
         private SQLiteAsyncConnection _connection;
@@ -37,7 +37,7 @@ namespace CompletOrder.ViewModels
         
         ICommand showOtherLocation;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        //public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand ShowOtherLocation
         {
@@ -97,8 +97,9 @@ namespace CompletOrder.ViewModels
                     
                 });
             }
-
-            orderDetail.OrderBy(x => x.IsDone);
+            var tmp = orderDetail.OrderBy(x => x.IsDone).ThenBy(x => x.twrkarty.MgA_Segment1).ThenBy(x => x.twrkarty.MgA_Segment2).ThenBy(x => x.twrkarty.MgA_Segment3);
+            orderDetail = Convert2(tmp.ToList());
+            //orderDetail.OrderBy(x => x.IsDone);
         }
 
         public OrderDetailVM(Presta presta)
@@ -134,8 +135,9 @@ namespace CompletOrder.ViewModels
                     nazwaShort= nazwakrtka
                 }); 
             }
-
-            orderDetail.OrderBy(x => x.IsDone);
+            var tmp = orderDetail.OrderBy(x => x.IsDone).ThenBy(x => x.twrkarty.MgA_Segment1).ThenBy(x => x.twrkarty.MgA_Segment2).ThenBy(x => x.twrkarty.MgA_Segment3);
+            orderDetail = Convert2(tmp.ToList());
+            //orderDetail.OrderBy(x => x.IsDone);
         }
 
 

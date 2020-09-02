@@ -197,11 +197,11 @@ namespace CompletOrder.Services
 
                     prestas.Add(new Presta
                     {
-                        ZaN_GIDNumer = (int)i.id,
+                        ZaN_GIDNumer = id,
                         ZaE_Ilosc = i.product_quantity,
                         ZaE_TwrKod = i.product_reference,
                         ZaE_TwrNazwa = i.product_name,
-                        ElementId = (int)i.product_id,
+                        ElementId = (int)i.id,
                         WartoscZam=i.unit_price_tax_incl,
                         Kolor= kolor,
                         Rozmiar=rozmiar
