@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using CompletOrder.Services;
+using System.Globalization;
 
 namespace CompletOrder.ViewModels
 {
@@ -32,9 +33,9 @@ namespace CompletOrder.ViewModels
         //protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         //{
         //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
+        //} 
+       
 
-        
         ICommand showOtherLocation;
 
         //public event PropertyChangedEventHandler PropertyChanged;
@@ -129,7 +130,7 @@ namespace CompletOrder.ViewModels
                     twrkarty = stwrkarty,
                     IsDone = (wynik.Where(s => s.IdOrder == _orderid && s.IdElementOrder == a.ElementId)).Any(),
                     IdElement = a.ElementId,
-                    cena_netto = Convert.ToDouble(a.WartoscZam),
+                    cena_netto = System.Convert.ToDouble(a.WartoscZam),
                     kolor=a.Kolor,
                     rozmiar= a.Rozmiar,
                     nazwaShort= nazwakrtka
@@ -329,7 +330,7 @@ namespace CompletOrder.ViewModels
                             twrkarty = stwrkarty,//GetTwrKartyAsync(reader["nr_katalogowy"].ToString()).Result[0] as TwrKarty,
                             promo = reader["promo"].ToString().Replace("&quot;", "").Replace("_", "").Replace("[", "").Replace("]", "").Replace("{", "").Replace("}", ""),
                             nazwa = reader["nazwa"].ToString().Replace(reader["nr_katalogowy"].ToString(), ""),
-                            ilosc = Convert.ToInt32(reader["ilosc"]) - Convert.ToInt32(reader["ilosc_zwrocona"]),
+                            ilosc = System.Convert.ToInt32(reader["ilosc"]) - System.Convert.ToInt32(reader["ilosc_zwrocona"]),
                             cena_netto = reader.GetDouble("cena_netto"),
                             vat = reader.GetInt32("zvat")
                         };
@@ -376,13 +377,14 @@ MgA_Segment2,MgA_Segment3, replace(twr_url,twr_kod,''miniatury/''+twr_kod) TwrUr
 
         }
 
+       
 
 
         //TwrKarty GetTwrInfo(string _twrkod) 
         //{
 
         //    var twrkarty = new TwrKarty();
-            
+
         //    var querystring = $@"SELECT twr_kod TwrKod, TZM_TPaId, CDN.ifs_PodajPolozenie(mga_id) Polozenie,MgA_Segment1,MgA_Segment2,MgA_Segment3, replace(twr_url,twr_kod,'miniatury/'+twr_kod) TwrUrl
         //            FROM cdn.twrkarty
         //            left join CDN.TwrPartie on tpa_twrnumer = twr_gidnumer
@@ -416,7 +418,7 @@ MgA_Segment2,MgA_Segment3, replace(twr_url,twr_kod,''miniatury/''+twr_kod) TwrUr
         //                    //MgA_Segment1 = tak1 ? _MgA_Segment1 : 0,
         //                    //MgA_Segment2 = tak2 ? _MgA_Segment2 : 0,
         //                    //MgA_Segment3 = tak3 ? _MgA_Segment3 : 0 
-                            
+
         //                };
         //                twrkarty = _twrKarty;
         //            }

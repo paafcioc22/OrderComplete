@@ -71,7 +71,7 @@ namespace CompletOrder.Services
             Dictionary<string, string> filterdata = new Dictionary<string, string>();
             string dFrom2 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", filtry.DataOd.ToString("yyyy-MM-dd HH:mm:ss"));
             string dTo2 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", date2.ToString("yyyy-MM-dd HH:mm:ss"));
-            filterdata.Add("date_upd", "[" + dFrom2 + "," + dTo2 + "]");
+            filterdata.Add("date_add", "[" + dFrom2 + "," + dTo2 + "]");
 
             return await Task.Run(() =>
             {
