@@ -5,14 +5,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" NavigationPage.HasBackButton="False"
              x:Class="CompletOrder.Views.OrderDetailView" Title="{Binding _orderid}" 
+              
              xmlns:local="clr-namespace:CompletOrder.Models"
              
     >
-    <!--<ContentPage.Resources>
+    <ContentPage.Resources>
         <ResourceDictionary>
             <local:KolorujIlosci x:Key="wiekszeNizJeden" />
         </ResourceDictionary>
-    </ContentPage.Resources>-->
+    </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Zakończ z brakami " Clicked="ToolbarItem_Clicked"   />
@@ -82,35 +83,52 @@
                                        HorizontalTextAlignment="Start"
                                        />
 
-                            <Label Text="{Binding ilosc, StringFormat='Ilość : {0} szt'} " x:Name="lbl_iloscc"
-                                       TextColor="Black"  FontAttributes="Bold"
+                            <Label Text="{Binding ilosc, StringFormat='Ilość : {0} szt' }" x:Name="lbl_iloscc"
+                                     TextColor="Black"  FontAttributes="Bold"
                                        AbsoluteLayout.LayoutBounds="0.5,.97,.3,.2"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                    >
-                                <Label.Style>
-                                    <Binding Source="{x:Reference lbl_iloscc}" Path="Text">
+                                <!--TextColor="Black"  FontAttributes="Bold"-->
+                                <!--<Label.Style>
+                                    --><!--<Binding Source="{x:Reference lbl_iloscc}" Path="Text">--><!--
+                                    <Binding Source="">
                                         <Binding.Converter>
                                             <local:KolorujIlosci x:TypeArguments="Style">
                                                 <local:KolorujIlosci.TrueObject>
                                                     <Style TargetType="Label">
+                                                 
                                                         <Setter Property="TextColor" Value="Red"/>
                                                         <Setter Property="FontAttributes" Value="Bold"/>
-                                                        <Setter Property="FontSize" Value="15"/>
+                                                        <Setter Property="FontSize" Value="17"/>
                                                     </Style>
                                                 </local:KolorujIlosci.TrueObject>
 
                                                 <local:KolorujIlosci.FalseObject>
                                                     <Style TargetType="Label">
+                                                 
                                                         <Setter Property="TextColor" Value="Black"/>
                                                         <Setter Property="FontAttributes" Value="Bold"/>
-                                                        <Setter Property="FontSize" Value="12"/>
+                                                        <Setter Property="FontSize" Value="15"/>
                                                     </Style>
                                                 </local:KolorujIlosci.FalseObject>
                                             </local:KolorujIlosci> 
                                         </Binding.Converter>
                                     </Binding>
-                                </Label.Style>
+                                </Label.Style> Binding="{Binding ilosc}" Value="{StaticResource wiekszeNizJeden}"-->
+                                <Label.Triggers>
+                                    <MultiTrigger TargetType="Label"  >
+                                        <MultiTrigger.Conditions >
+                                            <BindingCondition Binding="{Binding ilosc,Converter={StaticResource wiekszeNizJeden}} " Value="True">
+                                                
+                                            </BindingCondition>
+                                                                                                                
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="TextColor" Value="Red"/>
+                                        <Setter Property="FontAttributes" Value="Bold"/>
+                                        <Setter Property="FontSize" Value="17"/>
+                                    </MultiTrigger>
+                                </Label.Triggers>
                             </Label>
                                         
 

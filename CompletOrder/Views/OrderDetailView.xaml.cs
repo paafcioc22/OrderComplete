@@ -40,12 +40,12 @@ namespace CompletOrder.Views
 
             var ileall=orderDetail.PozycjiZamowienia;
             var ilePo = orderDetail.orderDetail.Count();
-            var suma = Convert.ToDecimal(orderDetail.orderDetail.Sum(s => s.cena_netto));
+            var suma = Convert.ToDecimal(orderDetail.orderDetail.Sum(s => s.cena_netto*s.ilosc));
 
             if (ileall!=ilePo)
             //if (suma != orderDetail.SumaZamowienia)
                 DisplayAlert("Uwaga", "Nie pełna lista zamówienia", "OK");
-            lbl_sumaKwota.Text = $"Łączna kwota pozycji : {suma} zł";
+            lbl_sumaKwota.Text = $"Łączna kwota pozycji : {suma:N} zł";
             //CzyKtosNieRobi();
         }
 
