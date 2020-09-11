@@ -12,13 +12,21 @@ namespace CompletOrder.Models
         protected MySqlConnectionStringBuilder conn_string;
         public DataBaseConn()
         {
+            //conn_string = new MySqlConnectionStringBuilder();
+            //conn_string.Server = "vps524101.ovh.net";
+            //conn_string.Port = 3306;
+            //conn_string.SslMode = MySqlSslMode.None;
+            //conn_string.UserID = "root";
+            //conn_string.Password = "Htyud682f45";
+            //conn_string.Database = "szachownica";
+
             conn_string = new MySqlConnectionStringBuilder();
-            conn_string.Server = "vps524101.ovh.net";
+            conn_string.Server = "presta2046291.home.pl";
             conn_string.Port = 3306;
             conn_string.SslMode = MySqlSslMode.None;
-            conn_string.UserID = "root";
-            conn_string.Password = "Htyud682f45";
-            conn_string.Database = "szachownica";
+            conn_string.UserID = "32610188_df84ef7f";
+            conn_string.Password = "!cAK1Spb";
+            conn_string.Database = "32610188_df84ef7f";
 
             Connect();
         }

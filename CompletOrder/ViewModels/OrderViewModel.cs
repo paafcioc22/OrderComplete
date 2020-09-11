@@ -469,7 +469,7 @@ namespace CompletOrder.ViewModels
 
                 
                //if(PrestaNagList.Count==0)
-                  PrestaNagList = Task.Run(() => prestaWeb.PobierzZamówienia()).Result;
+                  PrestaNagList = Task.Run(() => prestaWeb.PobierzZamówieniaSql()).Result;
 
 
 
@@ -551,7 +551,7 @@ namespace CompletOrder.ViewModels
 
                 //_prestaNagList= await App.TodoManager.GetOrdersFromPresta(querystring);
 
-                PrestaNagList = Task.Run(() => prestaWeb.PobierzZamówienia()).Result;
+                PrestaNagList = Task.Run(() => prestaWeb.PobierzZamówieniaSql()).Result;
 
 
 

@@ -2,6 +2,7 @@
 using Bukimedia.PrestaSharp.Factories;
 using CompletOrder.Models;
 using CompletOrder.Models.QuickType;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,7 +18,7 @@ using Xamarin.Forms;
 
 namespace CompletOrder.Services
 {
-    public class PrestaWeb
+    public class PrestaWeb:DataBaseConn
     {
 
         string BaseUrl = "https://www.szachownica.com.pl/api/";
@@ -32,24 +33,57 @@ namespace CompletOrder.Services
 
             orderFactory = new OrderFactory(BaseUrl, Account, Password);
 
-            customer = new CustomerFactory(BaseUrl, Account, Password);
+            customer = new CustomerFactory(BaseUrl, Account, Password); 
+
+        }
 
 
+        public async Task<ObservableCollection<Presta>> PobierzZamówieniaSql()
+        {
+            var filtry = Application.Current as App;
+            DateTimeOffset dateOd = new DateTime(filtry.DataOd.Year, filtry.DataOd.Month, filtry.DataOd.Day, 0, 0, 0);
+            DateTimeOffset dateDo = new DateTime(filtry.DataDo.Year, filtry.DataDo.Month, filtry.DataDo.Day, 23, 59, 59);
+            var sort = filtry.SortASC ? "ASC" : "DESC";
+            var dataod = dateOd.ToString("yyyy-MM-dd HH:mm:ss");
+            var datado = dateDo.ToString("yyyy-MM-dd HH:mm:ss");
 
-            //DateTime StartDate = new DateTime(2020, 8, 1);
-            //DateTime EndDate = new DateTime(2020, 8, 31);
-            //Dictionary<string, string> filter = new Dictionary<string, string>();
-            //string dFrom = string.Format("{0:yyyy-MM-dd HH:mm:ss}", StartDate);
-            //string dTo = string.Format("{0:yyyy-MM-dd HH:mm:ss}", EndDate);
-            ////filter.Add("date_add", "[" + dFrom + "," + dTo + "]");
-            //filter.Add("current_state", "3;15");
-            //List<long> PrestaSharpOrderIds = orderFactory.GetIdsByFilter(filter, "id_DESC", null);
+            this.mysqlconn.Open();
+            MySqlCommand command1 = this.mysqlconn.CreateCommand();
+            command1.CommandText = $@"SELECT id_order,reference,payment,ps_orders.date_add,ps_order_state.color,
+                CONVERT(total_paid,decimal(10,2))Totalpay, firstname, lastname , name
+                from ps_orders 
+                join ps_customer on ps_customer.id_customer=ps_orders.id_customer 
+                join ps_order_state on ps_order_state.id_order_state= ps_orders.current_state                
+                join `ps_order_state_lang` on ps_order_state_lang.id_order_state= ps_order_state.id_order_state
+                where ps_orders.current_state in('15,2,3,11') and ps_order_state_lang.id_lang=1 and
+                ps_orders.date_add BETWEEN '{dataod}' and '{datado}'
+                order by id_order {sort}";
+            MySqlDataReader reader = command1.ExecuteReader();
 
+            return await Task.Run(() =>
+            {
+                ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
+                while (reader.Read())
+                {
+                
+                    var cstm = reader["firstname"].ToString().ToUpper().Substring(0, 1) + ". " + reader["lastname"].ToString();
 
+                    prestas.Add(new Presta
+                    {
+                        ZaN_GIDNumer = reader.GetInt32("id_order"),
+                        ZaN_DataWystawienia = reader["date_add"].ToString(), 
+                        ZaN_DokumentObcy = reader["reference"].ToString(),
+                        ZaN_FormaNazwa = reader["payment"].ToString(),                       
+                        ZaN_SpDostawy = reader["name"].ToString(),                         
+                        WartoscZam = reader.GetDecimal("Totalpay"),
+                        KnA_Akronim = cstm,                   
+                        Color = reader["color"].ToString()
 
-
-            
-
+                    });
+                }
+                this.mysqlconn.Close();
+                return prestas;
+            });
         }
 
 
@@ -123,8 +157,8 @@ namespace CompletOrder.Services
 
                         //var customer1 = customer.GetByFilter(filter, null, null);
 
-                        //var _url = $"https://www.szachownica.com.pl/api/customers/{308}/";
-                        //var uri = new Uri(_url);
+                        var _url = $"https://www.szachownica.com.pl/api/customers/{308}/";
+                        var uri = new Uri(_url);
                         //var odp = await wyślijGet(uri, pobierzParametryAutoryzacji(Account));
 
                         ////var jsno = deserializujJson < PrestaKlient.Root > (odp.Strumień);
