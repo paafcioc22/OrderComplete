@@ -210,41 +210,67 @@ namespace CompletOrder.Services
             //string _url = $"https://www.szachownica.com.pl/api/orders/1/";//?fulfillment.status=PROCESSING  //status=READY_FOR_PROCESSING
             //var uri = new Uri(_url);
             //var odp = await wyślijGet(uri, pobierzParametryAutoryzacji(Account) );
-            return await Task.Run(() =>
+
+
+          
+            try
             {
-                ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
-
-                
-                
-                var zamowianie = orderFactory.Get((long)id);
-
-
-                foreach (var i in zamowianie.associations.order_rows)
-                {
-
-                    var nazwa = i.product_name.Substring(0, i.product_name.IndexOf("- Kolor") - 1);
-                    var rozmiar = i.product_name.Substring(i.product_name.IndexOf("- Rozmiar") + 2, i.product_name.Length - i.product_name.IndexOf("- Rozmiar") - 2);
-                    var kolor =
-                        i.product_name.Substring(i.product_name.IndexOf("- Kolor") + 2, i.product_name.Length - i.product_name.IndexOf("- Kolor") - 2).Replace("- " + rozmiar, "");
-
-
-
-                    prestas.Add(new Presta
+                return await Task.Run(() =>
                     {
-                        ZaN_GIDNumer = id,
-                        ZaE_Ilosc = i.product_quantity,
-                        ZaE_TwrKod = i.product_reference,
-                        ZaE_TwrNazwa = i.product_name,
-                        ElementId = (int)i.id,
-                        WartoscZam=i.unit_price_tax_incl,
-                        Kolor= kolor,
-                        Rozmiar=rozmiar
+                        ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
 
+
+
+                        var zamowianie = orderFactory.Get((long)id);
+
+
+                        foreach (var i in zamowianie.associations.order_rows)
+                        {
+                            var nazwa = "";
+                            var rozmiar = " ";
+                            var kolor = "";
+
+                            //var dsadas = i.product_name;
+                            //var sdasdsa = i.product_name.IndexOf("- Kolor");
+                            //var sdrzomsda = i.product_name.IndexOf("- Rozmiar");
+
+
+                            if (i.product_name.IndexOf("- Rozmiar") > 0)
+                            {
+                                rozmiar = i.product_name.Substring(i.product_name.IndexOf("- Rozmiar") + 2, i.product_name.Length - i.product_name.IndexOf("- Rozmiar") - 2);
+                            }
+                            if (i.product_name.IndexOf("- Kolor")>0)
+                            {
+                                nazwa = i.product_name.Substring(0, i.product_name.IndexOf("- Kolor") - 1);
+                         
+                                kolor =
+                                    i.product_name.Substring(i.product_name.IndexOf("- Kolor") + 2, i.product_name.Length - i.product_name.IndexOf("- Kolor") - 2).Replace("- " + rozmiar!=" "?rozmiar:" ", " ");
+
+                            } 
+                            
+
+                            prestas.Add(new Presta
+                            {
+                                ZaN_GIDNumer = id,
+                                ZaE_Ilosc = i.product_quantity,
+                                ZaE_TwrKod = i.product_reference,
+                                ZaE_TwrNazwa = i.product_name,
+                                ElementId = (int)i.id,
+                                WartoscZam = i.unit_price_tax_incl,
+                                Kolor = string.IsNullOrEmpty(kolor)?"":kolor,
+                                Rozmiar =string.IsNullOrEmpty(rozmiar)?"":rozmiar
+
+                            });
+                        }
+
+                        return prestas;
                     });
-                }
+            }
+            catch (Exception )
+            {
 
-                return prestas;
-            });
+                throw;
+            }
 
 
         }

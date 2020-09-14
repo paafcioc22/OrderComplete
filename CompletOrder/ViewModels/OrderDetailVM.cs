@@ -114,11 +114,25 @@ namespace CompletOrder.ViewModels
 
             _orderid = presta.ZaN_GIDNumer;
             var wynik = Task.Run(() => listaUkonczonych(presta.ZaN_GIDNumer)).Result;
-
+            var nazwakrtka = "";
             foreach (var a in PrestaElemList)
             {
+                if(a.ZaE_TwrNazwa.IndexOf("- Kolor")>0)
+                {
 
-                var nazwakrtka = a.ZaE_TwrNazwa.Substring(0, a.ZaE_TwrNazwa.IndexOf("- Kolor") - 1);
+                    nazwakrtka = a.ZaE_TwrNazwa.Substring(0, a.ZaE_TwrNazwa.IndexOf("- Kolor") - 1);
+                }
+                else if(a.ZaE_TwrNazwa.IndexOf("- Rozmiar") > 0)
+                {
+                    nazwakrtka = a.ZaE_TwrNazwa.Substring(0, a.ZaE_TwrNazwa.IndexOf("- Kolor") - 1);
+                   
+                }
+                else
+                {
+                    nazwakrtka = a.ZaE_TwrNazwa;
+                }
+
+
                 PozycjiZamowienia++;
                 var stwrkarty = Task.Run(() => GetTwrKartyAsync(a.ZaE_TwrKod)).Result[0] as TwrKarty;
                 orderDetail.Add(new OrderDetail
