@@ -124,7 +124,7 @@ namespace CompletOrder.ViewModels
                 }
                 else if(a.ZaE_TwrNazwa.IndexOf("- Rozmiar") > 0)
                 {
-                    nazwakrtka = a.ZaE_TwrNazwa.Substring(0, a.ZaE_TwrNazwa.IndexOf("- Kolor") - 1);
+                    nazwakrtka = a.ZaE_TwrNazwa.Substring(0, a.ZaE_TwrNazwa.IndexOf("- Rozmiar") - 1);
                    
                 }
                 else

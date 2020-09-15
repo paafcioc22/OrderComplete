@@ -242,10 +242,14 @@ namespace CompletOrder.Services
                             if (i.product_name.IndexOf("- Kolor")>0)
                             {
                                 nazwa = i.product_name.Substring(0, i.product_name.IndexOf("- Kolor") - 1);
-                         
-                                kolor =
-                                    i.product_name.Substring(i.product_name.IndexOf("- Kolor") + 2, i.product_name.Length - i.product_name.IndexOf("- Kolor") - 2).Replace("- " + rozmiar!=" "?rozmiar:" ", " ");
 
+                                kolor =
+                                    i.product_name.Substring(i.product_name.IndexOf("- Kolor") + 2, i.product_name.Length - i.product_name.IndexOf("- Kolor") - 2);
+
+                                     
+                                    var podmien = "- " + rozmiar != " " ? "- "+ rozmiar : " ";
+
+                                kolor = kolor.Replace(podmien, " ");
                             } 
                             
 
