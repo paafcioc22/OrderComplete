@@ -55,7 +55,7 @@ namespace CompletOrder.Services
                 join ps_customer on ps_customer.id_customer=ps_orders.id_customer 
                 join ps_order_state on ps_order_state.id_order_state= ps_orders.current_state                
                 join `ps_order_state_lang` on ps_order_state_lang.id_order_state= ps_order_state.id_order_state
-                where ps_orders.current_state in('15,2,3,11') and ps_order_state_lang.id_lang=1 and
+                where ps_orders.current_state in(15,2,3,11) and ps_order_state_lang.id_lang=1 and
                 ps_orders.date_add BETWEEN '{dataod}' and '{datado}'
                 order by id_order {sort}";
             MySqlDataReader reader = command1.ExecuteReader();
