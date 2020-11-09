@@ -24,10 +24,11 @@ namespace CompletOrder.Views
             listaPlatnosci = new List<string>();
 
             _typyPlatnosci.Clear();
-            _typyPlatnosci.Add(new TypPlatnosc { Id = 1, Typ_platnosc = "Wszystkie" });
-            _typyPlatnosci.Add(new TypPlatnosc { Id = 2, Typ_platnosc = "On-line" });
-            _typyPlatnosci.Add(new TypPlatnosc { Id = 3, Typ_platnosc = "Przelew" });
-            _typyPlatnosci.Add(new TypPlatnosc { Id = 4, Typ_platnosc = "Za pobraniem" });
+            _typyPlatnosci.Add(new TypPlatnosc { Id = 0, Typ_platnosc = "Wszystkie" });
+            _typyPlatnosci.Add(new TypPlatnosc { Id = 1, Typ_platnosc = "Płatność zaakceptowana" });
+            _typyPlatnosci.Add(new TypPlatnosc { Id = 2, Typ_platnosc = "Przygotowanie w toku" });
+            _typyPlatnosci.Add(new TypPlatnosc { Id = 3, Typ_platnosc = "Płatność przyjęta" });
+            _typyPlatnosci.Add(new TypPlatnosc { Id = 4, Typ_platnosc = "Płatność Przelewy24 przyjęta" });
 
             foreach (var item in _typyPlatnosci)
             {

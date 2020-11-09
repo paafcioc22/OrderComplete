@@ -21,9 +21,9 @@ namespace CompletOrder.Services
     public class PrestaWeb:DataBaseConn
     {
 
-        string BaseUrl = "https://www.szachownica.com.pl/api/";
-        string Account = "G9E9HM7AEP2UYLZYK6XATBA7HENMPX31";
-        string Password = "";
+        protected string BaseUrl = "https://www.szachownica.com.pl/api/";
+        protected string Account = "G9E9HM7AEP2UYLZYK6XATBA7HENMPX31";
+        protected string Password = "";
         OrderFactory orderFactory;
         CustomerFactory customer;
         OrderStateFactory orderStateFactory;
@@ -47,6 +47,28 @@ namespace CompletOrder.Services
             var dataod = dateOd.ToString("yyyy-MM-dd HH:mm:ss");
             var datado = dateDo.ToString("yyyy-MM-dd HH:mm:ss");
 
+            string typyplatnosci = "";
+            
+            switch(filtry.WybranyTypPlatnosci)
+            {
+                case 0:
+                    typyplatnosci = "15,2,3,11";
+                    break; 
+                case 1:
+                    typyplatnosci = "2";
+                    break;
+                case 2:
+                    typyplatnosci = "3";
+                    break;
+                case 3:
+                    typyplatnosci = "11";
+                    break;
+                case 4:
+                    typyplatnosci = "15";
+                    break;
+            }
+
+
             this.mysqlconn.Open();
             MySqlCommand command1 = this.mysqlconn.CreateCommand();
             command1.CommandText = $@"SELECT id_order,reference,payment,ps_orders.date_add,ps_order_state.color,
@@ -55,7 +77,7 @@ namespace CompletOrder.Services
                 join ps_customer on ps_customer.id_customer=ps_orders.id_customer 
                 join ps_order_state on ps_order_state.id_order_state= ps_orders.current_state                
                 join `ps_order_state_lang` on ps_order_state_lang.id_order_state= ps_order_state.id_order_state
-                where ps_orders.current_state in(15,2,3,11) and ps_order_state_lang.id_lang=1 and
+                where ps_orders.current_state in({typyplatnosci}) and ps_order_state_lang.id_lang=1 and
                 ps_orders.date_add BETWEEN '{dataod}' and '{datado}'
                 order by id_order {sort}";
             MySqlDataReader reader = command1.ExecuteReader();
@@ -169,7 +191,7 @@ namespace CompletOrder.Services
 
                         //}
 
-                        var cstm = customer1.Where(a => a.id == i.id_customer).Select(s => new customer { lastname = s.lastname, firstname = s.firstname }).FirstOrDefault() as customer;
+                        customer cstm = customer1.Where(a => a.id == i.id_customer).Select(s => new customer { lastname = s.lastname, firstname = s.firstname }).FirstOrDefault() as customer;
 
                         var kolor = statuses.Where(a => a.id == i.current_state).Select(s => new Status { color = s.color, status=s.status }).FirstOrDefault() as Status;
                         prestas.Add(new Presta
@@ -283,23 +305,25 @@ namespace CompletOrder.Services
 
 
 
-        private async Task<Odpowiedź> wyślijGet(Uri url, string nagłówekAutoryzacji)
-        {
-            
-            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpClient klient = new HttpClient();
-            klient.BaseAddress = url;
-            klient.DefaultRequestHeaders.Clear();
-            klient.DefaultRequestHeaders.Add("Authorization", nagłówekAutoryzacji);
-            //klient.DefaultRequestHeaders.Authorization = cc;
-            klient.DefaultRequestHeaders.Add("Output-Format", "JSON"); 
+        //private async Task<Odpowiedź> wyślijGet(Uri url, string nagłówekAutoryzacji)
+        //{
 
-            HttpResponseMessage odp = await get(klient, url);
-            var odpowiedź = Odpowiedź.Inicjacja(odp.StatusCode, odp.IsSuccessStatusCode, odp.Content.ReadAsStreamAsync().Result, null);
-            return odpowiedź;
-        }
+        //    //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        //    HttpClient klient = new HttpClient
+        //    {
+        //        BaseAddress = url
+        //    };
+        //    klient.DefaultRequestHeaders.Clear();
+        //    klient.DefaultRequestHeaders.Add("Authorization", nagłówekAutoryzacji);
+        //    //klient.DefaultRequestHeaders.Authorization = cc;
+        //    klient.DefaultRequestHeaders.Add("Output-Format", "JSON"); 
 
-        private async Task<HttpResponseMessage> get(HttpClient klient, Uri url)
+        //    HttpResponseMessage odp = await Get(klient, url);
+        //    var odpowiedź = Odpowiedź.Inicjacja(odp.StatusCode, odp.IsSuccessStatusCode, odp.Content.ReadAsStreamAsync().Result, null);
+        //    return odpowiedź;
+        //}
+
+        private async Task<HttpResponseMessage> Get(HttpClient klient, Uri url)
         {
             
             return await klient.GetAsync(url);

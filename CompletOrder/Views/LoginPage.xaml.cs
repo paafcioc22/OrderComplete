@@ -37,19 +37,27 @@ namespace CompletOrder.Views
      
         async void SprNowaWersja()
         {
-            var isLatest = await CrossLatestVersion.Current.IsUsingLatestVersion();
-            //string latestVersionNumber1 = await CrossLatestVersion.Current.GetLatestVersionNumber("com.SzachoToolsMini");
-            //string latestVersionNumber = await CrossLatestVersion.Current.GetLatestVersionNumber();
-            //string installedVersionNumber = CrossLatestVersion.Current.InstalledVersionNumber;
-
-            if (!isLatest)
+            try
             {
-                var update = await DisplayAlert("Nowa wersja", "Dostępna nowa wersja. Chcesz pobrać?", "Tak", "Nie");
+                var isLatest = await CrossLatestVersion.Current.IsUsingLatestVersion();
+                //string latestVersionNumber1 = await CrossLatestVersion.Current.GetLatestVersionNumber("com.SzachoToolsMini");
+                //string latestVersionNumber = await CrossLatestVersion.Current.GetLatestVersionNumber();
+                //string installedVersionNumber = CrossLatestVersion.Current.InstalledVersionNumber;
 
-                if (update)
+                if (!isLatest)
                 {
-                    await CrossLatestVersion.Current.OpenAppInStore();
+                    var update = await DisplayAlert("Nowa wersja", "Dostępna nowa wersja. Chcesz pobrać?", "Tak", "Nie");
+
+                    if (update)
+                    {
+                        await CrossLatestVersion.Current.OpenAppInStore();
+                    }
                 }
+            }
+            catch (Exception a)
+            {
+
+                await DisplayAlert("Uwaga", "Błąd sprawdzania wersji..Sprawdź połączenie", "OK");
             }
         }
 

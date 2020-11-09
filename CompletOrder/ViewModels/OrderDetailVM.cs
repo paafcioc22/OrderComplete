@@ -132,6 +132,7 @@ namespace CompletOrder.ViewModels
                     nazwakrtka = a.ZaE_TwrNazwa;
                 }
 
+                //TODO : jak zły kod to wywala
 
                 PozycjiZamowienia++;
                 var stwrkarty = Task.Run(() => GetTwrKartyAsync(a.ZaE_TwrKod)).Result[0] as TwrKarty;

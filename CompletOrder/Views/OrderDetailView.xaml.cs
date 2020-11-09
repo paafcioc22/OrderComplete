@@ -240,7 +240,7 @@ namespace CompletOrder.Views
                 
                 var DataDone = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                
-                var odp = await RodzajeMetod.ZakonczIwyjdz(orderDetail._orderid, DataDone);
+                await RodzajeMetod.ZakonczIwyjdz(orderDetail._orderid, DataDone);
                 await Navigation.PopAsync();
 
                 //await _connection.InsertAsync(_orderIdFinish);
