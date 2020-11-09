@@ -89,11 +89,13 @@ namespace CompletOrder.Services
                 {
                 
                     var cstm = reader["firstname"].ToString().ToUpper().Substring(0, 1) + ". " + reader["lastname"].ToString();
-
+                    DateTime dateTime;
+                    var datazam= DateTime.TryParse(reader["date_add"].ToString(),out dateTime);
+                    
                     prestas.Add(new Presta
                     {
                         ZaN_GIDNumer = reader.GetInt32("id_order"),
-                        ZaN_DataWystawienia = reader["date_add"].ToString(), 
+                        ZaN_DataWystawienia = dateTime.ToString("yyyy-MM-dd HH:mm:ss"), 
                         ZaN_DokumentObcy = reader["reference"].ToString(),
                         ZaN_FormaNazwa = reader["payment"].ToString(),                       
                         ZaN_SpDostawy = reader["name"].ToString(),                         
@@ -197,7 +199,7 @@ namespace CompletOrder.Services
                         prestas.Add(new Presta
                         {
                             ZaN_GIDNumer = (int)i.id,
-                            ZaN_DataWystawienia = i.date_add,
+                          //  ZaN_DataWystawienia = i.date_add,
                             ZaN_DokumentObcy = i.reference,
                             ZaN_FormaNazwa = i.payment,
                            // ZaN_SpDostawy = state.name[0].Value,

@@ -136,7 +136,7 @@ namespace CompletOrder.Views
 
 
 
-            var odp = await RodzajeMetod.WejdżWZamowienie(orderVM.ZaN_GIDNumer, orderVM.ZaN_DataWystawienia);
+            var odp = await RodzajeMetod.WejdżWZamowienie(orderVM.ZaN_GIDNumer, orderVM.ZaN_DataWystawienia.ToString());
             if (odp)
                 await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
             else
