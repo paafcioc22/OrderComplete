@@ -43,6 +43,12 @@
                             Title="Wybierz formę płatności" HorizontalOptions="CenterAndExpand" />
                 </ViewCell>
             </TableSection>
+            <TableSection Title="Allegro metody wysyłki">
+                <ViewCell>
+                    <Picker  x:Name="PickerMetodaWysylki" SelectedIndexChanged="PickerMetodaWysylki_SelectedIndexChanged" 
+                            Title="Wybierz metodę wysyłki" HorizontalOptions="CenterAndExpand" />
+                </ViewCell>
+            </TableSection>
         </TableRoot>
     </TableView>
     

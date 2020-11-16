@@ -203,7 +203,8 @@ namespace CompletOrder.Droid
                                 RaportDate = datastart.ToString("yyyy-MM-dd"),
                                 NrParagonu = a.NrParagonu,
                                 ElementId = a.ElementId,
-                                IsFinish = false
+                                IsFinish = false,
+                                typ_wysylka= a.typ_wysylka
                             });
                         }
 

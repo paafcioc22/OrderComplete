@@ -91,12 +91,26 @@
 
 
     <ContentPage Title="Allegro">
+
+        <AbsoluteLayout>
+            <Label Text="{Binding IleZam2}" 
+               HorizontalOptions="FillAndExpand" 
+               HorizontalTextAlignment="Center" 
+               FontSize="Large" 
+               BackgroundColor="#909090" 
+               TextColor="AliceBlue"
+               AbsoluteLayout.LayoutBounds="0,0,1,.05"
+               AbsoluteLayout.LayoutFlags="All"
+               />
+        
+        
+        
         <ListView x:Name="MyListView2"
             ItemsSource="{Binding AllegroList}"
             ItemTapped="MyListView2_ItemTapped"  SeparatorVisibility="None"
             CachingStrategy="RecycleElement" HasUnevenRows="True"
-                  AbsoluteLayout.LayoutBounds="0.4,1,1,.85"
-                                       AbsoluteLayout.LayoutFlags="All">
+                  AbsoluteLayout.LayoutBounds="0.4,1,1,.95"
+                  AbsoluteLayout.LayoutFlags="All">
 
             <!--Built in Cells-->
 
@@ -128,7 +142,7 @@
                                         <Label Text="{Binding forma_platnosc}" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
                                     </StackLayout>
                                     <!--<Label Text="{Binding do_zaplaty, StringFormat='Do zapłaty : {0:N} zł'}"/>-->
-                                    <!--<Label Text="{Binding nr_paragonu}"/>-->
+                                    <Label Text="{Binding typ_wysylka}"/>
                                 </StackLayout>
 
                                 <CheckBox  x:Name="checkBox1" HorizontalOptions="End" IsEnabled="False" IsChecked="{Binding IsFinish}" Scale="2" Margin="0,0,15,0"/>
@@ -142,6 +156,7 @@
             </ListView.ItemTemplate>
 
         </ListView>
+        </AbsoluteLayout>
     </ContentPage>
     <!--<ContentPage Title="SI" IsEnabled="False" >
 

@@ -9,6 +9,7 @@ namespace CompletOrder.Models
     [XmlType("Table")]
     public class Allegro
     {
+
         [XmlElement(ElementName = "Id")]
         public int Id { get; set; }
         public bool IsFinish { get; set; }
@@ -28,5 +29,6 @@ namespace CompletOrder.Models
         public string NrParagonu { get; set; }
         [XmlElement(ElementName = "ElementId")]
         public int ElementId { get; set; }
+        public string typ_wysylka { get; set; }
     }
 }

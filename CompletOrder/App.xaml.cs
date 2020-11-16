@@ -118,7 +118,7 @@ namespace CompletOrder
             {
                 if (Properties.ContainsKey(filtrZrealizowane))
                     return (bool)Properties[filtrZrealizowane];
-                return false;
+                return true;
             }
             set
             {

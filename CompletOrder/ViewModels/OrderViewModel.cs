@@ -160,6 +160,7 @@ namespace CompletOrder.ViewModels
 
 
         private string _ileZam;
+        private string _ileZam2;
 
         public string IleZam
         {
@@ -168,6 +169,17 @@ namespace CompletOrder.ViewModels
             {
                 SetValue(ref _ileZam, value);
                 OnPropertyChanged(nameof(IleZam));
+            }
+        }
+
+
+        public string IleZam2
+        {
+            get { return _ileZam2; }
+            set
+            {
+                SetValue(ref _ileZam2, value);
+                OnPropertyChanged(nameof(IleZam2));
             }
         }
 
@@ -303,7 +315,7 @@ namespace CompletOrder.ViewModels
 
         public void PobierzAllegro()
         {
-            
+           
             AllegroList.Clear();
             var tmp = Task.Run(() => GetAllegros()).Result;
            // wynik = Task.Run(() => SendOrders()).Result;
@@ -332,18 +344,32 @@ namespace CompletOrder.ViewModels
                     Pol1 = a.Pol1,
                     Pol2 = a.Pol2,
                     Pol3 = a.Pol3,
-                    RaportDate = a.RaportDate
+                    RaportDate = a.RaportDate,
+                    typ_wysylka=a.typ_wysylka
 
                 });
             }
+             
+            IleZam2 = $"Lista zamówień ({AllegroList.Count})";
         }
 
         async Task<ObservableCollection<Allegro>> GetAllegros()
         {
+            string filtr = "";
+
+            if (!string.IsNullOrEmpty(SettingsPage.SendMetod))
+            {
+                if(SettingsPage.SendMetod != "!Wszystkie")
+                
+                
+                filtr = $"where typ_wysylka=''{SettingsPage.SendMetod}''";
+            }
+
+
             try
             {
-                string tmp = $@"cdn.PC_WykonajSelect N' select distinct   Id, CustomerName, RaportDate,    forma_platnosc
-                            from cdn.pc_allegroorders '";
+                string tmp = $@"cdn.PC_WykonajSelect N' select distinct   Id, CustomerName, RaportDate,    forma_platnosc,  typ_wysylka 
+                            from cdn.pc_allegroorders  {filtr}  '";
 
                 var wynikii = await App.TodoManager.GetOrdersFromAllegro(tmp);
 
@@ -502,10 +528,10 @@ namespace CompletOrder.ViewModels
                 else
                     PrestaNagList.OrderByDescending(s => s.ZaN_GIDNumer);
 
-                
-             
 
-            IleZam = $"Lista zamówień ({PrestaNagList.Count})"; 
+            var suma = Decimal.Round(PrestaNagList.Sum(s => s.WartoscZam)/1000,1,MidpointRounding.AwayFromZero);
+
+            IleZam = $"Lista zamówień ({PrestaNagList.Count}), {suma}k"; 
              
 
             IsBusy = false;

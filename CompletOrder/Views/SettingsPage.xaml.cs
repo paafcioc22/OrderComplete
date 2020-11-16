@@ -16,6 +16,8 @@ namespace CompletOrder.Views
     {
         static public List<TypPlatnosc> _typyPlatnosci;
         private List<string> listaPlatnosci;
+        public static string SendMetod;
+
         public SettingsPage()
         {
             InitializeComponent();
@@ -37,7 +39,9 @@ namespace CompletOrder.Views
             }
 
             PickerSource.ItemsSource = listaPlatnosci;
-
+            var lista = Task.Run(()=> PobierzMetodyWsylki()).Result;
+            PickerMetodaWysylki.ItemsSource = lista;
+            PickerMetodaWysylki.SelectedItem = SendMetod;
             //PickerSource.SetBinding(Picker.ItemsSourceProperty, "TypPlatnosc"); 
             //PickerSource.ItemDisplayBinding = new Binding("Typ_platnosc");
 
@@ -62,6 +66,36 @@ namespace CompletOrder.Views
                  
             } 
 
+        }
+
+        async Task<List<string>> PobierzMetodyWsylki()
+        {
+
+            List<string> metody = new List<string>();
+
+            try
+            {
+                string tmp = $@"cdn.PC_WykonajSelect N' select distinct   typ_wysylka    from cdn.pc_allegroorders  union all select ''!Wszystkie'' order by 1'";
+
+                var wynikii = await App.TodoManager.GetOrdersFromAllegro(tmp);
+
+                foreach (var i in wynikii)
+                {
+                    metody.Add(i.typ_wysylka);
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return metody;
+        }
+
+        private  void PickerMetodaWysylki_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SendMetod = PickerMetodaWysylki.SelectedItem.ToString();
         }
     }
 }
