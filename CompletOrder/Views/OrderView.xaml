@@ -102,11 +102,11 @@
                AbsoluteLayout.LayoutBounds="0,0,1,.05"
                AbsoluteLayout.LayoutFlags="All"
                />
-        
-        
-        
-        <ListView x:Name="MyListView2"
-            ItemsSource="{Binding AllegroList}"
+
+
+
+            <ListView x:Name="MyListView2" IsRefreshing="{Binding IsBusy, Mode=OneWay}" 
+            ItemsSource="{Binding AllegroList}" Refreshing="MyListView2_Refreshing" IsPullToRefreshEnabled="True"
             ItemTapped="MyListView2_ItemTapped"  SeparatorVisibility="None"
             CachingStrategy="RecycleElement" HasUnevenRows="True"
                   AbsoluteLayout.LayoutBounds="0.4,1,1,.95"
@@ -156,6 +156,14 @@
             </ListView.ItemTemplate>
 
         </ListView>
+            <Button BorderColor="DarkGray"  BorderWidth="3" Text="Filtr" TextColor="Red" BackgroundColor="Pink"
+                    Margin="6" 
+                    HorizontalOptions="EndAndExpand"  
+                    CornerRadius="50" 
+                    Clicked="Button_Clicked"
+                    AbsoluteLayout.LayoutBounds="1,1,80,80"  
+                    AbsoluteLayout.LayoutFlags="PositionProportional"
+                    />
         </AbsoluteLayout>
     </ContentPage>
     <!--<ContentPage Title="SI" IsEnabled="False" >

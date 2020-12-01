@@ -159,6 +159,12 @@ namespace CompletOrder.Views
             orderView.PobierzListeZatwierdzonychZamowien();
         }
 
+        private void MyListView2_Refreshing(object sender, EventArgs e)
+        {
+            orderView.PobierzAllegro();
+            orderView.PobierzListeZatwierdzonychZamowien();
+        }
+
 
 
         //public IEnumerable<Order> SzukajTowar(string searchText = null)

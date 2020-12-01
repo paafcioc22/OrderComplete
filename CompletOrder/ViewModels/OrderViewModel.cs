@@ -315,7 +315,12 @@ namespace CompletOrder.ViewModels
 
         public void PobierzAllegro()
         {
-           
+
+            if (IsBusy)
+                return;
+
+            IsBusy = true;
+
             AllegroList.Clear();
             var tmp = Task.Run(() => GetAllegros()).Result;
            // wynik = Task.Run(() => SendOrders()).Result;
@@ -351,10 +356,13 @@ namespace CompletOrder.ViewModels
             }
              
             IleZam2 = $"Lista zamówień ({AllegroList.Count})";
+            IsBusy = false;
         }
 
         async Task<ObservableCollection<Allegro>> GetAllegros()
         {
+           
+            
             string filtr = "";
 
             if (!string.IsNullOrEmpty(SettingsPage.SendMetod))
@@ -369,7 +377,7 @@ namespace CompletOrder.ViewModels
             try
             {
                 string tmp = $@"cdn.PC_WykonajSelect N' select distinct   Id, CustomerName, RaportDate,    forma_platnosc,  typ_wysylka 
-                            from cdn.pc_allegroorders  {filtr}  '";
+                            from cdn.pc_allegroorders  {filtr}  order by RaportDate asc'";
 
                 var wynikii = await App.TodoManager.GetOrdersFromAllegro(tmp);
 

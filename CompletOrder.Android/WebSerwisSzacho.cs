@@ -200,7 +200,7 @@ namespace CompletOrder.Droid
                                 Pol2 = a.Pol2,
                                 Pol3 = a.Pol3,
                                 ilosc = a.ilosc,
-                                RaportDate = datastart.ToString("yyyy-MM-dd"),
+                                RaportDate = datastart.ToString("yyyy-MM-dd HH:mm:ss"),
                                 NrParagonu = a.NrParagonu,
                                 ElementId = a.ElementId,
                                 IsFinish = false,
