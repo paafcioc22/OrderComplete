@@ -1,4 +1,5 @@
 ﻿using CompletOrder.Models;
+using CompletOrder.Services;
 using CompletOrder.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,13 @@ namespace CompletOrder.Views
         static public List<TypPlatnosc> _typyPlatnosci;
         private List<string> listaPlatnosci;
         public static string SendMetod;
+        string sklep;
 
-        public SettingsPage()
+        public SettingsPage(string sklep)
         {
             InitializeComponent();
-
+            if (sklep == "presta")
+                label_metodywysylki.Title = label_metodywysylki.Title.Replace("Allegro", "Presta");
             _typyPlatnosci = new List<TypPlatnosc>();
             listaPlatnosci = new List<string>();
 
@@ -38,6 +41,7 @@ namespace CompletOrder.Views
                 listaPlatnosci.Add(item.Typ_platnosc);
             }
 
+            this.sklep = sklep;
             PickerSource.ItemsSource = listaPlatnosci;
             var lista = Task.Run(()=> PobierzMetodyWsylki()).Result;
             PickerMetodaWysylki.ItemsSource = lista;
@@ -75,27 +79,84 @@ namespace CompletOrder.Views
 
             try
             {
-                string tmp = $@"cdn.PC_WykonajSelect N' select distinct   typ_wysylka    from cdn.pc_allegroorders  union all select ''!Wszystkie'' order by 1'";
-
-                var wynikii = await App.TodoManager.GetOrdersFromAllegro(tmp);
-
-                foreach (var i in wynikii)
+                if (sklep == "allegro")
                 {
-                    metody.Add(i.typ_wysylka);
+                    string tmp = $@"cdn.PC_WykonajSelect N' select distinct   typ_wysylka    from cdn.pc_allegroorders  union all select ''!Wszystkie'' order by 1'";
+
+                    var wynikii = await App.TodoManager.GetOrdersFromAllegro(tmp);
+
+                    foreach (var i in wynikii)
+                    {
+                        metody.Add(i.typ_wysylka);
+                    }
                 }
+                else
+                {
+                    PrestaWeb prestaWeb = new PrestaWeb();
+                    var  kurierzy = Task.Run(() => prestaWeb.PrestaPobierzListeKurierow()).Result;
+                    foreach (var i in kurierzy)
+                    {
+                        metody.Add(i.ZaN_SpDostawy);
+                    }
+                }
+               
+
+               
 
             }
             catch (Exception)
             {
-
-                throw;
+                 throw;
             }
             return metody;
         }
 
+
+        bool maybe_exit = false;
+        protected override bool OnBackButtonPressed()
+        {
+            //bool back = false;
+
+            //if (!maybe_exit)
+            //{
+            //    maybe_exit = true;
+            //    back = base.OnBackButtonPressed();
+            //}
+            //maybe_exit = false;
+            //return back;
+
+
+            if (!maybe_exit)
+            {
+                maybe_exit = true;
+                return false;
+            }
+            return true;
+
+
+
+            //if (maybe_exit) 
+            //    return false; //QUIT
+
+            ////DependencyService.Get<Model.IAppVersionProvider>().ShowLong("Wciśnij jeszcze raz by wyjść z aplikacji");
+            //maybe_exit = true;
+
+            //Device.StartTimer(TimeSpan.FromSeconds(2), () =>
+            //{
+            //    maybe_exit = false; //reset those 2 seconds
+            //                        // false - Don't repeat the timer 
+            //    return false;
+            //});
+            //return true;
+        }
+
         private  void PickerMetodaWysylki_SelectedIndexChanged(object sender, EventArgs e)
         {
+            
+            if(PickerMetodaWysylki.SelectedItem!=null)
             SendMetod = PickerMetodaWysylki.SelectedItem.ToString();
         }
+
+     
     }
 }

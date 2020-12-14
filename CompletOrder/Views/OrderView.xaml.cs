@@ -16,7 +16,7 @@ namespace CompletOrder.Views
     public partial class OrderView : TabbedPage
     {
          
-        OrderViewModel orderView;
+        public OrderViewModel orderView;
         private bool _userTapped;
 
         public OrderView()
@@ -77,7 +77,7 @@ namespace CompletOrder.Views
 
 
 
-            if(orderView.PrestaNagList.Count==0)
+           // if(orderView.PrestaNagList.Count==0)
                 orderView.GetPrestaZam();
            // else
              //   orderView.GetPrestaZam(true);
@@ -90,7 +90,7 @@ namespace CompletOrder.Views
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new SettingsPage());
+            await Navigation.PushAsync(new SettingsPage("allegro"));
         }
 
         private async void MyListView2_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -163,6 +163,11 @@ namespace CompletOrder.Views
         {
             orderView.PobierzAllegro();
             orderView.PobierzListeZatwierdzonychZamowien();
+        }
+
+        private async void Btn_prestaSettings(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new SettingsPage("presta"));
         }
 
 

@@ -2,6 +2,7 @@
 using Bukimedia.PrestaSharp.Factories;
 using CompletOrder.Models;
 using CompletOrder.Models.QuickType;
+using CompletOrder.Views;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,16 @@ namespace CompletOrder.Services
             var dataod = dateOd.ToString("yyyy-MM-dd HH:mm:ss");
             var datado = dateDo.ToString("yyyy-MM-dd HH:mm:ss");
 
+            string filtr = "";
+
+            if (!string.IsNullOrEmpty(SettingsPage.SendMetod))
+            {
+                if (SettingsPage.SendMetod != "!Wszystkie")
+
+
+                    filtr = $"and pc.name='{SettingsPage.SendMetod}'";
+            }
+
             string typyplatnosci = "";
             
             switch(filtry.WybranyTypPlatnosci)
@@ -72,13 +83,14 @@ namespace CompletOrder.Services
             this.mysqlconn.Open();
             MySqlCommand command1 = this.mysqlconn.CreateCommand();
             command1.CommandText = $@"SELECT id_order,reference,payment,ps_orders.date_add,ps_order_state.color,
-                CONVERT(total_paid,decimal(10,2))Totalpay, firstname, lastname , name
+                CONVERT(total_paid,decimal(10,2))Totalpay, firstname, lastname , pc.name typDostawy, ps_order_state_lang.name
                 from ps_orders 
                 join ps_customer on ps_customer.id_customer=ps_orders.id_customer 
+                join ps_carrier pc on pc.id_carrier=ps_orders.id_carrier
                 join ps_order_state on ps_order_state.id_order_state= ps_orders.current_state                
                 join `ps_order_state_lang` on ps_order_state_lang.id_order_state= ps_order_state.id_order_state
                 where ps_orders.current_state in({typyplatnosci}) and ps_order_state_lang.id_lang=1 and
-                ps_orders.date_add BETWEEN '{dataod}' and '{datado}'
+                ps_orders.date_add BETWEEN '{dataod}' and '{datado}' {filtr} 
                 order by id_order {sort}";
             MySqlDataReader reader = command1.ExecuteReader();
 
@@ -97,11 +109,76 @@ namespace CompletOrder.Services
                         ZaN_GIDNumer = reader.GetInt32("id_order"),
                         ZaN_DataWystawienia = dateTime.ToString("yyyy-MM-dd HH:mm:ss"), 
                         ZaN_DokumentObcy = reader["reference"].ToString(),
-                        ZaN_FormaNazwa = reader["payment"].ToString(),                       
-                        ZaN_SpDostawy = reader["name"].ToString(),                         
+                        ZaN_FormaNazwa = reader["payment"].ToString(),
+                        ZaN_StatusPlatnosc = reader["name"].ToString(),                         
+                        ZaN_SpDostawy = reader["typDostawy"].ToString(),                         
                         WartoscZam = reader.GetDecimal("Totalpay"),
                         KnA_Akronim = cstm,                   
                         Color = reader["color"].ToString()
+
+                    });
+                }
+                this.mysqlconn.Close();
+                return prestas;
+            });
+        }
+
+
+
+        public async Task<ObservableCollection<Presta>> PrestaPobierzListeKurierow()
+        {
+            var filtry = Application.Current as App;
+            DateTimeOffset dateOd = new DateTime(filtry.DataOd.Year, filtry.DataOd.Month, filtry.DataOd.Day, 0, 0, 0);
+            DateTimeOffset dateDo = new DateTime(filtry.DataDo.Year, filtry.DataDo.Month, filtry.DataDo.Day, 23, 59, 59);
+            var sort = filtry.SortASC ? "ASC" : "DESC";
+            var dataod = dateOd.ToString("yyyy-MM-dd HH:mm:ss");
+            var datado = dateDo.ToString("yyyy-MM-dd HH:mm:ss");
+
+            string typyplatnosci = "";
+
+            switch (filtry.WybranyTypPlatnosci)
+            {
+                case 0:
+                    typyplatnosci = "15,2,3,11";
+                    break;
+                case 1:
+                    typyplatnosci = "2";
+                    break;
+                case 2:
+                    typyplatnosci = "3";
+                    break;
+                case 3:
+                    typyplatnosci = "11";
+                    break;
+                case 4:
+                    typyplatnosci = "15";
+                    break;
+            }
+
+
+            this.mysqlconn.Open();
+            MySqlCommand command1 = this.mysqlconn.CreateCommand();
+            command1.CommandText = $@"SELECT distinct  pc.name typDostawy 
+                from ps_orders 
+                join ps_customer on ps_customer.id_customer=ps_orders.id_customer 
+                join ps_carrier pc on pc.id_carrier=ps_orders.id_carrier
+                join ps_order_state on ps_order_state.id_order_state= ps_orders.current_state                
+                join `ps_order_state_lang` on ps_order_state_lang.id_order_state= ps_order_state.id_order_state
+                where ps_orders.current_state in({typyplatnosci}) and ps_order_state_lang.id_lang=1 and
+                ps_orders.date_add BETWEEN '{dataod}' and '{datado}'
+                 union all select '!Wszystkie' order by 1";
+            MySqlDataReader reader = command1.ExecuteReader();
+
+            return await Task.Run(() =>
+            {
+                ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
+                while (reader.Read())
+                {
+                  
+                    prestas.Add(new Presta
+                    {
+                       
+                        ZaN_SpDostawy = reader["typDostawy"].ToString(), 
 
                     });
                 }

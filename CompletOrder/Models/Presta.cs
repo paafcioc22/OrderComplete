@@ -13,6 +13,7 @@ namespace CompletOrder.Models
         public event PropertyChangedEventHandler PropertyChanged;
         public int ZaN_GIDNumer { get; set; }
         public string ZaN_FormaNazwa { get; set; }
+        public string ZaN_StatusPlatnosc { get; set; }
         public string ZaN_DokumentObcy { get; set; }
         public string ZaN_SpDostawy { get; set; }
         public string ZaN_DataWystawienia { get; set; }

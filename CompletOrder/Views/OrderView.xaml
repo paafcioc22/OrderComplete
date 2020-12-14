@@ -57,9 +57,9 @@
                                                HorizontalOptions="CenterAndExpand" 
                                                 />
                                         </StackLayout>
-                                        <Label Text="{Binding ZaN_FormaNazwa}"  HorizontalOptions="StartAndExpand" HorizontalTextAlignment="Start"/>
+                                        <Label Text="{Binding ZaN_SpDostawy}"  HorizontalOptions="StartAndExpand" HorizontalTextAlignment="Start"/>
                                         <Label Text="{Binding ZaN_DataWystawienia}" />
-                                        <Label Text="{Binding ZaN_SpDostawy}" TextColor="{Binding Color}" FontAttributes="Bold"/>
+                                        <Label Text="{Binding ZaN_StatusPlatnosc}" TextColor="{Binding Color}" FontAttributes="Bold"/>
                                         <Label Text="{Binding WartoscZam, StringFormat='Do zapłaty : {0:N} zł'}"/>
                                         <!--<Label Text="{Binding nr_paragonu}"/>-->
                                     </StackLayout>
@@ -79,7 +79,7 @@
                     Margin="6" 
                     HorizontalOptions="EndAndExpand"  
                     CornerRadius="50" 
-                    Clicked="Button_Clicked"
+                    Clicked="Btn_prestaSettings"  
                     AbsoluteLayout.LayoutBounds="1,1,80,80"  
                     AbsoluteLayout.LayoutFlags="PositionProportional"
                     />
