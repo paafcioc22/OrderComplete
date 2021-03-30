@@ -19,7 +19,7 @@ using Xamarin.Forms;
 
 namespace CompletOrder.Services
 {
-    public class PrestaWeb:DataBaseConn
+    public class PrestaWeb : DataBaseConn
     {
 
         protected string BaseUrl = "https://www.szachownica.com.pl/api/";
@@ -32,9 +32,17 @@ namespace CompletOrder.Services
         public PrestaWeb()
         {
 
-            orderFactory = new OrderFactory(BaseUrl, Account, Password);
+            try
+            {
+                orderFactory = new OrderFactory(BaseUrl, Account, Password);
 
-            customer = new CustomerFactory(BaseUrl, Account, Password); 
+                customer = new CustomerFactory(BaseUrl, Account, Password);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
 
         }
 
@@ -59,12 +67,12 @@ namespace CompletOrder.Services
             }
 
             string typyplatnosci = "";
-            
-            switch(filtry.WybranyTypPlatnosci)
+
+            switch (filtry.WybranyTypPlatnosci)
             {
                 case 0:
                     typyplatnosci = "15,2,3,11";
-                    break; 
+                    break;
                 case 1:
                     typyplatnosci = "2";
                     break;
@@ -79,10 +87,15 @@ namespace CompletOrder.Services
                     break;
             }
 
+                    ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
+            try
+            {
+                this.mysqlconn.Open();
 
-            this.mysqlconn.Open();
-            MySqlCommand command1 = this.mysqlconn.CreateCommand();
-            command1.CommandText = $@"SELECT id_order,reference,payment,ps_orders.date_add,ps_order_state.color,
+                //var cdsa=this.mysqlconn.Ping();
+
+                MySqlCommand command1 = this.mysqlconn.CreateCommand();
+                command1.CommandText = $@"SELECT id_order,reference,payment,ps_orders.date_add,ps_order_state.color,
                 CONVERT(total_paid,decimal(10,2))Totalpay, firstname, lastname , pc.name typDostawy, ps_order_state_lang.name
                 from ps_orders 
                 join ps_customer on ps_customer.id_customer=ps_orders.id_customer 
@@ -92,35 +105,43 @@ namespace CompletOrder.Services
                 where ps_orders.current_state in({typyplatnosci}) and ps_order_state_lang.id_lang=1 and
                 ps_orders.date_add BETWEEN '{dataod}' and '{datado}' {filtr} 
                 order by id_order {sort}";
-            MySqlDataReader reader = command1.ExecuteReader();
+                MySqlDataReader reader = command1.ExecuteReader();
 
-            return await Task.Run(() =>
-            {
-                ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
-                while (reader.Read())
+                return await Task.Run(() =>
                 {
-                
-                    var cstm = reader["firstname"].ToString().ToUpper().Substring(0, 1) + ". " + reader["lastname"].ToString();
-                    DateTime dateTime;
-                    var datazam= DateTime.TryParse(reader["date_add"].ToString(),out dateTime);
-                    
-                    prestas.Add(new Presta
+                    while (reader.Read())
                     {
-                        ZaN_GIDNumer = reader.GetInt32("id_order"),
-                        ZaN_DataWystawienia = dateTime.ToString("yyyy-MM-dd HH:mm:ss"), 
-                        ZaN_DokumentObcy = reader["reference"].ToString(),
-                        ZaN_FormaNazwa = reader["payment"].ToString(),
-                        ZaN_StatusPlatnosc = reader["name"].ToString(),                         
-                        ZaN_SpDostawy = reader["typDostawy"].ToString(),                         
-                        WartoscZam = reader.GetDecimal("Totalpay"),
-                        KnA_Akronim = cstm,                   
-                        Color = reader["color"].ToString()
 
-                    });
-                }
+                        var cstm = reader["firstname"].ToString().ToUpper().Substring(0, 1) + ". " + reader["lastname"].ToString();
+                        DateTime dateTime;
+                        var datazam = DateTime.TryParse(reader["date_add"].ToString(), out dateTime);
+
+                        prestas.Add(new Presta
+                        {
+                            ZaN_GIDNumer = reader.GetInt32("id_order"),
+                            ZaN_DataWystawienia = dateTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                            ZaN_DokumentObcy = reader["reference"].ToString(),
+                            ZaN_FormaNazwa = reader["payment"].ToString(),
+                            ZaN_StatusPlatnosc = reader["name"].ToString(),
+                            ZaN_SpDostawy = reader["typDostawy"].ToString(),
+                            WartoscZam = reader.GetDecimal("Totalpay"),
+                            KnA_Akronim = cstm,
+                            Color = reader["color"].ToString()
+
+                        });
+                    }
+                    this.mysqlconn.Close();
+                    //this.mysqlconn = null;
+                    return prestas;
+                });
+            }
+            catch (Exception s)
+            {
                 this.mysqlconn.Close();
+                //this.mysqlconn = null;
                 return prestas;
-            });
+
+            }
         }
 
 
@@ -156,9 +177,12 @@ namespace CompletOrder.Services
             }
 
 
-            this.mysqlconn.Open();
-            MySqlCommand command1 = this.mysqlconn.CreateCommand();
-            command1.CommandText = $@"SELECT distinct  pc.name typDostawy 
+                    ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
+            try
+            {
+                this.mysqlconn.Open();
+                MySqlCommand command1 = this.mysqlconn.CreateCommand();
+                command1.CommandText = $@"SELECT distinct  pc.name typDostawy 
                 from ps_orders 
                 join ps_customer on ps_customer.id_customer=ps_orders.id_customer 
                 join ps_carrier pc on pc.id_carrier=ps_orders.id_carrier
@@ -167,24 +191,29 @@ namespace CompletOrder.Services
                 where ps_orders.current_state in({typyplatnosci}) and ps_order_state_lang.id_lang=1 and
                 ps_orders.date_add BETWEEN '{dataod}' and '{datado}'
                  union all select '!Wszystkie' order by 1";
-            MySqlDataReader reader = command1.ExecuteReader();
+                MySqlDataReader reader = command1.ExecuteReader();
 
-            return await Task.Run(() =>
-            {
-                ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
-                while (reader.Read())
+                return await Task.Run(() =>
                 {
-                  
-                    prestas.Add(new Presta
+                    while (reader.Read())
                     {
-                       
-                        ZaN_SpDostawy = reader["typDostawy"].ToString(), 
 
-                    });
-                }
-                this.mysqlconn.Close();
+                        prestas.Add(new Presta
+                        {
+
+                            ZaN_SpDostawy = reader["typDostawy"].ToString(),
+
+                        });
+                    }
+                    this.mysqlconn.Close();
+                    return prestas;
+                });
+            }
+            catch (Exception s)
+            {
+
                 return prestas;
-            });
+            }
         }
 
 
@@ -235,7 +264,7 @@ namespace CompletOrder.Services
 
                 foreach (var s in state2)
                 {
-                    if(new int[] { 15, 2, 3, 11 }.Contains((int)s.id))
+                    if (new int[] { 15, 2, 3, 11 }.Contains((int)s.id))
                     {
                         statuses.Add(new Status
                         {
@@ -272,27 +301,27 @@ namespace CompletOrder.Services
 
                         customer cstm = customer1.Where(a => a.id == i.id_customer).Select(s => new customer { lastname = s.lastname, firstname = s.firstname }).FirstOrDefault() as customer;
 
-                        var kolor = statuses.Where(a => a.id == i.current_state).Select(s => new Status { color = s.color, status=s.status }).FirstOrDefault() as Status;
+                        var kolor = statuses.Where(a => a.id == i.current_state).Select(s => new Status { color = s.color, status = s.status }).FirstOrDefault() as Status;
                         prestas.Add(new Presta
                         {
                             ZaN_GIDNumer = (int)i.id,
-                          //  ZaN_DataWystawienia = i.date_add,
+                            //  ZaN_DataWystawienia = i.date_add,
                             ZaN_DokumentObcy = i.reference,
                             ZaN_FormaNazwa = i.payment,
-                           // ZaN_SpDostawy = state.name[0].Value,
+                            // ZaN_SpDostawy = state.name[0].Value,
                             ZaN_SpDostawy = kolor.status,
                             WartoscZam = i.total_paid,
                             //KnA_Akronim = klient.firstname + ' ' + klient.lastname,
-                            KnA_Akronim = cstm !=null? cstm.firstname.ToUpper().Substring(0,1) + ". " + cstm.lastname:"",
+                            KnA_Akronim = cstm != null ? cstm.firstname.ToUpper().Substring(0, 1) + ". " + cstm.lastname : "",
                             //Color = state.color,
-                            Color =kolor.color,
+                            Color = kolor.color,
 
 
                         });
                     }
                 }
 
-            return prestas;
+                return prestas;
             });
 
 
@@ -301,19 +330,17 @@ namespace CompletOrder.Services
         class Status
         {
             public int id { get; set; }
-            public string status  { get; set; }
-            public string color  { get; set; }
+            public string status { get; set; }
+            public string color { get; set; }
 
         }
 
-        public async Task<ObservableCollection<Presta>> PobierzelementyZamówienia( int id )
+        public async Task<ObservableCollection<Presta>> PobierzelementyZamówienia(int id)
         {
             //string _url = $"https://www.szachownica.com.pl/api/orders/1/";//?fulfillment.status=PROCESSING  //status=READY_FOR_PROCESSING
             //var uri = new Uri(_url);
             //var odp = await wyślijGet(uri, pobierzParametryAutoryzacji(Account) );
 
-
-          
             try
             {
                 return await Task.Run(() =>
@@ -340,19 +367,19 @@ namespace CompletOrder.Services
                             {
                                 rozmiar = i.product_name.Substring(i.product_name.IndexOf("- Rozmiar") + 2, i.product_name.Length - i.product_name.IndexOf("- Rozmiar") - 2);
                             }
-                            if (i.product_name.IndexOf("- Kolor")>0)
+                            if (i.product_name.IndexOf("- Kolor") > 0)
                             {
                                 nazwa = i.product_name.Substring(0, i.product_name.IndexOf("- Kolor") - 1);
 
                                 kolor =
                                     i.product_name.Substring(i.product_name.IndexOf("- Kolor") + 2, i.product_name.Length - i.product_name.IndexOf("- Kolor") - 2);
 
-                                     
-                                    var podmien = "- " + rozmiar != " " ? "- "+ rozmiar : " ";
+
+                                var podmien = "- " + rozmiar != " " ? "- " + rozmiar : " ";
 
                                 kolor = kolor.Replace(podmien, " ");
-                            } 
-                            
+                            }
+
 
                             prestas.Add(new Presta
                             {
@@ -362,8 +389,8 @@ namespace CompletOrder.Services
                                 ZaE_TwrNazwa = i.product_name,
                                 ElementId = (int)i.id,
                                 WartoscZam = i.unit_price_tax_incl,
-                                Kolor = string.IsNullOrEmpty(kolor)?"":kolor,
-                                Rozmiar =string.IsNullOrEmpty(rozmiar)?"":rozmiar
+                                Kolor = string.IsNullOrEmpty(kolor) ? "" : kolor,
+                                Rozmiar = string.IsNullOrEmpty(rozmiar) ? "" : rozmiar
 
                             });
                         }
@@ -371,7 +398,87 @@ namespace CompletOrder.Services
                         return prestas;
                     });
             }
-            catch (Exception )
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+        }
+
+
+        public async Task<ObservableCollection<Presta>> MySqlPobierzelementyZamówienia(int id)
+        {
+
+
+            try
+            {
+                return await Task.Run(() =>
+                {
+
+                    this.mysqlconn.Open();
+                    MySqlCommand command1 = this.mysqlconn.CreateCommand();
+                    command1.CommandText = $@"SELECT i.id_order
+                        ,id_order_detail
+                        ,i.product_quantity
+                        ,i.product_reference
+                        ,i.product_name
+                        ,i.unit_price_tax_incl
+                        FROM ps_order_detail i
+                        JOIN ps_orders o on o.id_order=i.id_order
+                        where o.id_order={id}";
+
+
+                    MySqlDataReader reader = command1.ExecuteReader();
+
+
+                    ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
+                    while (reader.Read())
+                    {
+                        var nazwa = "";
+                        var rozmiar = " ";
+                        var kolor = "";
+
+                        var product_name = reader["product_name"].ToString();
+
+                        if (product_name.IndexOf("- Rozmiar") > 0)
+                        {
+                            rozmiar = product_name.Substring(product_name.IndexOf("- Rozmiar") + 2, product_name.Length - product_name.IndexOf("- Rozmiar") - 2);
+                        }
+                        if (product_name.IndexOf("- Kolor") > 0)
+                        {
+                            nazwa = product_name.Substring(0, product_name.IndexOf("- Kolor") - 1);
+
+                            kolor =
+                                product_name.Substring(product_name.IndexOf("- Kolor") + 2, product_name.Length - product_name.IndexOf("- Kolor") - 2);
+
+
+                            var podmien = "- " + rozmiar != " " ? "- " + rozmiar : " ";
+
+                            kolor = kolor.Replace(podmien, " ");
+                        }
+
+                        prestas.Add(new Presta
+                        {
+                            ZaN_GIDNumer = Convert.ToInt32(reader["id_order"]),
+                            ZaE_Ilosc = Convert.ToInt32(reader["product_quantity"]),
+                            ZaE_TwrKod = reader["product_reference"].ToString(),
+                            ZaE_TwrNazwa = reader["product_name"].ToString(),
+                            ElementId = Convert.ToInt32(reader["id_order_detail"]),
+                            WartoscZam = Convert.ToDecimal(reader["unit_price_tax_incl"]),
+                            Kolor = string.IsNullOrEmpty(kolor) ? "" : kolor,
+                            Rozmiar = string.IsNullOrEmpty(rozmiar) ? "" : rozmiar
+
+                        });
+                    }
+                    this.mysqlconn.Close();
+                    return prestas;
+
+
+                });
+            }
+            catch (Exception)
             {
 
                 throw;
@@ -404,7 +511,7 @@ namespace CompletOrder.Services
 
         private async Task<HttpResponseMessage> Get(HttpClient klient, Uri url)
         {
-            
+
             return await klient.GetAsync(url);
         }
 
@@ -449,5 +556,5 @@ namespace CompletOrder.Services
         }
     }
 
-   
+
 }

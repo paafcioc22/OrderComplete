@@ -1,11 +1,13 @@
 ﻿using MySql.Data.MySqlClient;
+using Xamarin.Forms;
 
 namespace CompletOrder.Models
 {
 
-    public class DataBaseConn
+    public class DataBaseConn  
     {
-         
+        
+
         protected MySqlConnection mysqlconn;
         protected string sqlconn;
 
@@ -20,12 +22,15 @@ namespace CompletOrder.Models
             //conn_string.Password = "Htyud682f45";
             //conn_string.Database = "szachownica";
 
+            //var aaa = Current as App;
+          
             conn_string = new MySqlConnectionStringBuilder();
             conn_string.Server = "presta2046291.home.pl";
             conn_string.Port = 3306;
             conn_string.SslMode = MySqlSslMode.None;
             conn_string.UserID = "32610188_df84ef7f";
-            conn_string.Password = "!cAK1Spb";
+            //conn_string.Password = "!cAK1Spba";
+            conn_string.Password = ((App)Application.Current).PasswordSQL;
             conn_string.Database = "32610188_df84ef7f";
 
             Connect();

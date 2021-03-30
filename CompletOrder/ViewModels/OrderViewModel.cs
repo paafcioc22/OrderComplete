@@ -79,6 +79,25 @@ namespace CompletOrder.ViewModels
             }
         }
 
+        void Save()
+        {
+
+            ((App)Application.Current).PasswordSQL = passwordsql;
+            ((App)Application.Current).SavePropertiesAsync();
+           // SavePropertiesAsync();
+        }
+        public string Passwordsql
+        {
+            get { return passwordsql; }
+            set
+            {
+                
+                SetValue( ref passwordsql, value);
+                OnPropertyChanged(nameof(Passwordsql));
+                //Save();
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -100,7 +119,9 @@ namespace CompletOrder.ViewModels
 
             wynik = new List<SendOrder>();
             PobierzListeZatwierdzonychZamowien();
-             // przeniosłem z allegro i pobierz liste
+            // przeniosłem z allegro i pobierz liste
+
+           
 
 
             //if (GetOrders !=null)
@@ -147,7 +168,7 @@ namespace CompletOrder.ViewModels
             OnPropertyChanged(propertyName);
 
 
-            OnPropertyChanged(propertyName);
+           // OnPropertyChanged(propertyName);
         }
 
 
@@ -406,6 +427,7 @@ namespace CompletOrder.ViewModels
 
         List<SendOrder> sendOrders;
         private List<SendOrder> wynik;
+        private string passwordsql;
 
         //public  void PobierzListe()
         //{

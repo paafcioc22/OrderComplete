@@ -166,8 +166,25 @@
                     />
         </AbsoluteLayout>
     </ContentPage>
-    <!--<ContentPage Title="SI" IsEnabled="False" >
 
+    <ContentPage Title="Ustawienia">
+        <StackLayout VerticalOptions="CenterAndExpand">
+            <Entry IsPassword="True" Placeholder="Hasło" Text="{Binding Source={x:Static Application.Current}, Path=PasswordSQL}"
+                   
+                   HorizontalOptions="CenterAndExpand" 
+                   VerticalOptions="CenterAndExpand"
+                   WidthRequest="200">
+
+                 
+                   
+           
+            </Entry>
+        </StackLayout>
+    </ContentPage>
+    <!--<ContentPage Title="SI" IsEnabled="False" >
+   <Label Text="{Binding Source={x:Reference timePicker},
+                              Path=Time.TotalSeconds,
+                              StringFormat='{0} total seconds'}" />
 
         <AbsoluteLayout >
             <Label Text="{Binding IleZam}" 

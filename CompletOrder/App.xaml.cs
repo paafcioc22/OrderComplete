@@ -28,6 +28,7 @@ namespace CompletOrder
         private const string ListaTypow = "ListaTypow";
         private const string password = "password";
         private const string isloading = "isloading";
+        private const string passwordsql = "passwordsql";
 
         public App()
         {
@@ -64,6 +65,23 @@ namespace CompletOrder
             }
 
         }
+
+        public string PasswordSQL
+        {
+            get
+            {
+                if (Properties.ContainsKey(passwordsql))
+                    return Properties[passwordsql].ToString();
+                return "";
+            }
+            set
+            {
+                Properties[passwordsql] = value;
+            }
+
+        }
+
+
         public bool OnlyToDoKompletacja
         {
             get
