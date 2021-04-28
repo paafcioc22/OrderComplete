@@ -218,6 +218,46 @@ namespace CompletOrder.Droid
             }
         }
 
+
+        public async Task<IList<T>> PobierzDaneZWeb<T>(string query)
+        {
+
+            try
+            {
+                return await Task.Run(() =>
+                {
+                    var respone = client.ExecuteSQLCommand(query);
+
+                    return DeserializeFromXml<T>(respone);
+                });
+            }
+            catch (Exception s)
+            {
+
+                return null;
+            }
+        }
+
+
+
+
+
+        public static IList<T> DeserializeFromXml<T>(string xml)
+        {
+            List<T> result;
+            //Type type = result.GetType();
+
+            XmlSerializer ser = new XmlSerializer(typeof(List<T>), new XmlRootAttribute("ROOT"));
+            using (TextReader tr = new StringReader(xml))
+            {
+                result = (List<T>)ser.Deserialize(tr);
+            }
+            return result;
+        }
+
+
+
+
         public async Task<ObservableCollection<Presta>> GetPrestaZam(string query3)
         {
             try

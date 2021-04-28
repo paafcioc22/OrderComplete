@@ -22,7 +22,7 @@
     <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand"> 
 
         <ListView x:Name="MyListView"
-            ItemsSource="{Binding orderDetail}"
+            ItemsSource="{Binding OrderDetail}"
             ItemTapped="Handle_ItemTapped"
             CachingStrategy="RecycleElement" HasUnevenRows="True">
 
@@ -49,7 +49,7 @@
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_ShowKod"/>
                                 </Label.GestureRecognizers>
                             </Label>
-                            <Label Text="{Binding twrkarty.Polozenie }" 
+                            <Label Text="{Binding twrkarty.Polozenie, Mode=TwoWay}" 
                                        TextColor="Black"  
                                        FontSize="25" FontAttributes="Bold"  
                                        AbsoluteLayout.LayoutBounds="0.05,0.20,.85,.2"

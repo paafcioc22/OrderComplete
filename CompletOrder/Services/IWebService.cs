@@ -13,5 +13,6 @@ namespace CompletOrder.Models
         Task<List<SendOrder>> SelectOrderSend(string query3);
         Task<ObservableCollection<Allegro>> GetAllegros(string query3);
         Task<ObservableCollection<Presta>> GetPrestaZam(string query3);
+        Task<IList<T>> PobierzDaneZWeb<T>(string query);
     }
 }

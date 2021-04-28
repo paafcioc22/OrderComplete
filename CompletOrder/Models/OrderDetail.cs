@@ -30,8 +30,19 @@ namespace CompletOrder.ViewModels
         
          
         public int IdElement { get; set; }
-        public int OrderId { get; set; } 
-        public TwrKarty twrkarty { get; set; }
+        public int OrderId { get; set; }
+        private TwrKarty _twrkarty;
+       
+
+        public TwrKarty twrkarty
+        {
+            get { return _twrkarty; }
+            set { SetValue(ref _twrkarty, value);
+                OnPropertyChanged(nameof(twrkarty));
+            }
+          
+        }
+
         public double cena_netto { get; set; }
         public int ilosc { get; set; }
         public string kod { get; set; }
@@ -56,7 +67,7 @@ namespace CompletOrder.ViewModels
                 //SetValue(ref _isDone, value);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Color));
-
+               // SetValue(ref Color, value); 
 
                 //var tmp=OrderDetailVM.OrderBy(x => x.twrkarty.MgA_Segment1).ThenBy(x => x.twrkarty.MgA_Segment2).ThenBy(x => x.twrkarty.MgA_Segment3);
                 //OrderDetailVM.orderDetail = Convert2(tmp.ToList());
@@ -69,7 +80,18 @@ namespace CompletOrder.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public  ObservableCollection<T> Convert2<T>(IList<T> original)
+
+        protected void SetValue<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(backingField, value))
+                return;
+
+            backingField = value;
+
+            OnPropertyChanged(propertyName);
+        }
+
+        public ObservableCollection<T> Convert2<T>(IList<T> original)
         {
             return new ObservableCollection<T>(original);
         }

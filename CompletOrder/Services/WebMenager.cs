@@ -40,5 +40,10 @@ namespace CompletOrder.Services
         {
             return soapService.GetPrestaZam(query2);
         }
+         
+        public Task<IList<T>> PobierzDaneZWeb<T>(string query)
+        {
+            return soapService.PobierzDaneZWeb<T>(query);
+        }
     }
 }

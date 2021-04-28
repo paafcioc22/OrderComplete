@@ -14,8 +14,8 @@ namespace CompletOrder.Views
     public partial class OrderDetailView : ContentPage
     {
 
-        OrderDetailVM orderDetail;
-        private SQLiteAsyncConnection _connection;
+        OrderDetailVM orderDetailVm;
+        //private SQLiteAsyncConnection _connection;
         public string  DataOrder{ get; set; }
         static string deviceIdentifier;
 
@@ -23,24 +23,24 @@ namespace CompletOrder.Views
         {
             InitializeComponent();
 
-            _connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
+            //_connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
 
-            orderDetail = orderDetailVM;
+            orderDetailVm = orderDetailVM;
 
-            //((NavigationPage)Application.Current.MainPage).BarTextColor = Color.LightGray;
+             
 
             DataOrder = orderDetailVM._order.data;
 
-              BindingContext = orderDetail = orderDetailVM;
-            _connection.CreateTableAsync<OrderComplete>();
+              BindingContext = orderDetailVm = orderDetailVM;
+            //_connection.CreateTableAsync<OrderComplete>();
 
             IDevice device = DependencyService.Get<IDevice>();
             deviceIdentifier = device.GetIdentifier();
-            //var suma = orderDetail.orderDetail.Count();// (s => s.cena_netto);
+          
 
-            var ileall=orderDetail.PozycjiZamowienia;
-            var ilePo = orderDetail.orderDetail.Count();
-            var suma = Convert.ToDecimal(orderDetail.orderDetail.Sum(s => s.cena_netto*s.ilosc));
+            var ileall=orderDetailVm.PozycjiZamowienia;
+            var ilePo = orderDetailVm.OrderDetail.Count();
+            var suma = Convert.ToDecimal(orderDetailVm.OrderDetail.Sum(s => s.cena_netto*s.ilosc));
 
             if (ileall!=ilePo)
             //if (suma != orderDetail.SumaZamowienia)
@@ -53,7 +53,7 @@ namespace CompletOrder.Views
         async void CzyKtosNieRobi()
         {
 
-            string tmp = $@"cdn.PC_WykonajSelect N'select * from cdn.pc_ordernag where Orn_OrderId={orderDetail._orderid}'";
+            string tmp = $@"cdn.PC_WykonajSelect N'select * from cdn.pc_ordernag where Orn_OrderId={orderDetailVm._orderid}'";
 
             var wynikii = await App.TodoManager.GetOrdersFromWeb(tmp);
 
@@ -72,27 +72,20 @@ namespace CompletOrder.Views
             if (e.Item == null)
                 return;
 
-            ////await DisplayAlert("Item Tapped", "An item was tapped.", "OK");
-            //var a = (sender as ListView).Parent.Parent as ViewCell;
-            //var b = (sender as ListView).Parent as ViewCell;
-            //var c = (sender as CheckBox).Parent.Parent as ViewCell;
-            //var d = (sender as CheckBox).Parent as ViewCell;
-
-
+         
             var order = e.Item as OrderDetail;
 
-            //ViewCell cell = (sender as ListView).Parent.Parent as ViewCell; 
-            //OrderDetail order = cell.BindingContext as OrderDetail;
+    
             order.IsDone = !order.IsDone;
 
 
             ZaznaczElement(order, order.IsDone);
 
-            var nowa = orderDetail.orderDetail.OrderBy(s => s.IsDone);
+            var nowa = orderDetailVm.OrderDetail.OrderBy(s => s.IsDone);
 
             MyListView.ItemsSource = nowa.ToList();
 
-            if (orderDetail.orderDetail.Count() == orderDetail.orderDetail.Where(s => s.IsDone == true).Count())
+            if (orderDetailVm.OrderDetail.Count() == orderDetailVm.OrderDetail.Where(s => s.IsDone == true).Count())
             {
                 this.Title += " >> ZAKOŃCZONE";
 
@@ -100,17 +93,13 @@ namespace CompletOrder.Views
                 var DataDone = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             
                  
-                var odp = await RodzajeMetod.ZakonczIwyjdz(orderDetail._orderid, DataDone);
+                var odp = await RodzajeMetod.ZakonczIwyjdz(orderDetailVm._orderid, DataDone);
                 await Navigation.PopAsync();
             }
             else
             {
-                this.Title = this.Title.Replace(" >> ZAKOŃCZONE", "");
-
-               
-               
-
-                //var movies = await App.TodoManager.InsertOrderSend(send);
+                
+                this.Title = this.Title.Replace(" >> ZAKOŃCZONE", "");  
 
             }
 
@@ -119,48 +108,67 @@ namespace CompletOrder.Views
             ((ListView)sender).SelectedItem = null;
         }
 
-        protected override async void OnAppearing()
+        protected override   void OnAppearing()
         {
 
-            await _connection.CreateTableAsync<OrderDatailComplete>();
-            BindingContext = orderDetail;
+           // await _connection.CreateTableAsync<OrderDatailComplete>();
+            BindingContext = orderDetailVm;
             base.OnAppearing();
         }
 
 
         private async void ZaznaczElement(OrderDetail order, bool isClick)
         {
+            PC_SiOrderElem orderElem;
 
-            var tmp2 = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
+            //var tmp2 = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
+
             var updejt = new OrderDatailComplete
-            {
-                
+            { 
                 IdOrder = order.OrderId,
                 IdElementOrder = order.IdElement
             };
 
+            var tmp = await orderDetailVm.SelectOrderElem(order.OrderId, order.IdElement);
 
             if (isClick)
             {
-                var zaznaczone = orderDetail.orderDetail.Where(x => x.OrderId == order.OrderId);
+                var zaznaczone = orderDetailVm.OrderDetail.Where(x => x.OrderId == order.OrderId);
 
-               
-                var tmp = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
+
+                // var tmp = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
+
                 if (tmp.Count == 0)
-                    await _connection.InsertAsync(updejt);
+                {
+                    //await _connection.InsertAsync(updejt);
+
+
+                    orderElem = new PC_SiOrderElem()
+                    {
+                        OrE_PlaceName = order.twrkarty.Polozenie,
+                        OrE_OrderEleId = order.IdElement,
+                        OrE_OrderId = order.OrderId,
+                        OrE_Quantity = order.ilosc,
+                        OrE_MpaId = order.twrkarty.MgA_Id
+
+                    };
+
+                    await orderDetailVm.AddOrderElem(orderElem);
+                }
             }
             else {
 
                 
-                var tmp = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
+                //var tmp = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
                 var delete = new OrderDatailComplete
                 {
-                    Id=tmp[0].Id,
+                    //Id=tmp[0].Id,
                     IdOrder = order.OrderId,
                     IdElementOrder = order.IdElement
                 };
-                await _connection.DeleteAsync(delete); //Uswuwasz znaczki zakonczenia
-                var tmp3 = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
+                //await _connection.DeleteAsync(delete); //Uswuwasz znaczki zakonczenia
+                await orderDetailVm.DeleteOrderElem(delete);
+           
 
             }
         }
@@ -231,24 +239,20 @@ namespace CompletOrder.Views
         private async void ToolbarItem_Clicked(object sender, System.EventArgs e)
         {
 
-            var odp1 =await DisplayAlert("Pytanie..", "Czy chcesz zakończyć zadanie?", "Tak", "Nie");
-
-            
+            var odp1 =await DisplayAlert("Pytanie..", "Czy chcesz zakończyć zadanie?", "Tak", "Nie"); 
 
             if (odp1)
             {
                 
                 var DataDone = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                
-                await RodzajeMetod.ZakonczIwyjdz(orderDetail._orderid, DataDone);
-                await Navigation.PopAsync();
-
-                //await _connection.InsertAsync(_orderIdFinish);
+                await RodzajeMetod.ZakonczIwyjdz(orderDetailVm._orderid, DataDone);
+                await Navigation.PopAsync(); 
                 
             }
         }
 
-        private void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
+        private async void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
             ViewCell cell = (sender as Label).Parent.Parent as ViewCell;
 
@@ -257,15 +261,26 @@ namespace CompletOrder.Views
             
 
             List<string> nowy = new List<string>();
-            var stwrkarty = Task.Run(() => orderDetail.GetTwrKartyAsync(order.kod));
+
+            var zam = orderDetailVm.OrderDetail.Where(s => s.kod == order.kod).FirstOrDefault();
+            
+
+            var stwrkarty = Task.Run(() => orderDetailVm.GetTwrKartyAsync(order.kod));
 
             foreach (var wpis in stwrkarty.Result)
             {
                 nowy.Add(String.Concat(wpis.Polozenie, " : ", (wpis.TwrStan), " szt"));
             }
 
-            DisplayActionSheet("Wszystkie położenia:", "OK", null, nowy.ToArray());
+            var polozenie=await DisplayActionSheet("Wszystkie położenia:", "OK", "Anuluj", nowy.ToArray());
 
+            if (polozenie != "Anuluj" && polozenie != "OK")
+            {
+                zam.twrkarty.Polozenie = polozenie.Substring(0, polozenie.IndexOf(":")-1);
+                var mpaidlist = Task.Run(() => orderDetailVm.GetTwrKartyAsync(order.kod)).Result;
+                var mpa= mpaidlist.Where(s => s.Polozenie == zam.twrkarty.Polozenie).FirstOrDefault();
+                zam.twrkarty.MgA_Id = mpa.MgA_Id;
+            }
             //DisplayAlert(null, "tu będą inne położenia", "ok");
         }
 
@@ -288,7 +303,7 @@ namespace CompletOrder.Views
 
             //var movies = await App.TodoManager.InsertOrderSend(send);
 
-            var odp = await RodzajeMetod.TylkoWyjdz(orderDetail._orderid);
+            var odp = await RodzajeMetod.TylkoWyjdz(orderDetailVm._orderid);
         }
 
         protected override bool OnBackButtonPressed()
