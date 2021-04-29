@@ -549,10 +549,10 @@ namespace CompletOrder.ViewModels
                     left join CDN.TwrPartie on tpa_twrnumer = twr_gidnumer
                     LEFT JOIN CDN.TwrZasobyMag ON CDN.TwrPartie.TPa_Id = CDN.TwrZasobyMag.TZM_TPaId AND CDN.TwrZasobyMag.TZM_MagNumer = 41 
                     LEFT JOIN CDN.MagAdresy ON CDN.TwrZasobyMag.TZM_MgAId = CDN.MagAdresy.MgA_Id  
-                    WHERE Twr_kod = ''{_twrkod}'' and isnull(MgA_Id,0)<>3171
+                    WHERE Twr_kod = ''{_twrkod}'' 
                     order by tzm_ilosc desc'";
-
-                    var movies = await App.TodoManager.PobierzDaneZWeb<TwrKarty>(Webquery);
+            //and isnull(MgA_Id,0)<>3171
+            var movies = await App.TodoManager.PobierzDaneZWeb<TwrKarty>(Webquery);
 
                     return movies;
 

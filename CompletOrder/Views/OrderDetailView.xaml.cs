@@ -75,33 +75,48 @@ namespace CompletOrder.Views
          
             var order = e.Item as OrderDetail;
 
-    
-            order.IsDone = !order.IsDone;
 
-
-            ZaznaczElement(order, order.IsDone);
-
-            var nowa = orderDetailVm.OrderDetail.OrderBy(s => s.IsDone);
-
-            MyListView.ItemsSource = nowa.ToList();
-
-            if (orderDetailVm.OrderDetail.Count() == orderDetailVm.OrderDetail.Where(s => s.IsDone == true).Count())
+            if (order.twrkarty.Polozenie.Contains("NIEZGOD"))
             {
-                this.Title += " >> ZAKOŃCZONE";
 
-               
-                var DataDone = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            
-                 
-                var odp = await RodzajeMetod.ZakonczIwyjdz(orderDetailVm._orderid, DataDone);
-                await Navigation.PopAsync();
-            }
-            else
-            {
-                
-                this.Title = this.Title.Replace(" >> ZAKOŃCZONE", "");  
+                var CzyDodacNiezgodny = await DisplayAlert("Pytanie..", "Czy na pewno dodać z NIEZGODNEGO\nSprawdź inne położenia?", "Tak", "Nie");
 
+                if (CzyDodacNiezgodny)
+                {
+                    order.IsDone = !order.IsDone;
+
+
+                    ZaznaczElement(order, order.IsDone);
+
+                    var nowa = orderDetailVm.OrderDetail.OrderBy(s => s.IsDone);
+
+                    MyListView.ItemsSource = nowa.ToList();
+
+                    if (orderDetailVm.OrderDetail.Count() == orderDetailVm.OrderDetail.Where(s => s.IsDone == true).Count())
+                    {
+                        this.Title += " >> ZAKOŃCZONE";
+
+
+                        var DataDone = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+
+                        var odp = await RodzajeMetod.ZakonczIwyjdz(orderDetailVm._orderid, DataDone);
+                        await Navigation.PopAsync();
+                    }
+                    else
+                    {
+
+                        this.Title = this.Title.Replace(" >> ZAKOŃCZONE", "");
+
+                    }
+                }
+                else
+                {
+
+                }
             }
+
+             
 
 
             ////Deselect Item
@@ -141,19 +156,21 @@ namespace CompletOrder.Views
                 if (tmp.Count == 0)
                 {
                     //await _connection.InsertAsync(updejt);
+                  
+                            orderElem = new PC_SiOrderElem()
+                            {
+                                OrE_PlaceName = order.twrkarty.Polozenie,
+                                OrE_OrderEleId = order.IdElement,
+                                OrE_OrderId = order.OrderId,
+                                OrE_Quantity = order.ilosc,
+                                OrE_MpaId = order.twrkarty.MgA_Id
 
+                            };
 
-                    orderElem = new PC_SiOrderElem()
-                    {
-                        OrE_PlaceName = order.twrkarty.Polozenie,
-                        OrE_OrderEleId = order.IdElement,
-                        OrE_OrderId = order.OrderId,
-                        OrE_Quantity = order.ilosc,
-                        OrE_MpaId = order.twrkarty.MgA_Id
+                            await orderDetailVm.AddOrderElem(orderElem);
+                    
 
-                    };
-
-                    await orderDetailVm.AddOrderElem(orderElem);
+                    
                 }
             }
             else {
