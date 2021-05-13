@@ -112,6 +112,35 @@ namespace CompletOrder.Views
                 }
                 else
                 {
+                    
+                }
+            }
+            else
+            {
+                order.IsDone = !order.IsDone;
+
+
+                ZaznaczElement(order, order.IsDone);
+
+                var nowa = orderDetailVm.OrderDetail.OrderBy(s => s.IsDone);
+
+                MyListView.ItemsSource = nowa.ToList();
+
+                if (orderDetailVm.OrderDetail.Count() == orderDetailVm.OrderDetail.Where(s => s.IsDone == true).Count())
+                {
+                    this.Title += " >> ZAKOŃCZONE";
+
+
+                    var DataDone = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+
+                    var odp = await RodzajeMetod.ZakonczIwyjdz(orderDetailVm._orderid, DataDone);
+                    await Navigation.PopAsync();
+                }
+                else
+                {
+
+                    this.Title = this.Title.Replace(" >> ZAKOŃCZONE", "");
 
                 }
             }
