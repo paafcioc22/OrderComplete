@@ -308,7 +308,7 @@ namespace CompletOrder.Views
 
             List<string> nowy = new List<string>();
 
-            var zam = orderDetailVm.OrderDetail.Where(s => s.kod == order.kod).FirstOrDefault();
+            var zam = orderDetailVm.OrderDetail.Where(s => s.kod == order.kod & s.rozmiar==order.rozmiar).FirstOrDefault();
             
 
             var stwrkarty = Task.Run(() => orderDetailVm.GetTwrKartyAsync(order.kod));
