@@ -47,6 +47,27 @@ namespace CompletOrder.Services
         }
 
 
+        private bool OpenConnection()
+        {
+            try
+            {
+                mysqlconn.OpenAsync();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                //When handling errors, you can your application's response based 
+                //on the error number.
+                //The two most common error numbers when connecting are as follows:
+                //0: Cannot connect to server.
+                //1045: Invalid user name and/or password.
+
+                    return false;
+                throw ex;
+            }
+        }
+
+
         public async Task<ObservableCollection<Presta>> PobierzZamówieniaSql()
         {
             var filtry = Application.Current as App;
@@ -180,7 +201,7 @@ namespace CompletOrder.Services
                     ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
             try
             {
-                this.mysqlconn.Open();
+                await this.mysqlconn.OpenAsync();
                 MySqlCommand command1 = this.mysqlconn.CreateCommand();
                 command1.CommandText = $@"SELECT distinct  pc.name typDostawy 
                 from ps_orders 
@@ -205,6 +226,7 @@ namespace CompletOrder.Services
 
                         });
                     }
+                    reader.Close();
                     this.mysqlconn.Close();
                     return prestas;
                 });

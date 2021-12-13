@@ -15,6 +15,9 @@ namespace CompletOrder.ViewModels
         public IDataStore<OrderO> DataStore => DependencyService.Get<IDataStore<OrderO>>();
 
         bool isBusy = false;
+
+    
+
         public bool IsBusy
         {
             get { return isBusy; }

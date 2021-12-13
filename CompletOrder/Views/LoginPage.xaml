@@ -3,8 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converter="clr-namespace:CompletOrder.ViewModels"
              mc:Ignorable="d"
              x:Class="CompletOrder.Views.LoginPage" NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:ObjectNullConverter x:Key="HasValueConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+
     <RelativeLayout BackgroundColor="#feecfa">
         <BoxView Color="Gray"
                  HeightRequest="130"
@@ -48,21 +57,71 @@
             Property=Y, 
             Constant=220}" 
                />
-        <Entry Placeholder="Podaj hasło" x:Name="entry_haslo" Text="{Binding Password}"
+        <Picker Title="Wybierz użytkownika" x:Name="PickerLogin" 
+                ItemsSource="{Binding Users}" 
+                ItemDisplayBinding="{Binding Login}" 
+                SelectedItem="{Binding SelectUser}"
+            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=320}"
+            RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
+            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
+            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=50}" >
+            
+        </Picker>
+
+       
+        
+        <Entry Placeholder="Podaj hasło" x:Name="entry_haslo" Text="{Binding Password}" IsVisible="false"
                IsPassword="True" 
-                Keyboard="Text"   
+               Keyboard="Text"   
                BackgroundColor="White" 
                TextColor="Black" 
                HorizontalTextAlignment="Center"
                Completed="Entry_Completed"
-            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=320}"
+            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=420}"
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=50}" 
            >
-
-
+            <Entry.Triggers>
+                <DataTrigger TargetType="Entry" Binding="{Binding Source={x:Reference PickerLogin},Path=SelectedItem.Login,Converter={StaticResource HasValueConverter} }"  Value="True" >
+                    <Setter Property="IsVisible" Value="true"></Setter>
+                </DataTrigger>
+            </Entry.Triggers>
         </Entry>
+
+        <Entry Placeholder="Potwierdź hasło" x:Name="entry_haslo2" Text="{Binding Password}" IsVisible="false"
+               IsPassword="True" 
+               Keyboard="Text"   
+               BackgroundColor="White" 
+               TextColor="Black" 
+               HorizontalTextAlignment="Center"
+               Completed="Entry_Completed"
+            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=520}"
+            RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
+            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
+            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=50}" 
+           >
+            <Entry.Triggers>
+                <DataTrigger TargetType="Entry" Binding="{Binding SelectUser.VisiblePass }"  Value="true" >
+                    <Setter Property="IsVisible" Value="true"></Setter>
+                </DataTrigger>
+            </Entry.Triggers>
+                
+        </Entry>
+
+        <Button Text="Zapisz hasło"   IsVisible="false" x:Name="btn_rejestruj"
+            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=620}"
+            RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
+            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
+            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=50}"
+                
+                >
+            <Button.Triggers>
+                <DataTrigger TargetType="Button" Binding="{Binding SelectUser.VisiblePass }"  Value="true" >
+                    <Setter Property="IsVisible" Value="true"></Setter>
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
 
         <Label x:Name="wersja_label" TextColor="Black"  HorizontalTextAlignment="End"  Text="ver 1.4"
             RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1,Constant=-30}"

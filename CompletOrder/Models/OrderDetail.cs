@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace CompletOrder.ViewModels
 {
-    public class OrderDetail : INotifyPropertyChanged
+    public class OrderDetail : BaseViewModel
     {
 
         //ObservableCollection<OrderDetail> OrderDetailVM;
@@ -37,7 +37,8 @@ namespace CompletOrder.ViewModels
         public TwrKarty twrkarty
         {
             get { return _twrkarty; }
-            set { SetValue(ref _twrkarty, value);
+            set {
+                SetProperty(ref _twrkarty, value);
                 OnPropertyChanged(nameof(twrkarty));
             }
           
@@ -74,22 +75,7 @@ namespace CompletOrder.ViewModels
                 //OrderDetailVM = new ObservableCollection<OrderDetail>(Convert2(tmp.ToList()));
             }
         }
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected void SetValue<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(backingField, value))
-                return;
-
-            backingField = value;
-
-            OnPropertyChanged(propertyName);
-        }
+        
 
         public ObservableCollection<T> Convert2<T>(IList<T> original)
         {

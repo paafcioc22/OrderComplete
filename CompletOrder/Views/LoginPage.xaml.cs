@@ -1,4 +1,5 @@
 ﻿using CompletOrder.Services;
+using CompletOrder.ViewModels;
 using Plugin.LatestVersion;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,17 @@ namespace CompletOrder.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LoginPage : ContentPage
     {
-       
+
+        LoginViewModel viewModel;
         public LoginPage()
         {
             InitializeComponent();
 
-            BindingContext =  Application.Current;
+            //entry_haslo2.IsVisible = false;
+            //BindingContext =  Application.Current;
+            BindingContext = viewModel = new LoginViewModel();
 
+            
             entry_haslo.Keyboard = Keyboard.Create(KeyboardFlags.CapitalizeWord);
             wersja_label.Text = $"ver {AppInfo.VersionString}";
 
@@ -28,13 +33,18 @@ namespace CompletOrder.Views
             SprNowaWersja();
         }
 
+
         class Haslo
         {
             public static string pass = "j0@rt";
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            viewModel.LoadItemsCommand.Execute(null);
+        }
 
-     
         async void SprNowaWersja()
         {
             try
