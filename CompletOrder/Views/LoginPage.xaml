@@ -10,6 +10,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converter:ObjectNullConverter x:Key="HasValueConverter" />
+            <converter:MultiCulti x:Key="MultiConvert" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -57,11 +58,11 @@
             Property=Y, 
             Constant=220}" 
                />
-        <Picker Title="Wybierz użytkownika" x:Name="PickerLogin" 
+        <Picker Title="Wybierz użytkownika" x:Name="PickerLogin" PropertyChanged="PickerLogin_PropertyChanged"  
                 ItemsSource="{Binding Users}" 
                 ItemDisplayBinding="{Binding Login}" 
                 SelectedItem="{Binding SelectUser}"
-            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=320}"
+            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=300}"
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=50}" >
@@ -70,14 +71,14 @@
 
        
         
-        <Entry Placeholder="Podaj hasło" x:Name="entry_haslo" Text="{Binding Password}" IsVisible="false"
+        <Entry Placeholder="Podaj hasło" x:Name="entry_haslo" Text="{Binding Pass1}" IsVisible="false"
                IsPassword="True" 
-               Keyboard="Text"   
+               Keyboard="Text"    
                BackgroundColor="White" 
                TextColor="Black" 
                HorizontalTextAlignment="Center"
                Completed="Entry_Completed"
-            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=420}"
+            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=400}"
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=50}" 
@@ -89,14 +90,14 @@
             </Entry.Triggers>
         </Entry>
 
-        <Entry Placeholder="Potwierdź hasło" x:Name="entry_haslo2" Text="{Binding Password}" IsVisible="false"
+        <Entry Placeholder="Powtórz hasło" x:Name="entry_haslo2" Text="{Binding Pass2}" IsVisible="false"
                IsPassword="True" 
                Keyboard="Text"   
                BackgroundColor="White" 
                TextColor="Black" 
                HorizontalTextAlignment="Center"
                Completed="Entry_Completed"
-            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=520}"
+            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=500}"
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=50}" 
@@ -109,8 +110,8 @@
                 
         </Entry>
 
-        <Button Text="Zapisz hasło"   IsVisible="false" x:Name="btn_rejestruj"
-            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=620}"
+        <Button Text="Zapisz hasło"   IsVisible="false" x:Name="btn_rejestruj" IsEnabled="{Binding IsUserIdsEqual}"
+            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=600}"
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=50}"

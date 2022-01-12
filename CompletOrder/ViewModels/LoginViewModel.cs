@@ -14,7 +14,7 @@ namespace CompletOrder.ViewModels
      
     public class LoginViewModel : BaseViewModel
     {
-        public ObservableCollection<User> Users { get; set; }
+        public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
         public Command LoadItemsCommand { get; set; }
 
         private User selectUser;
@@ -26,9 +26,43 @@ namespace CompletOrder.ViewModels
             set { SetProperty(ref selectUser, value); }
         }
 
+
+        private string pass1;
+
+        public string Pass1
+        {
+            get { return pass1; }
+             
+            set 
+            { 
+              SetProperty(ref pass1, value);
+                OnPropertyChanged(nameof(IsUserIdsEqual));
+            }
+        }
+
+        private string pass2;
+
+        public string Pass2
+        {
+            get { return pass2; }
+            set { SetProperty(ref pass2, value);
+                OnPropertyChanged(nameof(IsUserIdsEqual));
+            }
+        }
+
+
+        private bool isUserIdsEqual;
+        public bool IsUserIdsEqual
+        {
+            get { return Pass1 == Pass2 && !string.IsNullOrEmpty(Pass1) && !string.IsNullOrEmpty(Pass2); }
+            set { SetProperty(ref isUserIdsEqual, value); }
+        }
+
+
+
         public LoginViewModel()
         {
-            Users = new ObservableCollection<User>();
+            
 
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
@@ -53,6 +87,7 @@ namespace CompletOrder.ViewModels
 
             try
             {
+                if(Users.Count>0)
                 Users.Clear();
                 var items = await App.TodoManager.PobierzDaneZWeb<User>(Webquery);
                 foreach (var item in items)

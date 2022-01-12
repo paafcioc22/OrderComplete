@@ -73,22 +73,22 @@ namespace CompletOrder.Views
 
         private async void Entry_Completed(object sender, EventArgs e)
         {
-            if (entry_haslo.Text == Haslo.pass)
-            {
-                //PrestaWeb prestaWeb = new PrestaWeb();
-                //await prestaWeb.PobierzZamówienia();
+            //if (entry_haslo.Text == Haslo.pass)
+            //{
+            //    //PrestaWeb prestaWeb = new PrestaWeb();
+            //    //await prestaWeb.PobierzZamówienia();
 
-                kolko.IsRunning = true;
-                kolko.IsVisible = true;
-                await Navigation.PushAsync(new OrderView());
-                kolko.IsRunning = false;
-                kolko.IsVisible = false;
+            //    kolko.IsRunning = true;
+            //    kolko.IsVisible = true;
+            //    await Navigation.PushAsync(new OrderView());
+            //    kolko.IsRunning = false;
+            //    kolko.IsVisible = false;
 
-            }
-            else
-            {
-                await DisplayAlert(null, "Błędne hasło", "OK");
-            }
+            //}
+            //else
+            //{
+            //    await DisplayAlert(null, "Błędne hasło", "OK");
+            //}
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -111,6 +111,15 @@ namespace CompletOrder.Views
             {
                 await  DisplayAlert(null, "Błędne hasło", "OK");
             }
+        }
+
+        private void PickerLogin_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            //if(PickerLogin.SelectedIndex>=0)
+              //  viewModel.LoadItemsCommand.Execute(null);
+
+            entry_haslo.Text = "";
+            entry_haslo2.Text = "";
         }
     }
 }
