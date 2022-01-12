@@ -13,6 +13,7 @@ namespace CompletOrder.ViewModels
     public class BaseViewModel : INotifyPropertyChanged
     {
         public IDataStore<OrderO> DataStore => DependencyService.Get<IDataStore<OrderO>>();
+        
 
         bool isBusy = false;
 

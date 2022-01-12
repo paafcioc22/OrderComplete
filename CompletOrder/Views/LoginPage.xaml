@@ -96,7 +96,7 @@
                BackgroundColor="White" 
                TextColor="Black" 
                HorizontalTextAlignment="Center"
-               Completed="Entry_Completed"
+               Completed="entry_haslo2_Completed"
             RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=500}"
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
@@ -115,7 +115,7 @@
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=50}"
-                
+                Command="{Binding SaveUserPass}" CommandParameter="{Binding SelectUser}"
                 >
             <Button.Triggers>
                 <DataTrigger TargetType="Button" Binding="{Binding SelectUser.VisiblePass }"  Value="true" >

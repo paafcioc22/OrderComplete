@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Security.Cryptography;
+using System.Windows.Input;
+using Microsoft.AspNetCore.Identity;
 
 namespace CompletOrder.ViewModels
 {
@@ -16,6 +18,9 @@ namespace CompletOrder.ViewModels
     {
         public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
         public Command LoadItemsCommand { get; set; }
+        public ICommand SaveUserPass { private set; get; }
+        //private readonly IPasswordHasher<User> passwordHasher;
+        public IPasswordHasher<User> passwordHasher => DependencyService.Get<IPasswordHasher<User>>();
 
         private User selectUser;
 
@@ -64,8 +69,9 @@ namespace CompletOrder.ViewModels
         {
             
 
+            //this.passwordHasher = new PasswordHasher<User>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
-
+            SaveUserPass = new Command(async (User) => await UpdateUserPass(SelectUser));
             
         }
 
@@ -104,11 +110,48 @@ namespace CompletOrder.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-            }
-             
-        
+            } 
         }
 
-        
+
+        internal async Task<bool> UpdateUserPass(User user)
+        {
+            try
+            {
+                bool IsAddRow = true;
+
+                {
+
+                    var Hashpass = passwordHasher.HashPassword(user, user.Password);
+                     
+
+                    var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                    var sqlInsert = $@"cdn.PC_WykonajSelect N' update [CDNXL_JOART].[CDN].[PC_Users]
+                                     set User_Password=''{Hashpass}''  
+                                        where User_login=''{user.Login}''
+                                    if @@ROWCOUNT>0
+                                                select ''OK'' as User_Login
+                    '";
+
+                    var response = await App.TodoManager.PobierzDaneZWeb<PC_SiOrderElem>(sqlInsert);
+                    if (response != null)
+                    {
+                        if (response.Count > 0)
+                            return IsAddRow;
+                    }
+
+                }
+
+                return IsAddRow = false;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
     }
 }

@@ -7,6 +7,7 @@ using System.Globalization;
 using CompletOrder.ViewModels;
 using System.Collections.Generic;
 using CompletOrder.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace CompletOrder
 {
@@ -14,6 +15,7 @@ namespace CompletOrder
     {
 
         public static WebMenager TodoManager { get; set; }
+        
 
        // public TypPlatnosc typPlatnosci { get; set; } = new TypPlatnosc();
         //public OrderViewModel orderViewModel { get; set; } = new OrderViewModel();
@@ -34,7 +36,9 @@ namespace CompletOrder
         {
             InitializeComponent();
           
-            //DependencyService.Register<MockDataStore>();
+            DependencyService.Register<MockDataStore>();
+            //DependencyService.Register<PasswordHasher<User>>();
+            DependencyService.Register<IPasswordHasher<User>, Models.PasswordHasher<User>>();
             MainPage = new NavigationPage( new LoginPage());
         }
 

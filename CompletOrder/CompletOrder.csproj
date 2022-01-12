@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="MySqlConnector" Version="0.63.2" />
     <PackageReference Include="PrestaSharp" Version="1.2.7" />
     <PackageReference Include="sqlite-net-pcl" Version="1.6.292" />

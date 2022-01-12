@@ -1,6 +1,9 @@
-﻿using CompletOrder.Services;
+﻿using CompletOrder.Models;
+using CompletOrder.Services;
 using CompletOrder.ViewModels;
+using Identity.PasswordHasher;
 using Plugin.LatestVersion;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +16,10 @@ using Xamarin.Forms.Xaml;
 namespace CompletOrder.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class LoginPage : ContentPage
+    public partial class LoginPage : ContentPage   
     {
 
+        
         LoginViewModel viewModel;
         public LoginPage()
         {
@@ -25,7 +29,9 @@ namespace CompletOrder.Views
             //BindingContext =  Application.Current;
             BindingContext = viewModel = new LoginViewModel();
 
-            
+             
+
+
             entry_haslo.Keyboard = Keyboard.Create(KeyboardFlags.CapitalizeWord);
             wersja_label.Text = $"ver {AppInfo.VersionString}";
 
@@ -99,6 +105,11 @@ namespace CompletOrder.Views
             //await imageCircleBack.TranslateTo(0, -10, 100);
             //await imageCircleBack.TranslateTo(0, 0, 100);
 
+
+        
+
+
+
             if (entry_haslo.Text == Haslo.pass)
             {
                 kolko.IsRunning = true;
@@ -113,13 +124,19 @@ namespace CompletOrder.Views
             }
         }
 
-        private void PickerLogin_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private async void PickerLogin_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             //if(PickerLogin.SelectedIndex>=0)
-              //  viewModel.LoadItemsCommand.Execute(null);
+            //  viewModel.LoadItemsCommand.Execute(null); 
+       
 
             entry_haslo.Text = "";
-            entry_haslo2.Text = "";
+                entry_haslo2.Text = "";
+        }
+
+        private void entry_haslo2_Completed(object sender, EventArgs e)
+        {
+            viewModel.SelectUser.Password = entry_haslo2.Text;
         }
     }
 }
