@@ -196,9 +196,7 @@ namespace CompletOrder.Views
 
                             };
 
-                            await orderDetailVm.AddOrderElem(orderElem);
-                    
-
+                            await orderDetailVm.AddOrderElem(orderElem); 
                     
                 }
             }
@@ -334,21 +332,7 @@ namespace CompletOrder.Views
 
         async void TylkoWyjdz()
         {
-
-            //var send = new SendOrder()
-            //{
-            //    Orn_OrderId = orderDetail._orderid,
-            //    Orn_IsDone = false,
-            //    Orn_IsEdit = false,
-            //    Orn_DoneUser = 0,
-            //    Orn_EditUser = 0,
-            //    Orn_OrderData = DataOrder,
-
-
-            //};
-
-            //var movies = await App.TodoManager.InsertOrderSend(send);
-
+  
             var odp = await RodzajeMetod.TylkoWyjdz(orderDetailVm._orderid);
         }
 

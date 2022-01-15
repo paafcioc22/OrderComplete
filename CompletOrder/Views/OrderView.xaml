@@ -6,9 +6,10 @@
              mc:Ignorable="d"
               
              
-            x:Class="CompletOrder.Views.OrderView" NavigationPage.HasNavigationBar="False" BarBackgroundColor="Gray">
+            x:Class="CompletOrder.Views.OrderView" BarBackgroundColor="Gray" Title="{Binding Title}">
 
-
+    <!--<Label Text="" x:Name="lbl_User" HorizontalOptions="Center"/>-->
+    <!--NavigationPage.HasNavigationBar="False"-->
     <ContentPage Title="Presta" >
         <AbsoluteLayout >
             <Label Text="{Binding IleZam}" 

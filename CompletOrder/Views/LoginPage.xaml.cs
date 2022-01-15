@@ -1,7 +1,6 @@
 ﻿using CompletOrder.Models;
 using CompletOrder.Services;
 using CompletOrder.ViewModels;
-using Identity.PasswordHasher;
 using Plugin.LatestVersion;
 
 using System;
@@ -39,12 +38,7 @@ namespace CompletOrder.Views
             SprNowaWersja();
         }
 
-
-        class Haslo
-        {
-            public static string pass = "j0@rt";
-        }
-
+ 
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -77,25 +71,32 @@ namespace CompletOrder.Views
             }
         }
 
-        private async void Entry_Completed(object sender, EventArgs e)
-        {
-            //if (entry_haslo.Text == Haslo.pass)
-            //{
-            //    //PrestaWeb prestaWeb = new PrestaWeb();
-            //    //await prestaWeb.PobierzZamówienia();
+        //private  void Entry_Completed(object sender, EventArgs e)
+        //{
 
-            //    kolko.IsRunning = true;
-            //    kolko.IsVisible = true;
-            //    await Navigation.PushAsync(new OrderView());
-            //    kolko.IsRunning = false;
-            //    kolko.IsVisible = false;
+        //    if (viewModel.SelectUser.VisiblePass)
+        //    {
 
-            //}
-            //else
-            //{
-            //    await DisplayAlert(null, "Błędne hasło", "OK");
-            //}
-        }
+        //    }
+
+
+        //    //if (entry_haslo.Text == Haslo.pass)
+        //    //{
+        //    //    //PrestaWeb prestaWeb = new PrestaWeb();
+        //    //    //await prestaWeb.PobierzZamówienia();
+
+        //    //    kolko.IsRunning = true;
+        //    //    kolko.IsVisible = true;
+        //    //    await Navigation.PushAsync(new OrderView());
+        //    //    kolko.IsRunning = false;
+        //    //    kolko.IsVisible = false;
+
+        //    //}
+        //    //else
+        //    //{
+        //    //    await DisplayAlert(null, "Błędne hasło", "OK");
+        //    //}
+        //}
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
@@ -105,38 +106,41 @@ namespace CompletOrder.Views
             //await imageCircleBack.TranslateTo(0, -10, 100);
             //await imageCircleBack.TranslateTo(0, 0, 100);
 
+            entry_haslo.Text = "";
+            entry_haslo2.Text = "";
 
-        
+            viewModel.LoadItemsCommand.Execute(null);
 
 
-
-            if (entry_haslo.Text == Haslo.pass)
-            {
-                kolko.IsRunning = true;
-                kolko.IsVisible = true;
-                 await  Navigation.PushAsync(new OrderView());
-                kolko.IsRunning = false;
-                kolko.IsVisible = false;
-            }
-            else
-            {
-                await  DisplayAlert(null, "Błędne hasło", "OK");
-            }
+            //if (entry_haslo.Text == Haslo.pass)
+            //{
+            //    kolko.IsRunning = true;
+            //    kolko.IsVisible = true;
+            //     await  Navigation.PushAsync(new OrderView());
+            //    kolko.IsRunning = false;
+            //    kolko.IsVisible = false;
+            //}
+            //else
+            //{
+            //    await  DisplayAlert(null, "Błędne hasło", "OK");
+            //}
         }
 
-        private async void PickerLogin_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            //if(PickerLogin.SelectedIndex>=0)
-            //  viewModel.LoadItemsCommand.Execute(null); 
+        //private  void PickerLogin_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        //{
+        //    if(PickerLogin.SelectedIndex>=0)
+        //     // viewModel.LoadItemsCommand.Execute(null); 
        
 
-            entry_haslo.Text = "";
-                entry_haslo2.Text = "";
-        }
+        //    entry_haslo.Text = "";
+        //        entry_haslo2.Text = "";
+        //}
 
         private void entry_haslo2_Completed(object sender, EventArgs e)
         {
             viewModel.SelectUser.Password = entry_haslo2.Text;
         }
+
+         
     }
 }

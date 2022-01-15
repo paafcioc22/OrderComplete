@@ -607,10 +607,7 @@ namespace CompletOrder.ViewModels
 
                 //_prestaNagList= await App.TodoManager.GetOrdersFromPresta(querystring);
 
-                PrestaNagList = Task.Run(() => prestaWeb.PobierzZamówieniaSql()).Result;
-
-
-
+                PrestaNagList = Task.Run(() => prestaWeb.PobierzZamówieniaSql()).Result;  
                 
                 IsBusy = false;
 

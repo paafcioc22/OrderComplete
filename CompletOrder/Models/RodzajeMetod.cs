@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace CompletOrder.Models
@@ -49,6 +50,8 @@ namespace CompletOrder.Models
         {
             bool zwroc = true;
 
+            var login = Preferences.Get("user", "default_value");
+
             IDevice device = DependencyService.Get<IDevice>();
             deviceIdentifier = device.GetIdentifier();
 
@@ -60,7 +63,8 @@ namespace CompletOrder.Models
                 Orn_DoneUser = 0,
                 Orn_EditUser = 0,                
                 Orn_DoneData = doneData,
-                Orn_DeviceId = deviceIdentifier
+                Orn_DeviceId = deviceIdentifier,
+                Orn_UsrLogin = login
             };
 
             var odp = await App.TodoManager.InsertOrderSend(send);

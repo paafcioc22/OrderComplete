@@ -16,6 +16,7 @@ namespace CompletOrder.Models
         public string Orn_OrderData { get; set; }
         public string Orn_DoneData { get; set; }
         public string Orn_DeviceId { get; set; }
+        public string Orn_UsrLogin { get; set; }
 
     }
 }

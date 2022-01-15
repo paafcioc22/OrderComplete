@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -22,7 +22,7 @@ namespace CompletOrder.Views
         public OrderView()
         {
             InitializeComponent();
-
+            Title= "User : " +Preferences.Get("user", "default_value");
             BindingContext = orderView = new OrderViewModel();
 
             
@@ -178,7 +178,17 @@ namespace CompletOrder.Views
             await Navigation.PushAsync(new SettingsPage("presta"));
         }
 
+        protected  override bool OnBackButtonPressed()
+        {
+            Device.BeginInvokeOnMainThread(async () => {
+                var result = await this.DisplayAlert("Uwaga", "Czy chcesz się wylogować?", "Tak", "NIE");
+                if (result) await this.Navigation.PopAsync(); // or anything else
+            });
 
+            return true;
+
+            
+        }
 
         //public IEnumerable<Order> SzukajTowar(string searchText = null)
         //{

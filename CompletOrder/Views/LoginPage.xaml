@@ -58,10 +58,11 @@
             Property=Y, 
             Constant=220}" 
                />
-        <Picker Title="Wybierz użytkownika" x:Name="PickerLogin" PropertyChanged="PickerLogin_PropertyChanged"  
+        <Picker Title="Wybierz użytkownika" x:Name="PickerLogin" 
                 ItemsSource="{Binding Users}" 
                 ItemDisplayBinding="{Binding Login}" 
-                SelectedItem="{Binding SelectUser}"
+                SelectedItem="{Binding SelectUser, Mode=TwoWay}"
+                SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"  
             RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=300}"
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
@@ -77,7 +78,9 @@
                BackgroundColor="White" 
                TextColor="Black" 
                HorizontalTextAlignment="Center"
-               Completed="Entry_Completed"
+                ReturnType="Done"
+               ReturnCommand="{Binding PassCheckCommand}"
+               ReturnCommandParameter="{Binding Source={x:Reference entry_haslo}, Path=Text}"
             RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=400}"
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
@@ -121,6 +124,7 @@
                 <DataTrigger TargetType="Button" Binding="{Binding SelectUser.VisiblePass }"  Value="true" >
                     <Setter Property="IsVisible" Value="true"></Setter>
                 </DataTrigger>
+                
             </Button.Triggers>
         </Button>
 
@@ -129,7 +133,7 @@
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-90}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.2,Constant=0}"/>
 
-        <ActivityIndicator  Color="#f4b9fe"    x:Name="kolko"
+        <ActivityIndicator  Color="#f4b9fe"    x:Name="kolko" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"
             RelativeLayout.XConstraint="{ConstraintExpression
             Type=RelativeToView,ElementName=imageCircleBack,Property=X,Factor=1.4}"
                

@@ -99,11 +99,12 @@ namespace CompletOrder.Droid
                                 {sendOrder.Orn_OrderId},
                                 '{sendOrder.Orn_IsDone}',
                                 '{sendOrder.Orn_IsEdit}',
-                                {sendOrder.Orn_DoneUser},
-                                {sendOrder.Orn_EditUser},
+                                 {sendOrder.Orn_DoneUser},
+                                 {sendOrder.Orn_EditUser},
                                 '{sendOrder.Orn_OrderData}',
                                 '{sendOrder.Orn_DoneData}',
-                                '{sendOrder.Orn_DeviceId}'";
+                                '{sendOrder.Orn_DeviceId}',
+                                '{sendOrder.Orn_UsrLogin}'";
 
                         var respone = client.ExecuteSQLCommand(InsertString);
 
@@ -143,8 +144,6 @@ namespace CompletOrder.Droid
                 //
                 GetOrders gidNazwa = (GetOrders)serializer.Deserialize(reader);
 
-                //XmlSerializer serializer = new XmlSerializer(typeof(List<SendOrder>), new XmlRootAttribute("ROOT"));
-                //List<SendOrder> gidNazwa = (List<SendOrder>)serializer.Deserialize(reader);
 
 
                 foreach (var akcje in gidNazwa.OrderLista)
@@ -239,9 +238,6 @@ namespace CompletOrder.Droid
         }
 
 
-
-
-
         public static IList<T> DeserializeFromXml<T>(string xml)
         {
             List<T> result;
@@ -254,8 +250,6 @@ namespace CompletOrder.Droid
             }
             return result;
         }
-
-
 
 
         public async Task<ObservableCollection<Presta>> GetPrestaZam(string query3)

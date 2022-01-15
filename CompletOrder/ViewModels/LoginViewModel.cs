@@ -10,6 +10,9 @@ using Xamarin.Forms;
 using System.Security.Cryptography;
 using System.Windows.Input;
 using Microsoft.AspNetCore.Identity;
+using CompletOrder.Views;
+using System.Linq;
+using Xamarin.Essentials;
 
 namespace CompletOrder.ViewModels
 {
@@ -19,6 +22,7 @@ namespace CompletOrder.ViewModels
         public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
         public Command LoadItemsCommand { get; set; }
         public ICommand SaveUserPass { private set; get; }
+        public ICommand PassCheckCommand { private set; get; }
         //private readonly IPasswordHasher<User> passwordHasher;
         public IPasswordHasher<User> passwordHasher => DependencyService.Get<IPasswordHasher<User>>();
 
@@ -28,7 +32,22 @@ namespace CompletOrder.ViewModels
         {
             get { return selectUser; }
 
-            set { SetProperty(ref selectUser, value); }
+            set 
+            { 
+                SetProperty(ref selectUser, value);
+                OnPropertyChanged(nameof(SelectUser));
+                //Task.Run(async ()=>await ExecuteLoadItemsCommand()); 
+            }
+        }
+
+
+
+        private int selectedIndex;
+
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set { selectedIndex = value; }
         }
 
 
@@ -72,11 +91,37 @@ namespace CompletOrder.ViewModels
             //this.passwordHasher = new PasswordHasher<User>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
             SaveUserPass = new Command(async (User) => await UpdateUserPass(SelectUser));
+            PassCheckCommand = new Command<string>(async (pass) => await TryToLogin(pass));
             
+        }
+
+        private async Task TryToLogin(string pass)
+        {
+            if (!selectUser.VisiblePass)
+            {
+                IsBusy = true;
+                var isCorrect= passwordHasher.VerifyHashedPassword(selectUser, selectUser.Password, pass);
+
+                if(isCorrect == PasswordVerificationResult.Success)
+                {
+                    Preferences.Set("user", selectUser.Login);
+                    Pass1 = "";
+                
+                    await Application.Current.MainPage.Navigation.PushAsync(new OrderView());
+                    IsBusy = false;
+                }
+                else
+                {
+                    IsBusy = false;
+                    await Application.Current.MainPage.DisplayAlert("Uwaga","Podano błędne hasło","OK");
+                }
+            }
         }
 
         private async Task ExecuteLoadItemsCommand()
         {
+
+            var tmp = SelectedIndex;
             string Webquery = $@"cdn.PC_WykonajSelect N' 
                 select 
 	                 usr.User_Login as Login
@@ -134,11 +179,22 @@ namespace CompletOrder.ViewModels
                                                 select ''OK'' as User_Login
                     '";
 
-                    var response = await App.TodoManager.PobierzDaneZWeb<PC_SiOrderElem>(sqlInsert);
+                    var response = await App.TodoManager.PobierzDaneZWeb<User>(sqlInsert);
                     if (response != null)
                     {
                         if (response.Count > 0)
+                        {
+                            LoadItemsCommand.Execute(null);
+
+                            
+                            await Application.Current.MainPage.DisplayAlert("Info", "Hasło zapisane\nMozesz się teraz zalogowac", "OK");
+                            Pass1 = "";
+                            Pass2 = "";
+
+                            
                             return IsAddRow;
+
+                        }
                     }
 
                 }

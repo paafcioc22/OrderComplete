@@ -238,7 +238,7 @@ namespace CompletOrder.Services
             }
         }
 
-
+   
         public async Task<ObservableCollection<Presta>> PobierzZamówienia()
         {
             var filtry = Application.Current as App;
