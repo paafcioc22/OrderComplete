@@ -106,7 +106,7 @@
 
 
 
-            <ListView x:Name="MyListView2" IsRefreshing="{Binding IsBusy, Mode=OneWay}" 
+            <ListView x:Name="MyListView2" IsRefreshing="{Binding IsBusy, Mode=OneWay}"  
             ItemsSource="{Binding AllegroList}" Refreshing="MyListView2_Refreshing" IsPullToRefreshEnabled="True"
             ItemTapped="MyListView2_ItemTapped"  SeparatorVisibility="None"
             CachingStrategy="RecycleElement" HasUnevenRows="True"
@@ -170,16 +170,30 @@
 
     <ContentPage Title="Ustawienia">
         <StackLayout VerticalOptions="CenterAndExpand">
-            <Entry IsPassword="True" Placeholder="Hasło" Text="{Binding Source={x:Static Application.Current}, Path=PasswordSQL}"
+            <Entry IsPassword="true"  Placeholder="Hasło" Text="{Binding Source={x:Static Application.Current}, Path=PasswordSQL}"
+                   
+                   HorizontalOptions="CenterAndExpand" 
+                   VerticalOptions="CenterAndExpand"
+                   WidthRequest="200">
+           
+            </Entry>
+
+            <Entry   Placeholder="Nazwa Bazy" Text="{Binding Source={x:Static Application.Current}, Path=BaseName}"
                    
                    HorizontalOptions="CenterAndExpand" 
                    VerticalOptions="CenterAndExpand"
                    WidthRequest="200">
 
-                 
-                   
-           
             </Entry>
+            <Button Text="Zapisz" Command="{Binding SaveConnectionSettings}" >
+                
+            </Button>
+            <!--<Picker WidthRequest="300"   >
+                <Picker.Items >
+                    <x:String>32610188_presta1</x:String>
+                    <x:String>32610188_df84ef7f</x:String> 
+                </Picker.Items>
+            </Picker>-->
         </StackLayout>
     </ContentPage>
     <!--<ContentPage Title="SI" IsEnabled="False" >

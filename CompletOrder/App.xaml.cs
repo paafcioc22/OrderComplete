@@ -28,16 +28,16 @@ namespace CompletOrder
         private const string filtrDataOd = "filtrDataOd";
         private const string filtrDataDo = "filtrDataDo";
         private const string ListaTypow = "ListaTypow";
-        private const string password = "password";
+        private const string baseName = "baseName";
         private const string isloading = "isloading";
-        private const string passwordsql = "passwordsql";
+        private const string passwordsql2 = "passwordsql2";
 
         public App()
         {
             InitializeComponent();
           
             DependencyService.Register<MockDataStore>();
-            //DependencyService.Register<PasswordHasher<User>>();
+             
             DependencyService.Register<IPasswordHasher<User>, Models.PasswordHasher<User>>();
             MainPage = new NavigationPage( new LoginPage());
         }
@@ -55,17 +55,17 @@ namespace CompletOrder
         {
         }
 
-        public string Password
+        public string BaseName
         {
             get
             {
-                if (Properties.ContainsKey(password))
-                    return Properties[password].ToString();
-                return "";
+                if (Properties.ContainsKey(baseName))
+                    return Properties[baseName].ToString();
+                return "32610188_df84e";
             }
             set
             {
-                Properties[password] = value;
+                Properties[baseName] = value;
             }
 
         }
@@ -74,13 +74,13 @@ namespace CompletOrder
         {
             get
             {
-                if (Properties.ContainsKey(passwordsql))
-                    return Properties[passwordsql].ToString();
-                return "";
+                if (Properties.ContainsKey(passwordsql2))
+                    return Properties[passwordsql2].ToString();
+                return "bfV6(PR)hk0s!";
             }
             set
             {
-                Properties[passwordsql] = value;
+                Properties[passwordsql2] = value;
             }
 
         }

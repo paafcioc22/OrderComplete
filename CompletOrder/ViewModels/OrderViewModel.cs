@@ -31,6 +31,8 @@ namespace CompletOrder.ViewModels
        // private ObservableCollection<Order> GetOrders;
         private ObservableCollection<Presta> _prestaNagList;
 
+        public ICommand SaveConnectionSettings { private set; get; }
+
         public ObservableCollection<Presta> PrestaNagList
         {
             get { return _prestaNagList; }
@@ -79,13 +81,7 @@ namespace CompletOrder.ViewModels
             }
         }
 
-        void Save()
-        {
-
-            ((App)Application.Current).PasswordSQL = passwordsql;
-            ((App)Application.Current).SavePropertiesAsync();
-           // SavePropertiesAsync();
-        }
+    
         public string Passwordsql
         {
             get { return passwordsql; }
@@ -120,14 +116,19 @@ namespace CompletOrder.ViewModels
             wynik = new List<SendOrder>();
             PobierzListeZatwierdzonychZamowien();
             // przeniosłem z allegro i pobierz liste
+            SaveConnectionSettings = new Command(async () =>  await ExecuteSaveConnection());
 
-           
 
 
             //if (GetOrders !=null)
             //OrderList = GetOrders;
         }
 
+        private async Task ExecuteSaveConnection()
+        {
+              await Task.Run(() => Connect());
+            await App.Current.MainPage.Navigation.PopAsync();
+        }
 
         public void PobierzListeZatwierdzonychZamowien()
         {

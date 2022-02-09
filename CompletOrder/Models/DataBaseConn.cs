@@ -14,35 +14,26 @@ namespace CompletOrder.Models
         protected MySqlConnectionStringBuilder conn_string;
         public DataBaseConn()
         {
-            //conn_string = new MySqlConnectionStringBuilder();
-            //conn_string.Server = "vps524101.ovh.net";
-            //conn_string.Port = 3306;
-            //conn_string.SslMode = MySqlSslMode.None;
-            //conn_string.UserID = "root";
-            //conn_string.Password = "Htyud682f45";
-            //conn_string.Database = "szachownica";
-
-            //var aaa = Current as App;
-          
-            conn_string = new MySqlConnectionStringBuilder();
-            conn_string.Server = "presta2046291.home.pl";
-            conn_string.Port = 3306;
-            conn_string.SslMode = MySqlSslMode.None;
-            conn_string.UserID = "32610188_df84ef7f";
-            //conn_string.Password = "!cAK1Spba";
-            conn_string.Password = ((App)Application.Current).PasswordSQL;
-            conn_string.Database = "32610188_df84ef7f";
+                  
 
             Connect();
         }
 
-        private void Connect()
+        internal void Connect()
         {
               sqlconn = $"SERVER={funkcje.serwer};" +
                 $"DATABASE={funkcje.database};" +
                 $"TRUSTED_CONNECTION=No; UID={funkcje.sqluser}; " +
                 $"PWD={funkcje.password};Connection Timeout=30";
 
+            conn_string = new MySqlConnectionStringBuilder();
+            conn_string.Server = "presta2046291.home.pl";
+            conn_string.Port = 3306;
+            conn_string.SslMode = MySqlSslMode.None;
+            conn_string.UserID = "32610188_df84ef7f";
+            conn_string.Password = ((App)Application.Current).PasswordSQL;
+            //conn_string.Database = "32610188_df84ef7f";
+            conn_string.Database = ((App)Application.Current).BaseName;
 
             MySqlConnection connection = new MySqlConnection(conn_string.ToString());
             this.mysqlconn = connection;
