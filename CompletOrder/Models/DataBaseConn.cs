@@ -30,7 +30,7 @@ namespace CompletOrder.Models
             conn_string.Server = "presta2046291.home.pl";
             conn_string.Port = 3306;
             conn_string.SslMode = MySqlSslMode.None;
-            conn_string.UserID = "32610188_df84ef7f";
+            conn_string.UserID = ((App)Application.Current).BaseName;
             conn_string.Password = ((App)Application.Current).PasswordSQL;
             //conn_string.Database = "32610188_df84ef7f";
             conn_string.Database = ((App)Application.Current).BaseName;
