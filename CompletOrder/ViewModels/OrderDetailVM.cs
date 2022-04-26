@@ -150,22 +150,37 @@ namespace CompletOrder.ViewModels
                     //TODO : jak zły kod to wywala
 
                     PozycjiZamowienia++;
-                    var TwrKarty = Task.Run(() => GetTwrKartyAsync(a.ZaE_TwrKod)).Result[0] as TwrKarty;
-                    OrderDetail.Add(new OrderDetail
+
+                    if (a.ZaE_TwrKod == "331LKWBDM451-027")
+                        a.ZaE_TwrKod = "331ZKWBDM451-027a";
+
+
+                    var TwrKarty = Task.Run(() => GetTwrKartyAsync(a.ZaE_TwrKod)).Result;
+
+                    if (TwrKarty.Count > 0)
                     {
-                        OrderId = a.ZaN_GIDNumer,
-                        ilosc = a.ZaE_Ilosc,
-                        nazwa = a.ZaE_TwrNazwa,
-                        kod = a.ZaE_TwrKod,
-                        twrkarty = TwrKarty,
-                        //IsDone = (wynik.Where(s => s.IdOrder == _orderid && s.IdElementOrder == a.ElementId)).Any(),
-                        IsDone = (wynik.Where(s => s.OrE_OrderId == _orderid && s.OrE_OrderEleId == a.ElementId)).Any(),
-                        IdElement = a.ElementId,
-                        cena_netto = System.Convert.ToDouble(a.WartoscZam),
-                        kolor = a.Kolor,
-                        rozmiar = a.Rozmiar,
-                        nazwaShort = nazwakrtka
-                    });
+                        OrderDetail.Add(new OrderDetail
+                        {
+                            OrderId = a.ZaN_GIDNumer,
+                            ilosc = a.ZaE_Ilosc,
+                            nazwa = a.ZaE_TwrNazwa,
+                            kod = a.ZaE_TwrKod,
+                            twrkarty = TwrKarty[0],
+                            //IsDone = (wynik.Where(s => s.IdOrder == _orderid && s.IdElementOrder == a.ElementId)).Any(),
+                            IsDone = (wynik.Where(s => s.OrE_OrderId == _orderid && s.OrE_OrderEleId == a.ElementId)).Any(),
+                            IdElement = a.ElementId,
+                            cena_netto = System.Convert.ToDouble(a.WartoscZam),
+                            kolor = a.Kolor,
+                            rozmiar = a.Rozmiar,
+                            nazwaShort = nazwakrtka
+                        });
+                    }
+                    else
+                    {
+                        Application.Current.MainPage.DisplayAlert("uwaga", $"nie pobrano danych dla \n {a.ZaE_TwrKod}", "OK");
+                    }
+
+                    
                 }
                 var tmp = OrderDetail.OrderBy(x => x.IsDone).ThenBy(x => x.twrkarty.MgA_Segment1).ThenBy(x => x.twrkarty.MgA_Segment2).ThenBy(x => x.twrkarty.MgA_Segment3);
                 OrderDetail = Convert2(tmp.ToList());
