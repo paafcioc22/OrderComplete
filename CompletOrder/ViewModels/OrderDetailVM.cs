@@ -96,20 +96,33 @@ namespace CompletOrder.ViewModels
             foreach (var a in AllegroList)
             {
                 PozycjiZamowienia++;
-                var stwrkarty = Task.Run(() => GetTwrKartyAsync(a.kod)).Result[0] as TwrKarty;
-                OrderDetail.Add(new OrderDetail
-                {
-                    OrderId = a.Id,
-                    ilosc = a.ilosc,
-                    nazwaShort = a.nazwa,
-                    kod = a.kod,
-                    twrkarty = stwrkarty,
-                    //IsDone = (wynik.Where(s => s.IdOrder == _orderid && s.IdElementOrder == a.ElementId)).Any(),
-                    IsDone = (wynik.Where(s => s.OrE_OrderId == _orderid && s.OrE_OrderEleId== a.ElementId)).Any(),
-                    IdElement = a.ElementId,
 
-                });
+                if (a.kod == "331ZKWBDM451-027")
+                    a.kod = "331LKWBDM451-027";
+
+
+                var stwrkarty = Task.Run(() => GetTwrKartyAsync(a.kod)).Result;
+                if (stwrkarty.Count > 0)
+                {
+                    OrderDetail.Add(new OrderDetail
+                    {
+                        OrderId = a.Id,
+                        ilosc = a.ilosc,
+                        nazwaShort = a.nazwa,
+                        kod = a.kod,
+                        twrkarty = stwrkarty[0],
+                        //IsDone = (wynik.Where(s => s.IdOrder == _orderid && s.IdElementOrder == a.ElementId)).Any(),
+                        IsDone = (wynik.Where(s => s.OrE_OrderId == _orderid && s.OrE_OrderEleId == a.ElementId)).Any(),
+                        IdElement = a.ElementId,
+
+                    });
+                }
+                else
+                {
+                     Application.Current.MainPage.DisplayAlert("uwaga", $"nie pobrano danych dla \n {a.kod}", "OK");                    
+                }
             }
+              
             var tmp = OrderDetail.OrderBy(x => x.IsDone).ThenBy(x => x.twrkarty.MgA_Segment1).ThenBy(x => x.twrkarty.MgA_Segment2).ThenBy(x => x.twrkarty.MgA_Segment3);
             OrderDetail = Convert2(tmp.ToList());
             //orderDetail.OrderBy(x => x.IsDone);
@@ -150,9 +163,7 @@ namespace CompletOrder.ViewModels
                     //TODO : jak zły kod to wywala
 
                     PozycjiZamowienia++;
-
-                    if (a.ZaE_TwrKod == "331LKWBDM451-027")
-                        a.ZaE_TwrKod = "331ZKWBDM451-027a";
+ 
 
 
                     var TwrKarty = Task.Run(() => GetTwrKartyAsync(a.ZaE_TwrKod)).Result;
