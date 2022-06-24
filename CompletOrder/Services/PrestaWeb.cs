@@ -201,7 +201,7 @@ namespace CompletOrder.Services
                     ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
             try
             {
-                await this.mysqlconn.OpenAsync();
+                this.mysqlconn.Open();
                 MySqlCommand command1 = this.mysqlconn.CreateCommand();
                 command1.CommandText = $@"SELECT distinct  pc.name typDostawy 
                 from ps_orders 
@@ -357,6 +357,8 @@ namespace CompletOrder.Services
 
         }
 
+        #region old
+
         public async Task<ObservableCollection<Presta>> PobierzelementyZamówienia(int id)
         {
             //string _url = $"https://www.szachownica.com.pl/api/orders/1/";//?fulfillment.status=PROCESSING  //status=READY_FOR_PROCESSING
@@ -430,6 +432,8 @@ namespace CompletOrder.Services
         }
 
 
+        #endregion
+        
         public async Task<ObservableCollection<Presta>> MySqlPobierzelementyZamówienia(int id)
         {
 

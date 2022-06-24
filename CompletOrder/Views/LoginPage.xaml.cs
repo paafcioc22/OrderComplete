@@ -47,10 +47,10 @@ namespace CompletOrder.Views
 
         async void SprNowaWersja()
         {
+             string latestVersionNumber1 = await CrossLatestVersion.Current.GetLatestVersionNumber();
             try
             {
                 var isLatest = await CrossLatestVersion.Current.IsUsingLatestVersion();
-                //string latestVersionNumber1 = await CrossLatestVersion.Current.GetLatestVersionNumber("com.SzachoToolsMini");
                 //string latestVersionNumber = await CrossLatestVersion.Current.GetLatestVersionNumber();
                 //string installedVersionNumber = CrossLatestVersion.Current.InstalledVersionNumber;
 
