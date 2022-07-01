@@ -27,13 +27,13 @@ namespace CompletOrder.Models
                 $"PWD={funkcje.password};Connection Timeout=30";
 
             conn_string = new MySqlConnectionStringBuilder();
-            conn_string.Server = "presta2046291.home.pl";
+            conn_string.Server = "146.59.85.82";
             conn_string.Port = 3306;
             conn_string.SslMode = MySqlSslMode.None;
             conn_string.UserID = ((App)Application.Current).BaseName;
             conn_string.Password = ((App)Application.Current).PasswordSQL;
             //conn_string.Database = "32610188_df84ef7f";
-            conn_string.Database = ((App)Application.Current).BaseName;
+            conn_string.Database = "admin_hhd663ehd";
 
             MySqlConnection connection = new MySqlConnection(conn_string.ToString());
             this.mysqlconn = connection;

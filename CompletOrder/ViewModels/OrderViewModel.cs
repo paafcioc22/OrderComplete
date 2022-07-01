@@ -114,7 +114,7 @@ namespace CompletOrder.ViewModels
             prestaWeb = new PrestaWeb();
 
             wynik = new List<SendOrder>();
-            PobierzListeZatwierdzonychZamowien();
+            //PobierzListeZatwierdzonychZamowien();
             // przeniosłem z allegro i pobierz liste
             SaveConnectionSettings = new Command(async () =>  await ExecuteSaveConnection());
 
@@ -416,8 +416,15 @@ namespace CompletOrder.ViewModels
 
         async Task<List<SendOrder>> SendOrders()
         {
+            var filtry = Application.Current as App;
+            DateTimeOffset dateOd = new DateTime(filtry.DataOd.Year, filtry.DataOd.Month, filtry.DataOd.Day, 0, 0, 0);
+            DateTimeOffset dateDo = new DateTime(filtry.DataDo.Year, filtry.DataDo.Month, filtry.DataDo.Day, 23, 59, 59);
+            var sort = filtry.SortASC ? "ASC" : "DESC";
+            var dataod = dateOd.ToString("yyyy-MM-dd HH:mm:ss");
+            var datado = dateDo.ToString("yyyy-MM-dd HH:mm:ss");
 
-            string tmp = $@"cdn.PC_WykonajSelect N'select * from cdn.pc_ordernag where  Orn_OrderData>getdate()-30'";
+
+            string tmp = $@"cdn.PC_WykonajSelect N'select * from cdn.pc_ordernag where  Orn_OrderData>=''{dataod}'''";
 
             var wynikii = await App.TodoManager.GetOrdersFromWeb(tmp);
 

@@ -61,7 +61,7 @@ namespace CompletOrder
             {
                 if (Properties.ContainsKey(baseName))
                     return Properties[baseName].ToString();
-                return "32610188_df84e";
+                return "admin_hhdtret44";
             }
             set
             {
@@ -76,7 +76,7 @@ namespace CompletOrder
             {
                 if (Properties.ContainsKey(passwordsql2))
                     return Properties[passwordsql2].ToString();
-                return "bfV6(PR)hk0s!";
+                return "x4Yfu$091";
             }
             set
             {
