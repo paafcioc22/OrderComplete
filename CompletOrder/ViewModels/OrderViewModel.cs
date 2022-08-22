@@ -1,6 +1,6 @@
 ﻿using CompletOrder.Models;
 using CompletOrder.Views;
-using MySql.Data.MySqlClient;
+ 
 using SQLite;
 using System;
  
@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using CompletOrder.Services;
+using MySqlConnector;
 
 namespace CompletOrder.ViewModels
 {
@@ -37,10 +38,8 @@ namespace CompletOrder.ViewModels
         {
             get { return _prestaNagList; }
             set
-            {
-                
-                SetValue(ref _prestaNagList, value);
-                
+            {                
+                SetValue(ref _prestaNagList, value);                
             }
         }
 
@@ -141,8 +140,7 @@ namespace CompletOrder.ViewModels
 
 
                     ss.IsFinish = ( 
-                                  from nowa in wynik
-                                        //join presta in ss on nowa.Orn_OrderId equals presta.ZaN_GIDNumer
+                                  from nowa in wynik                                        
                                   where nowa.Orn_OrderId ==ss.ZaN_GIDNumer
                                   select   nowa.Orn_IsDone).SingleOrDefault(); 
 

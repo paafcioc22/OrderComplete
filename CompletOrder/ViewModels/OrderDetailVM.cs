@@ -1,5 +1,5 @@
 ﻿using CompletOrder.Models;
-using MySql.Data.MySqlClient;
+ 
 using SQLite;
 using System;
 
@@ -14,6 +14,7 @@ using Xamarin.Forms;
 using CompletOrder.Services;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using MySqlConnector;
 
 namespace CompletOrder.ViewModels
 {
@@ -48,8 +49,7 @@ namespace CompletOrder.ViewModels
 
         ICommand showOtherLocation;
 
-
-
+        
         public ICommand ShowOtherLocation
         {
             get { return showOtherLocation; }
@@ -59,12 +59,10 @@ namespace CompletOrder.ViewModels
         public int PozycjiZamowienia { get; set; }
 
         public OrderDetailVM(Order _order)
-        {
-            //_orderDetail = new OrderDetail();
+        {      
 
             OrderDetail = new ObservableCollection<OrderDetail>();
-            //orderDetail =  _orderDetail.OrderDetailVM;
-            //orderDetail=_orderDetail.OrderDetailVM =new ObservableCollection<OrderDetail>();
+ 
 
             this._order = _order;
             SumaZamowienia = (decimal)_order.do_zaplaty;
@@ -138,6 +136,7 @@ namespace CompletOrder.ViewModels
                 OrderDetail = new ObservableCollection<OrderDetail>();
                 prestaWeb = new PrestaWeb();
                 PrestaElemList = Task.Run(() => GetPrestaElem(presta.ZaN_GIDNumer)).Result;
+                
 
                 _orderid = presta.ZaN_GIDNumer;
                 //var wynik = Task.Run(() => listaUkonczonych(presta.ZaN_GIDNumer)).Result;

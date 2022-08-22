@@ -25,7 +25,11 @@ namespace CompletOrder.Views
             Title= "User : " +Preferences.Get("user", "default_value");
             BindingContext = orderView = new OrderViewModel();
 
-            
+            orderView.PobierzListeZatwierdzonychZamowien();
+          
+            orderView.GetPrestaZam();
+      
+            orderView.PobierzAllegro();
 
             IDevice device = DependencyService.Get<IDevice>();
             string deviceIdentifier = device.GetIdentifier();
@@ -51,12 +55,12 @@ namespace CompletOrder.Views
             
             var odp =await RodzajeMetod.WejdżWZamowienie(orderVM.id, orderVM.data);
             if (odp)
-                await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
+                await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM), orderView));
             else 
             { 
                 var odp2=await DisplayAlert("info", "To zamówienie jest edytowane\n Czy nadal chcesz je otworzyć?", "Tak","Nie");
                 if(odp2)
-                    await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
+                    await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM), orderView));
             }
 
 
@@ -67,30 +71,38 @@ namespace CompletOrder.Views
         }
 
 
-
-        protected override void OnAppearing()
-        {
-            orderView.PobierzListeZatwierdzonychZamowien();
-
-            // orderView.PobierzListe();
+        
 
 
+        //protected override void OnAppearing()
+        //{
+        //    var pages = Application.Current.MainPage.Navigation.ModalStack;
+
+        //    if (pages.Count > 0)
+        //    {
+        //        var nazwa = pages[pages.Count - 1].GetType().Name;
+        //    }
 
 
-           // if(orderView.PrestaNagList.Count==0)
-                orderView.GetPrestaZam();
-           // else
-             //   orderView.GetPrestaZam(true);
-            orderView.PobierzAllegro(); 
+        //    orderView.PobierzListeZatwierdzonychZamowien();
 
-            base.OnAppearing();
-        }
+        //    // orderView.PobierzListe(); 
+
+
+        //   // if(orderView.PrestaNagList.Count==0)
+        //    orderView.GetPrestaZam();
+        //   // else
+        //     //   orderView.GetPrestaZam(true);
+        //    orderView.PobierzAllegro(); 
+
+        //    base.OnAppearing();
+        //}
 
          
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new SettingsPage("allegro"));
+            await Navigation.PushAsync(new SettingsPage("allegro", orderView));
         }
 
         private async void MyListView2_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -108,12 +120,12 @@ namespace CompletOrder.Views
 
             var odp = await RodzajeMetod.WejdżWZamowienie(orderVM.Id, orderVM.RaportDate);
             if (odp)
-                await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
+                await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM), orderView));
             else
             {
                 var odp2 = await DisplayAlert("info", "To zamówienie jest edytowane\n Czy nadal chcesz je otworzyć?", "Tak", "Nie");
                 if (odp2)
-                    await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
+                    await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM), orderView));
             }
 
 
@@ -140,12 +152,12 @@ namespace CompletOrder.Views
 
                 var odp = await RodzajeMetod.WejdżWZamowienie(orderVM.ZaN_GIDNumer, orderVM.ZaN_DataWystawienia.ToString());
                 if (odp)
-                    await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
+                    await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM), orderView));
                 else
                 {
                     var odp2 = await DisplayAlert("info", "To zamówienie jest edytowane\n Czy nadal chcesz je otworzyć?", "Tak", "Nie");
                     if (odp2)
-                        await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM)));
+                        await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM), orderView));
                 }
 
 
@@ -175,7 +187,7 @@ namespace CompletOrder.Views
 
         private async void Btn_prestaSettings(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new SettingsPage("presta"));
+            await Navigation.PushAsync(new SettingsPage("presta", orderView));
         }
 
         protected  override bool OnBackButtonPressed()

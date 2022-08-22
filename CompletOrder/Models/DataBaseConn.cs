@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿
+using MySqlConnector;
 using Xamarin.Forms;
 
 namespace CompletOrder.Models

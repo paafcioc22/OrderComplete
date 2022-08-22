@@ -15,19 +15,21 @@ namespace CompletOrder.Views
     {
 
         OrderDetailVM orderDetailVm;
+        OrderViewModel orderView;
         //private SQLiteAsyncConnection _connection;
         public string  DataOrder{ get; set; }
         static string deviceIdentifier;
 
-        public OrderDetailView(OrderDetailVM orderDetailVM)
+        public OrderDetailView(OrderDetailVM orderDetailVM, OrderViewModel orderView)
         {
             InitializeComponent();
 
             //_connection = DependencyService.Get<SQLite.ISQLiteDb>().GetConnection();
 
             orderDetailVm = orderDetailVM;
+            this.orderView = orderView;
 
-             
+
 
             DataOrder = orderDetailVM._order.data;
 
@@ -101,6 +103,13 @@ namespace CompletOrder.Views
 
 
                         var odp = await RodzajeMetod.ZakonczIwyjdz(orderDetailVm._orderid, DataDone);
+
+                        orderView.PobierzListeZatwierdzonychZamowien();
+                        orderView.GetPrestaZam();
+                        orderView.PobierzAllegro();
+
+
+
                         await Navigation.PopAsync();
                     }
                     else
@@ -133,8 +142,14 @@ namespace CompletOrder.Views
 
                     var DataDone = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
+                    
 
                     var odp = await RodzajeMetod.ZakonczIwyjdz(orderDetailVm._orderid, DataDone);
+
+                    orderView.PobierzListeZatwierdzonychZamowien();
+                    orderView.GetPrestaZam();
+                    orderView.PobierzAllegro();
+
                     await Navigation.PopAsync();
                 }
                 else

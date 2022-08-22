@@ -19,10 +19,13 @@ namespace CompletOrder.Views
         private List<string> listaPlatnosci;
         public static string SendMetod;
         string sklep;
+        public OrderViewModel orderView;
 
-        public SettingsPage(string sklep)
+        public SettingsPage(string sklep, OrderViewModel orderView)
         {
             InitializeComponent();
+            this.orderView = orderView;
+
             if (sklep == "presta")
                 label_metodywysylki.Title = label_metodywysylki.Title.Replace("Allegro", "Presta");
             _typyPlatnosci = new List<TypPlatnosc>();
@@ -128,6 +131,13 @@ namespace CompletOrder.Views
 
             if (!maybe_exit)
             {
+              
+                orderView.PobierzListeZatwierdzonychZamowien();
+
+                orderView.GetPrestaZam();
+
+                orderView.PobierzAllegro();
+
                 maybe_exit = true;
                 return false;
             }

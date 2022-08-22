@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MySqlConnector">
-      <Version>0.63.2</Version>
+      <Version>2.1.11</Version>
     </PackageReference>
     <PackageReference Include="PrestaSharp">
       <Version>1.2.7</Version>

@@ -3,7 +3,7 @@ using Bukimedia.PrestaSharp.Factories;
 using CompletOrder.Models;
 using CompletOrder.Models.QuickType;
 using CompletOrder.Views;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,17 +32,17 @@ namespace CompletOrder.Services
         public PrestaWeb()
         {
 
-            try
-            {
-                orderFactory = new OrderFactory(BaseUrl, Account, Password);
+            //try
+            //{
+            //    orderFactory = new OrderFactory(BaseUrl, Account, Password);
 
-                customer = new CustomerFactory(BaseUrl, Account, Password);
-            }
-            catch (Exception)
-            {
+            //    customer = new CustomerFactory(BaseUrl, Account, Password);
+            //}
+            //catch (Exception)
+            //{
 
-                throw;
-            }
+            //    throw;
+            //}
 
         }
 
@@ -62,7 +62,7 @@ namespace CompletOrder.Services
                 //0: Cannot connect to server.
                 //1045: Invalid user name and/or password.
 
-                    return false;
+                return false;
                 throw ex;
             }
         }
@@ -108,57 +108,65 @@ namespace CompletOrder.Services
                     break;
             }
 
-                    ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
+            ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
             try
             {
-                this.mysqlconn.Open();
 
-                //var cdsa=this.mysqlconn.Ping();
-
-                MySqlCommand command1 = this.mysqlconn.CreateCommand();
-                command1.CommandText = $@"SELECT id_order,reference,payment,ps_orders.date_add,ps_order_state.color,
-                CONVERT(total_paid,decimal(10,2))Totalpay, firstname, lastname , pc.name typDostawy, ps_order_state_lang.name
-                from ps_orders 
-                join ps_customer on ps_customer.id_customer=ps_orders.id_customer 
-                join ps_carrier pc on pc.id_carrier=ps_orders.id_carrier
-                join ps_order_state on ps_order_state.id_order_state= ps_orders.current_state                
-                join `ps_order_state_lang` on ps_order_state_lang.id_order_state= ps_order_state.id_order_state
-                where ps_orders.current_state in({typyplatnosci}) and ps_order_state_lang.id_lang=1 and
-                ps_orders.date_add BETWEEN '{dataod}' and '{datado}' {filtr} 
-                order by id_order {sort}";
-                MySqlDataReader reader = command1.ExecuteReader();
-
-                return await Task.Run(() =>
+                using (MySqlConnection connection = new MySqlConnection(conn_string.ToString()))
                 {
-                    while (reader.Read())
+                    connection.Open();
+
+
+                    // this.mysqlconn.Open();
+
+                    //var cdsa=this.mysqlconn.Ping();
+
+                    MySqlCommand command1 = connection.CreateCommand();
+                    command1.CommandText = $@"SELECT id_order,reference,payment,ps_orders.date_add,ps_order_state.color,
+                        CONVERT(total_paid,decimal(10,2))Totalpay, firstname, lastname , pc.name typDostawy, ps_order_state_lang.name
+                        from ps_orders 
+                        join ps_customer on ps_customer.id_customer=ps_orders.id_customer 
+                        join ps_carrier pc on pc.id_carrier=ps_orders.id_carrier
+                        join ps_order_state on ps_order_state.id_order_state= ps_orders.current_state                
+                        join `ps_order_state_lang` on ps_order_state_lang.id_order_state= ps_order_state.id_order_state
+                        where ps_orders.current_state in({typyplatnosci}) and ps_order_state_lang.id_lang=1 and
+                        ps_orders.date_add BETWEEN '{dataod}' and '{datado}' {filtr} 
+                        order by id_order {sort}";
+                    MySqlDataReader reader = command1.ExecuteReader();
+
+                    return await Task.Run(() =>
                     {
-
-                        var cstm = reader["firstname"].ToString().ToUpper().Substring(0, 1) + ". " + reader["lastname"].ToString();
-                        DateTime dateTime;
-                        var datazam = DateTime.TryParse(reader["date_add"].ToString(), out dateTime);
-
-                        prestas.Add(new Presta
+                        while (reader.Read())
                         {
-                            ZaN_GIDNumer = reader.GetInt32("id_order"),
-                            ZaN_DataWystawienia = dateTime.ToString("yyyy-MM-dd HH:mm:ss"),
-                            ZaN_DokumentObcy = reader["reference"].ToString(),
-                            ZaN_FormaNazwa = reader["payment"].ToString(),
-                            ZaN_StatusPlatnosc = reader["name"].ToString(),
-                            ZaN_SpDostawy = reader["typDostawy"].ToString(),
-                            WartoscZam = reader.GetDecimal("Totalpay"),
-                            KnA_Akronim = cstm,
-                            Color = reader["color"].ToString()
 
-                        });
-                    }
-                    this.mysqlconn.Close();
-                    //this.mysqlconn = null;
-                    return prestas;
-                });
+                            var cstm = reader["firstname"].ToString().ToUpper().Substring(0, 1) + ". " + reader["lastname"].ToString();
+                            DateTime dateTime;
+                            var datazam = DateTime.TryParse(reader["date_add"].ToString(), out dateTime);
+
+                            prestas.Add(new Presta
+                            {
+                                ZaN_GIDNumer = reader.GetInt32("id_order"),
+                                ZaN_DataWystawienia = dateTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                                ZaN_DokumentObcy = reader["reference"].ToString(),
+                                ZaN_FormaNazwa = reader["payment"].ToString(),
+                                ZaN_StatusPlatnosc = reader["name"].ToString(),
+                                ZaN_SpDostawy = reader["typDostawy"].ToString(),
+                                WartoscZam = reader.GetDecimal("Totalpay"),
+                                KnA_Akronim = cstm,
+                                Color = reader["color"].ToString()
+
+                            });
+                        }
+                        //   this.mysqlconn.Close();
+
+                        //this.mysqlconn = null;
+                        return prestas;
+                    });
+                }
             }
             catch (Exception s)
             {
-                this.mysqlconn.Close();
+                //this.mysqlconn.Close();
                 //this.mysqlconn = null;
                 return prestas;
 
@@ -198,7 +206,7 @@ namespace CompletOrder.Services
             }
 
 
-                    ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
+            ObservableCollection<Presta> prestas = new ObservableCollection<Presta>();
             try
             {
                 this.mysqlconn.Open();
@@ -238,7 +246,7 @@ namespace CompletOrder.Services
             }
         }
 
-   
+
         public async Task<ObservableCollection<Presta>> PobierzZamówienia()
         {
             var filtry = Application.Current as App;
@@ -433,7 +441,7 @@ namespace CompletOrder.Services
 
 
         #endregion
-        
+
         public async Task<ObservableCollection<Presta>> MySqlPobierzelementyZamówienia(int id)
         {
 
