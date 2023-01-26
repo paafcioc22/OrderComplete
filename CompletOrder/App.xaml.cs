@@ -8,6 +8,9 @@ using CompletOrder.ViewModels;
 using System.Collections.Generic;
 using CompletOrder.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace CompletOrder
 {
@@ -31,6 +34,7 @@ namespace CompletOrder
         private const string baseName = "baseName";
         private const string isloading = "isloading";
         private const string passwordsql2 = "passwordsql2";
+        private const string webserviceTypeConn = "webserviceTypeConn";
 
         public App()
         {
@@ -44,7 +48,11 @@ namespace CompletOrder
 
         protected override void OnStart()
         {
-            
+            AppCenter.Start("android=3a57c7c2-771f-4371-aa59-98e228893af3;" +
+                 "uwp={Your UWP App secret here};" +
+                 "ios={Your iOS App secret here};" +
+                 "macos={Your macOS App secret here};",
+                 typeof(Analytics), typeof(Crashes));
         }
 
         protected override void OnSleep()
@@ -231,6 +239,21 @@ namespace CompletOrder
 
         }
 
+        public bool IsConnLocal
+        {
+            get
+            {
+                if (Properties.ContainsKey(webserviceTypeConn))
+                    return (bool)Properties[webserviceTypeConn];
+                return true;
+            }
+            set
+            {
+                Properties[webserviceTypeConn] = value;
+                //  orderViewModel.Filtr = true;
+            }
+
+        }
 
 
     }

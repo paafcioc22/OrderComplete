@@ -57,6 +57,7 @@ namespace CompletOrder.ViewModels
         public int _orderid { get; set; }
         public decimal SumaZamowienia { get; set; }
         public int PozycjiZamowienia { get; set; }
+        public int SztukZamówienia { get; set; }
 
         public OrderDetailVM(Order _order)
         {      
@@ -112,6 +113,8 @@ namespace CompletOrder.ViewModels
                         //IsDone = (wynik.Where(s => s.IdOrder == _orderid && s.IdElementOrder == a.ElementId)).Any(),
                         IsDone = (wynik.Where(s => s.OrE_OrderId == _orderid && s.OrE_OrderEleId == a.ElementId)).Any(),
                         IdElement = a.ElementId,
+                        nazwa = a.nazwa
+                         
 
                     });
                 }

@@ -28,14 +28,16 @@ namespace CompletOrder.Views
             //BindingContext =  Application.Current;
             BindingContext = viewModel = new LoginViewModel();
 
-             
+            bool value = false;
+            Preferences.Get("isWeberviceLocal", value, "default_value");
+            typeConnSwitch.IsToggled = value;
 
 
             entry_haslo.Keyboard = Keyboard.Create(KeyboardFlags.CapitalizeWord);
             wersja_label.Text = $"ver {AppInfo.VersionString}";
 
 
-            SprNowaWersja();
+            //SprNowaWersja();
         }
 
  
@@ -47,9 +49,9 @@ namespace CompletOrder.Views
 
         async void SprNowaWersja()
         {
-             string latestVersionNumber1 = await CrossLatestVersion.Current.GetLatestVersionNumber();
             try
             {
+             //string latestVersionNumber1 = await CrossLatestVersion.Current.GetLatestVersionNumber();
                 var isLatest = await CrossLatestVersion.Current.IsUsingLatestVersion();
                 //string latestVersionNumber = await CrossLatestVersion.Current.GetLatestVersionNumber();
                 //string installedVersionNumber = CrossLatestVersion.Current.InstalledVersionNumber;
@@ -67,7 +69,7 @@ namespace CompletOrder.Views
             catch (Exception a)
             {
 
-                await DisplayAlert("Uwaga", "Błąd sprawdzania wersji..Sprawdź połączenie", "OK");
+                await DisplayAlert("Uwaga", $"Błąd sprawdzania wersji..\n{a.Message}", "OK");
             }
         }
 
@@ -141,6 +143,11 @@ namespace CompletOrder.Views
             viewModel.SelectUser.Password = entry_haslo2.Text;
         }
 
-         
+        private void typeConnSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            var islocal= e.Value;
+            Preferences.Set("isWeberviceLocal", islocal);
+            
+        }
     }
 }

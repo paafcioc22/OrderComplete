@@ -133,6 +133,11 @@
             RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-90}"
             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.2,Constant=0}"/>
 
+        <Switch x:Name="typeConnSwitch"  Toggled="typeConnSwitch_Toggled" HorizontalOptions="Start" 
+            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1,Constant=-50}"
+            RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0, Constant=30}"
+            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.2,Constant=0}"/>
+
         <ActivityIndicator  Color="#f4b9fe"    x:Name="kolko" IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"
             RelativeLayout.XConstraint="{ConstraintExpression
             Type=RelativeToView,ElementName=imageCircleBack,Property=X,Factor=1.4}"

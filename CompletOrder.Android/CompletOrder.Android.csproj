@@ -72,6 +72,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AppCenter.Analytics">
+      <Version>4.5.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AppCenter.Crashes">
+      <Version>4.5.3</Version>
+    </PackageReference>
     <PackageReference Include="MySqlConnector">
       <Version>2.1.11</Version>
     </PackageReference>
@@ -90,6 +96,11 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLiteDb.cs" />
+    <Compile Include="Web References\LocalWebSzacho\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
     <Compile Include="Web References\WebSzacho\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -101,6 +112,11 @@
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
+    <None Include="Web References\LocalWebSzacho\cdnofflinesrv.wsdl" />
+    <None Include="Web References\LocalWebSzacho\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <None Include="Web References\WebSzacho\cdnofflinesrv.wsdl" />
     <None Include="Web References\WebSzacho\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
@@ -151,6 +167,19 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
+    <WebReferenceUrl Include="http://192.168.1.9/cdnofflinesrv/cdnofflinesrv.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\LocalWebSzacho\</RelPath>
+      <UpdateFromURL>http://192.168.1.9/cdnofflinesrv/cdnofflinesrv.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>
+      </CachedAppSettingsObjectName>
+      <CachedSettingsPropName>
+      </CachedSettingsPropName>
+    </WebReferenceUrl>
     <WebReferenceUrl Include="http://serwer.szachownica.com.pl/cdnofflinesrv/cdnofflinesrv.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\WebSzacho\</RelPath>
@@ -209,6 +238,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-xxhdpi\ustawienia64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web References\LocalWebSzacho\cdnofflinesrv.disco" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ProjectExtensions>

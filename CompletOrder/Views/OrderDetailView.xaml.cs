@@ -1,5 +1,6 @@
 ﻿using CompletOrder.Models;
 using CompletOrder.ViewModels;
+using Microsoft.AppCenter.Crashes;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace CompletOrder.Views
             if (ileall!=ilePo)
             //if (suma != orderDetail.SumaZamowienia)
                 DisplayAlert("Uwaga", "Nie pełna lista zamówienia", "OK");
-            lbl_sumaKwota.Text = $"Łączna kwota pozycji : {suma:N} zł";
+            lbl_sumaKwota.Text = $"Łączna kwota pozycji : {suma:N} zł, sztuk: {orderDetailVm.OrderDetail.Sum(s => s.ilosc)}";
             //CzyKtosNieRobi();
         }
 
@@ -179,56 +180,72 @@ namespace CompletOrder.Views
         private async void ZaznaczElement(OrderDetail order, bool isClick)
         {
             PC_SiOrderElem orderElem;
-
-            //var tmp2 = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
-
-            var updejt = new OrderDatailComplete
-            { 
-                IdOrder = order.OrderId,
-                IdElementOrder = order.IdElement
-            };
-
-            var tmp = await orderDetailVm.SelectOrderElem(order.OrderId, order.IdElement);
-
-            if (isClick)
+            try
             {
-                var zaznaczone = orderDetailVm.OrderDetail.Where(x => x.OrderId == order.OrderId);
 
+                //var tmp2 = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
 
-                // var tmp = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
-
-                if (tmp.Count == 0)
+                var updejt = new OrderDatailComplete
                 {
-                    //await _connection.InsertAsync(updejt);
-                  
-                            orderElem = new PC_SiOrderElem()
-                            {
-                                OrE_PlaceName = order.twrkarty.Polozenie,
-                                OrE_OrderEleId = order.IdElement,
-                                OrE_OrderId = order.OrderId,
-                                OrE_Quantity = order.ilosc,
-                                OrE_MpaId = order.twrkarty.MgA_Id
-
-                            };
-
-                            await orderDetailVm.AddOrderElem(orderElem); 
-                    
-                }
-            }
-            else {
-
-                
-                //var tmp = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
-                var delete = new OrderDatailComplete
-                {
-                    //Id=tmp[0].Id,
                     IdOrder = order.OrderId,
                     IdElementOrder = order.IdElement
                 };
-                //await _connection.DeleteAsync(delete); //Uswuwasz znaczki zakonczenia
-                await orderDetailVm.DeleteOrderElem(delete);
-           
 
+                var tmp = await orderDetailVm.SelectOrderElem(order.OrderId, order.IdElement);
+
+                if (isClick)
+                {
+                    var zaznaczone = orderDetailVm.OrderDetail.Where(x => x.OrderId == order.OrderId);
+
+
+                    // var tmp = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
+
+                    if (tmp.Count == 0)
+                    {
+                        //await _connection.InsertAsync(updejt);
+
+                        orderElem = new PC_SiOrderElem()
+                        {
+                            OrE_PlaceName = order.twrkarty.Polozenie,
+                            OrE_OrderEleId = order.IdElement,
+                            OrE_OrderId = order.OrderId,
+                            OrE_Quantity = order.ilosc,
+                            OrE_MpaId = order.twrkarty.MgA_Id
+
+                        };
+
+                        await orderDetailVm.AddOrderElem(orderElem);
+
+                    }
+                }
+                else
+                {
+
+
+                    //var tmp = await _connection.QueryAsync<OrderDatailComplete>("select * from OrderDatailComplete where IdOrder = ?  and IdElementOrder=? ", order.OrderId, order.IdElement);
+                    var delete = new OrderDatailComplete
+                    {
+                        //Id=tmp[0].Id,
+                        IdOrder = order.OrderId,
+                        IdElementOrder = order.IdElement
+                    };
+                    //await _connection.DeleteAsync(delete); //Uswuwasz znaczki zakonczenia
+                    await orderDetailVm.DeleteOrderElem(delete);
+
+
+                }
+            }
+            catch (Exception s)
+            {
+                var properties = new Dictionary<string, string>
+                {
+                    { "kod order", order.kod },
+                    { "kod xl", order.twrkarty.TwrKod},
+                    { "zamowienie", order.nazwa}
+                };
+                Crashes.TrackError(s, properties);
+
+                throw;
             }
         }
 
@@ -313,32 +330,58 @@ namespace CompletOrder.Views
 
         private async void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
         {
-            ViewCell cell = (sender as Label).Parent.Parent as ViewCell;
+              ViewCell cell = (sender as Label).Parent.Parent as ViewCell;
 
-            OrderDetail order = cell.BindingContext as OrderDetail;
-
-            
-
-            List<string> nowy = new List<string>();
-
-            var zam = orderDetailVm.OrderDetail.Where(s => s.kod == order.kod & s.rozmiar==order.rozmiar).FirstOrDefault();
-            
-
-            var stwrkarty = Task.Run(() => orderDetailVm.GetTwrKartyAsync(order.kod));
-
-            foreach (var wpis in stwrkarty.Result)
+              OrderDetail order = cell.BindingContext as OrderDetail;
+              IList<TwrKarty> stwrkarty = new List<TwrKarty>();
+                OrderDetail zamelem ;
+            try
             {
-                nowy.Add(String.Concat(wpis.Polozenie, " : ", (wpis.TwrStan), " szt"));
+
+
+                List<string> nowy = new List<string>();
+
+                if (string.IsNullOrEmpty(order.rozmiar))
+                {
+                    zamelem = orderDetailVm.OrderDetail.Where(s => s.nazwa == order.nazwa  ).FirstOrDefault();
+                }
+                else
+                {
+
+                    zamelem = orderDetailVm.OrderDetail.Where(s => s.kod == order.kod & s.rozmiar == order.rozmiar).FirstOrDefault();
+                }
+
+
+                stwrkarty = Task.Run(() => orderDetailVm.GetTwrKartyAsync(order.kod)).Result;
+
+
+                foreach (var wpis in stwrkarty)
+                {
+                    nowy.Add(String.Concat(wpis.Polozenie, " : ", (wpis.TwrStan), " szt"));
+                }
+
+                var polozenie = await DisplayActionSheet("Wszystkie położenia:", "OK", "Anuluj", nowy.ToArray());
+
+                if (polozenie != "Anuluj" && polozenie != "OK")
+                {
+                    zamelem.twrkarty.Polozenie = polozenie.Substring(0, polozenie.IndexOf(":") - 1);
+                    var mpaidlist = Task.Run(() => orderDetailVm.GetTwrKartyAsync(order.kod)).Result;
+                    var mpa = mpaidlist.Where(s => s.Polozenie == zamelem.twrkarty.Polozenie).FirstOrDefault();
+                    zamelem.twrkarty.MgA_Id = mpa.MgA_Id;
+                }
             }
-
-            var polozenie=await DisplayActionSheet("Wszystkie położenia:", "OK", "Anuluj", nowy.ToArray());
-
-            if (polozenie != "Anuluj" && polozenie != "OK")
+            catch (Exception s)
             {
-                zam.twrkarty.Polozenie = polozenie.Substring(0, polozenie.IndexOf(":")-1);
-                var mpaidlist = Task.Run(() => orderDetailVm.GetTwrKartyAsync(order.kod)).Result;
-                var mpa= mpaidlist.Where(s => s.Polozenie == zam.twrkarty.Polozenie).FirstOrDefault();
-                zam.twrkarty.MgA_Id = mpa.MgA_Id;
+                var kod = stwrkarty.Count > 0 ? stwrkarty[0].TwrKod : "";
+                var properties = new Dictionary<string, string>
+                {
+                    { "kod order", order.kod },
+                    { "kod xl", kod},
+                    { "zamowienie", order.nazwa}
+                };
+                Crashes.TrackError(s, properties);
+
+                throw;
             }
             //DisplayAlert(null, "tu będą inne położenia", "ok");
         }

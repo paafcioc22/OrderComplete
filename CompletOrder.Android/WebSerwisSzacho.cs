@@ -15,6 +15,7 @@ using Android.Views;
 using Android.Widget;
 using CompletOrder.Models;
 using Java.Util;
+using Xamarin.Essentials;
 
 namespace CompletOrder.Droid
 {
@@ -23,8 +24,10 @@ namespace CompletOrder.Droid
     public sealed class WebSerwisSzacho : IWebService
     {
 
-
+ 
         public WebSzacho.CDNOffLineSrv client;
+        public LocalWebSzacho.CDNOffLineSrv Localclient;
+
         public List<TwrKarty> TowarInfoList { get; private set; }
         public ObservableCollection<Allegro> AllegroList { get; private set; }
         List<SendOrder> TowarInfo;
@@ -34,16 +37,35 @@ namespace CompletOrder.Droid
 
         public WebSerwisSzacho()
         {
+            bool value=false;
+            Preferences.Get("isWeberviceLocal", value,"default_value");
+                       
+            Localclient = new LocalWebSzacho.CDNOffLineSrv();
+          
             client = new WebSzacho.CDNOffLineSrv();
+            
         }
 
         public async Task<List<TwrKarty>> GetInfos(string query)
         {
+            string respone = "";
+            bool value ;
             return await Task.Run(() =>
               {
                   TowarInfoList = new List<TwrKarty>();
 
-                  var respone = client.ExecuteSQLCommand(query);
+                  value = Preferences.Get("isWeberviceLocal", asd);
+
+                  if (value)
+                  {
+                      respone = Localclient.ExecuteSQLCommand(query);
+                  }
+                  else
+                  {
+                       
+                    respone = client.ExecuteSQLCommand(query);
+                  }
+
 
                   XmlDocument xmlDoc = new XmlDocument();
                   xmlDoc.LoadXml(respone);
@@ -90,6 +112,8 @@ namespace CompletOrder.Droid
 
         public async Task<string> InsertOrderSend(SendOrder sendOrder)
         {
+            string respone = "";
+            bool value;
             try
             {
                 return await Task.Run(() =>
@@ -106,7 +130,19 @@ namespace CompletOrder.Droid
                                 '{sendOrder.Orn_DeviceId}',
                                 '{sendOrder.Orn_UsrLogin}'";
 
-                        var respone = client.ExecuteSQLCommand(InsertString);
+
+                    value = Preferences.Get("isWeberviceLocal", asd);
+
+                    if (value)
+                    {
+                        respone = Localclient.ExecuteSQLCommand(InsertString);
+                    }
+                    else
+                    {
+
+                        respone = client.ExecuteSQLCommand(InsertString);
+                    }
+                    //var respone = client.ExecuteSQLCommand(InsertString);
 
                         odp = respone;
                         odp = odp.Replace("<ROOT>\r\n  <Table>\r\n    <statuss>", "").Replace("</statuss>\r\n  </Table>\r\n</ROOT>", "");
@@ -126,13 +162,28 @@ namespace CompletOrder.Droid
 
         public async Task<List<SendOrder>> SelectOrderSend(string query3)
         {
-            
+            string respone = "";
+            bool value;
+
             TowarInfo = new List<SendOrder>();
 
             return await Task.Run(() =>
             {
 
-                var respone = client.ExecuteSQLCommand(query3);
+
+                value = Preferences.Get("isWeberviceLocal", asd);
+
+                if (value)
+                {
+                    respone = Localclient.ExecuteSQLCommand(query3);
+                }
+                else
+                {
+                    respone = client.ExecuteSQLCommand(query3);
+                }
+                 
+
+                //var respone = client.ExecuteSQLCommand(query3);
 
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.LoadXml(respone);
@@ -168,13 +219,27 @@ namespace CompletOrder.Droid
 
         public async Task<ObservableCollection<Allegro>> GetAllegros(string query3)
         {
+            string respone = "";
+            bool value;
+
             try
             {
                 return await Task.Run(() =>
                     {
-                        AllegroList = new ObservableCollection<Allegro>();
+                        AllegroList = new ObservableCollection<Allegro>(); 
 
-                        var respone = client.ExecuteSQLCommand(query3);
+                        value = Preferences.Get("isWeberviceLocal", asd);
+
+                        if (value)
+                        {
+                            respone = Localclient.ExecuteSQLCommand(query3);
+                        }
+                        else
+                        {
+                            respone = client.ExecuteSQLCommand(query3);
+                        }
+
+                        //var respone = client.ExecuteSQLCommand(query3);
 
                         XmlDocument xmlDoc = new XmlDocument();
                         xmlDoc.LoadXml(respone);
@@ -217,15 +282,30 @@ namespace CompletOrder.Droid
             }
         }
 
-
+        bool asd;
         public async Task<IList<T>> PobierzDaneZWeb<T>(string query)
         {
-
+            string respone = "";
+            Localclient = new LocalWebSzacho.CDNOffLineSrv();
             try
             {
                 return await Task.Run(() =>
                 {
-                    var respone = client.ExecuteSQLCommand(query);
+                    bool value ;
+                    bool hasKey = Preferences.ContainsKey("isWeberviceLocal");
+
+                    value= Preferences.Get("isWeberviceLocal", asd);
+
+                    if (value)
+                    {
+                        respone = Localclient.ExecuteSQLCommand(query);
+                    }
+                    else
+                    {
+                        respone = client.ExecuteSQLCommand(query);
+                    }
+
+                    //var respone = client.ExecuteSQLCommand(query);
 
                     return DeserializeFromXml<T>(respone);
                 });
@@ -254,13 +334,30 @@ namespace CompletOrder.Droid
 
         public async Task<ObservableCollection<Presta>> GetPrestaZam(string query3)
         {
+
+            string respone = "";
+            bool value;
+
             try
             {
                 return await Task.Run(() =>
                 {
                     PrestaList = new ObservableCollection<Presta>();
 
-                    var respone = client.ExecuteSQLCommand(query3);
+                    value = Preferences.Get("isWeberviceLocal", asd);
+
+                    if (value)
+                    {
+                        respone = Localclient.ExecuteSQLCommand(query3);
+                    }
+                    else
+                    {
+                        respone = client.ExecuteSQLCommand(query3);
+                    }
+
+
+
+                    //var respone = client.ExecuteSQLCommand(query3);
 
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.LoadXml(respone);
