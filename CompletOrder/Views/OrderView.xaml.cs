@@ -22,82 +22,26 @@ namespace CompletOrder.Views
         public OrderView()
         {
             InitializeComponent();
-            Title= "User : " +Preferences.Get("user", "default_value");
+
+            var user= Preferences.Get("user", "default_value");
+            Title = "User : " + user;
             BindingContext = orderView = new OrderViewModel();
 
-            orderView.PobierzListeZatwierdzonychZamowien();
-          
-            orderView.GetPrestaZam();
-      
-            orderView.PobierzAllegro();
+            if (user != "GGL")
+            {
+                orderView.PobierzListeZatwierdzonychZamowien();
 
-            IDevice device = DependencyService.Get<IDevice>();
-            string deviceIdentifier = device.GetIdentifier();
-        }
+                orderView.GetPrestaZam();
 
-        async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
-        {
-
-            IDevice device = DependencyService.Get<IDevice>();
-            string deviceIdentifier = device.GetIdentifier();
-
-
-            if (_userTapped)
-                return;
-
-            _userTapped = true;
-
-            if (e.Item == null)
-                return;
-            var orderVM = e.Item as Order;
-
-
-            
-            var odp =await RodzajeMetod.WejdżWZamowienie(orderVM.id, orderVM.data);
-            if (odp)
-                await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM), orderView));
-            else 
-            { 
-                var odp2=await DisplayAlert("info", "To zamówienie jest edytowane\n Czy nadal chcesz je otworzyć?", "Tak","Nie");
-                if(odp2)
-                    await Navigation.PushAsync(new OrderDetailView(new OrderDetailVM(orderVM), orderView));
+                orderView.PobierzAllegro();
             }
+            
 
-
-            //Deselect Item
-            ((ListView)sender).SelectedItem = null;
-
-            _userTapped = false;
+            IDevice device = DependencyService.Get<IDevice>();
+            string deviceIdentifier = device.GetIdentifier();
         }
 
-
-        
-
-
-        //protected override void OnAppearing()
-        //{
-        //    var pages = Application.Current.MainPage.Navigation.ModalStack;
-
-        //    if (pages.Count > 0)
-        //    {
-        //        var nazwa = pages[pages.Count - 1].GetType().Name;
-        //    }
-
-
-        //    orderView.PobierzListeZatwierdzonychZamowien();
-
-        //    // orderView.PobierzListe(); 
-
-
-        //   // if(orderView.PrestaNagList.Count==0)
-        //    orderView.GetPrestaZam();
-        //   // else
-        //     //   orderView.GetPrestaZam(true);
-        //    orderView.PobierzAllegro(); 
-
-        //    base.OnAppearing();
-        //}
-
+          
          
 
         private async void Button_Clicked(object sender, EventArgs e)

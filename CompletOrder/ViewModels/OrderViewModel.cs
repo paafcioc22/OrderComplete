@@ -17,6 +17,7 @@ using System.Windows.Input;
 using Xamarin.Forms;
 using CompletOrder.Services;
 using MySqlConnector;
+using Xamarin.Essentials;
 
 namespace CompletOrder.ViewModels
 {
@@ -244,21 +245,7 @@ namespace CompletOrder.ViewModels
             return new ObservableCollection<T>(original);
         }
 
-
-        //public ICommand SearchCommand => new Command(Search);
-        //public void Search()
-        //{
-        //    if (string.IsNullOrWhiteSpace(_filter))
-        //    {
-        //        OrderList = GetOrders;// ItemData.Items;
-        //    }
-        //    else
-        //    {
-        //        var tmp = GetOrders.Where(c => c.id.ToString().Contains(_filter)).ToList();
-        //        OrderList = Convert2(tmp);
-        //    }
-              
-        //}
+         
 
 
         string UstawFiltry()
@@ -341,41 +328,60 @@ namespace CompletOrder.ViewModels
 
             IsBusy = true;
 
+            var user = Preferences.Get("user", "default_value");
+
             AllegroList.Clear();
-            var tmp = Task.Run(() => GetAllegros()).Result;
-           // wynik = Task.Run(() => SendOrders()).Result;
-
-            //var nowa = (
-            //    from allegro in tmp
-            //    join done in wynik on allegro.Id equals done.Orn_OrderId into pod
-            //    from ales in pod.DefaultIfEmpty()
-            //    select ales
-            //    );
 
 
-            foreach (var a in tmp)
+            if (user == "GGL")
             {
                 AllegroList.Add(new Allegro
                 {
-                    Id = a.Id,
-                    ElementId = a.ElementId,
-                    CustomerName = a.CustomerName,
-                    forma_platnosc = a.forma_platnosc,
-                    ilosc = a.ilosc,
-                    IsFinish = (wynik.Where(s => s.Orn_OrderId == a.Id && s.Orn_IsDone == true)).Any(),
-                    kod = a.kod,
-                    nazwa = a.nazwa,
-                    NrParagonu = a.NrParagonu,
-                    Pol1 = a.Pol1,
-                    Pol2 = a.Pol2,
-                    Pol3 = a.Pol3,
-                    RaportDate = a.RaportDate,
-                    typ_wysylka=a.typ_wysylka
+                    Id = 1,
+                    ElementId = 11,
+                    CustomerName = "Tesja Guglowa",
+                    forma_platnosc = "Płatność przyjęta",
+                    ilosc = 2,
+                    IsFinish = false,
+                    kod = "TwrKod",
+                    nazwa = "Testowa",
+                    NrParagonu = "1111",
+                    Pol1 = "11-22-33", 
+                    RaportDate = DateTime.UtcNow.AddDays(-3).ToString("G"),
+                    typ_wysylka = "Allegro Kurier DPD"
 
                 });
             }
-             
-            IleZam2 = $"Lista zamówień ({AllegroList.Count})";
+            else
+            {
+                var tmp = Task.Run(() => GetAllegros()).Result;
+
+                foreach (var a in tmp)
+                {
+                    AllegroList.Add(new Allegro
+                    {
+                        Id = a.Id,
+                        ElementId = a.ElementId,
+                        CustomerName = a.CustomerName,
+                        forma_platnosc = a.forma_platnosc,
+                        ilosc = a.ilosc,
+                        IsFinish = (wynik.Where(s => s.Orn_OrderId == a.Id && s.Orn_IsDone == true)).Any(),
+                        kod = a.kod,
+                        nazwa = a.nazwa,
+                        NrParagonu = a.NrParagonu,
+                        Pol1 = a.Pol1,
+                        Pol2 = a.Pol2,
+                        Pol3 = a.Pol3,
+                        RaportDate = a.RaportDate,
+                        typ_wysylka = a.typ_wysylka
+
+                    });
+                }
+
+                IleZam2 = $"Lista zamówień ({AllegroList.Count})";
+            }
+
+            
             IsBusy = false;
         }
 
