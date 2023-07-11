@@ -328,7 +328,7 @@ namespace CompletOrder.ViewModels
             ObservableCollection<Presta> _prestaNagList = new ObservableCollection<Presta>();
             try
             {
-
+                //to nie jest uzywane
                 string querystring = $@"cdn.PC_WykonajSelect N'     select   
 	                    ZaN_GIDNumer, 
 	                    ZaN_FormaNazwa, 

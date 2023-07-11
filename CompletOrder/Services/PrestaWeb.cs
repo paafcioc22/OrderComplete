@@ -474,7 +474,10 @@ namespace CompletOrder.Services
                         var rozmiar = " ";
                         var kolor = "";
 
+
+
                         var product_name = reader["product_name"].ToString();
+                        var twr_kod = reader["product_reference"].ToString().Replace("202CCTPULL-WF/SS/23-CH", "202CCTPULL-WF/SS/23").Replace("202CCTPULL-WF/SS/23-D", "202CCTPULL-WF/SS/23"); ;
 
                         if (product_name.IndexOf("- Rozmiar") > 0)
                         {
@@ -497,7 +500,7 @@ namespace CompletOrder.Services
                         {
                             ZaN_GIDNumer = Convert.ToInt32(reader["id_order"]),
                             ZaE_Ilosc = Convert.ToInt32(reader["product_quantity"]),
-                            ZaE_TwrKod = reader["product_reference"].ToString(),
+                            ZaE_TwrKod = twr_kod,
                             ZaE_TwrNazwa = reader["product_name"].ToString(),
                             ElementId = Convert.ToInt32(reader["id_order_detail"]),
                             WartoscZam = Convert.ToDecimal(reader["unit_price_tax_incl"]),
