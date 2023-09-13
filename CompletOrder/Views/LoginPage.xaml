@@ -22,7 +22,7 @@
                     Type=RelativeToParent,Property=Width, Factor=1}"
                  />
 
-        <Button BorderRadius="70" x:Name="imageCircleBack" HeightRequest="135" WidthRequest="135" 
+        <Button CornerRadius="70" x:Name="imageCircleBack" HeightRequest="135" WidthRequest="135" 
                 RelativeLayout.XConstraint="{ConstraintExpression 
             Type=RelativeToParent,
             Property=Width, 
@@ -35,7 +35,7 @@
             Property=Y, 
             Constant=60}" BackgroundColor="#f4b9fe" />
 
-        <Button x:Name="btn_click"  BorderRadius="63" Clicked="Button_Clicked" BackgroundColor="Black" HeightRequest="125" ImageSource="szacho.9" Scale="1"   TextColor="White"
+        <Button x:Name="btn_click"  CornerRadius="63" Clicked="Button_Clicked" BackgroundColor="Black" HeightRequest="125" ImageSource="szacho.9" Scale="1"   TextColor="White"
             WidthRequest="125" RelativeLayout.XConstraint="{ConstraintExpression 
             Type=RelativeToView, 
             ElementName=imageCircleBack, 

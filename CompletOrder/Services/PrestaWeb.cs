@@ -477,7 +477,10 @@ namespace CompletOrder.Services
 
 
                         var product_name = reader["product_name"].ToString();
-                        var twr_kod = reader["product_reference"].ToString().Replace("202CCTPULL-WF/SS/23-CH", "202CCTPULL-WF/SS/23").Replace("202CCTPULL-WF/SS/23-D", "202CCTPULL-WF/SS/23"); ;
+                        var twr_kod = reader["product_reference"]
+                            .ToString()
+                            .Replace("202CCTPULL-WF/SS/23-CH", "202CCTPULL-WF/SS/23")
+                            .Replace("202CCTPULL-WF/SS/23-D", "202CCTPULL-WF/SS/23");  
 
                         if (product_name.IndexOf("- Rozmiar") > 0)
                         {

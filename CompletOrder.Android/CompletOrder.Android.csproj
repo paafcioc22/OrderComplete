@@ -39,6 +39,17 @@
     <AndroidSupportedAbis>
     </AndroidSupportedAbis>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <MandroidI18n />
+    <AndroidPackageFormat>aab</AndroidPackageFormat>
+    <AndroidUseAapt2>true</AndroidUseAapt2>
+    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+    <AndroidLinkTool>r8</AndroidLinkTool>
+    <AndroidEnableSGenConcurrent>false</AndroidEnableSGenConcurrent>
+    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidSigningKeyStore>C:\Users\pafci\AppData\Local\Xamarin\Mono for Android\Keystore\pawel\pawel.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>manieczki22</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>pawel</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>manieczki22</AndroidSigningKeyPass>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,6 +69,12 @@
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <AndroidLinkTool>r8</AndroidLinkTool>
     <MandroidI18n />
+    <AndroidPackageFormat>aab</AndroidPackageFormat>
+    <AndroidUseAapt2>true</AndroidUseAapt2>
+    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+    <AndroidKeyStore>false</AndroidKeyStore>
+    <AndroidSigningKeyStore>C:\Users\pafci\AppData\Local\Xamarin\Mono for Android\Keystore\pawel\pawel.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>manieczki22</AndroidSigningStorePass>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -78,6 +95,9 @@
     <PackageReference Include="Microsoft.AppCenter.Crashes">
       <Version>4.5.3</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Identity.Core">
+      <Version>7.0.8</Version>
+    </PackageReference>
     <PackageReference Include="MySqlConnector">
       <Version>2.1.11</Version>
     </PackageReference>
@@ -88,7 +108,7 @@
       <Version>2.1.1-beta.107</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2578" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.7" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AndroidDevice.cs" />
